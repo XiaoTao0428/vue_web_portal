@@ -9,11 +9,17 @@ const routes = [
     path: '/',
     name: 'index',
     component: index,
+    meta: {
+      requireAuth: false,
+    },
     redirect: '/home',
     children: [
       {
         path: '/home',
         name: 'home',
+        meta: {
+          requireAuth: false,
+        },
         component: () => import(/* webpackChunkName: "home" */ '@/views/home/home.vue')
       }
     ]
