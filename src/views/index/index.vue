@@ -1,122 +1,115 @@
 <template>
   <div class="index_warp">
-    <div class="header">
-      <div class="header-icon">
-        <el-image
-            class="icon"
-            src="https://vahala.caltech.edu/static/core/img/caltech-new-logo.png"
-        ></el-image>
-        <el-divider class="divider" direction="vertical"></el-divider>
-        <div class="title">
-          Vahala Research Group
-        </div>
-      </div>
-      <div class="actions">
-        <el-select class="lang-change" size="mini" v-model="currLang" @change="langChange" placeholder="请选择">
-          <el-option
-              v-for="(item, index) in langOptions"
-              :key="'langOptions' + index"
-              :label="item.label"
-              :value="item.value">
-          </el-option>
-        </el-select>
-      </div>
-    </div>
-
-    <div class="menu_warp">
-      <el-menu
-          :default-active="menuActiveIndex"
-          class="menu"
-          mode="horizontal"
-          @select="handleSelect"
-          background-color="#ffffff"
-          text-color="#4A4A4A"
-          active-text-color="#D14900"
-      >
-        <el-menu-item index="1">
-          <span class="text">Home</span>
-        </el-menu-item>
-        <el-submenu index="2" popper-class="header-submenu">
-          <template slot="title">
-            <span class="text">研究</span>
-          </template>
-          <el-menu-item index="2-1">
-            <el-submenu index="2-2" popper-class="header-submenu">
-              <template slot="title">
-                <span class="text">研究1</span>
-              </template>
-              <el-menu-item index="2-2-1">
-                <span class="text">选项1</span>
-              </el-menu-item>
-              <el-menu-item index="2-2-2">
-                <span class="text">选项2</span>
-              </el-menu-item>
-              <el-menu-item index="2-2-3">
-                <span class="text">选项3</span>
-              </el-menu-item>
-            </el-submenu>
-          </el-menu-item>
-          <el-menu-item index="2-2">
-            <span class="text">研究2</span>
-          </el-menu-item>
-          <el-menu-item index="2-3">
-            <span class="text">研究3</span>
-          </el-menu-item>
-        </el-submenu>
-        <el-submenu index="3" popper-class="header-submenu">
-          <template slot="title">
-            <span class="text">出版物</span>
-          </template>
-          <el-menu-item index="3-1">
-            <span class="text">出版物1</span>
-          </el-menu-item>
-          <el-menu-item index="3-2">
-            <span class="text">出版物2</span>
-          </el-menu-item>
-          <el-menu-item index="3-3">
-            <span class="text">出版物3</span>
-          </el-menu-item>
-        </el-submenu>
-        <el-menu-item index="4">
-          <span class="text">人们</span>
-        </el-menu-item>
-      </el-menu>
-    </div>
-
-    <router-view></router-view>
-
-    <div class="footer">
-      <div class="footer-content">
-        <div class="footer-content-top">
-          <div class="footer-content-top-left">
-            <el-image
-                class="icon"
-                src="https://vahala.caltech.edu/static/core/img/caltech-new-logo.png"
-            ></el-image>
-            <div class="title">
-              California Institute of Technology
-            </div>
-          </div>
-          <div class="footer-content-top-right">
-            <div class="text">
-              1200 East California Boulevard
-              <br>
-              Pasadena, California 91125
-            </div>
-            <el-image
-                class="icon"
-                src="https://vahala.caltech.edu/static/theme-v7.0/img/icon-footerpin.png"
-            ></el-image>
+    <div class="content">
+      <div class="header">
+        <div class="header-icon">
+          <el-image
+              class="icon"
+              fit="contain"
+              :src="TSINGHUA_UNIVERSITY_logo"
+          ></el-image>
+          <el-divider class="divider" direction="vertical"></el-divider>
+          <div class="title">
+            {{$t('index.VahalaResearchGroup')}}
           </div>
         </div>
-        <div class="footer-content-bottom">
-          Home
-          <el-divider direction="vertical"></el-divider>
-          Privacy Notice
-          <el-divider direction="vertical"></el-divider>
-          Site Content Copyright © 2021
-          <el-divider direction="vertical"></el-divider>
-          Log In
+        <div class="actions">
+          <el-select class="lang-change" size="mini" v-model="currLang" @change="langChange" placeholder="请选择">
+            <el-option
+                v-for="(item, index) in langOptions"
+                :key="'langOptions' + index"
+                :label="item.label"
+                :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+
+      <div class="menu-warp">
+
+        <div class="menu-list-lg" :style="isInit?'':'overflow-x: auto;'" id="headerMenuId" v-if="!menuOverflow && currScreenSize === 'lg'">
+          <div class="menu-item" v-for="(item, index) in menuList" :key="'menuList' + index">
+            <span class="menu-item-title">{{item['title_' + currLang]}}</span>
+            <div class="submenu" v-if="item.children && item.children.length > 0">
+              <div class="submit-item" v-for="(item2, index2) in item.children" :key="'submenu' + index2">
+                <span class="submit-item-title">{{item2['title_' + currLang]}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="menu-list-no-lg" v-if="menuOverflow || currScreenSize !== 'lg'">
+          <div class="action" v-clickoutside="menuListPopupHide">
+            <div @click="menuListPopupVisibleChange">
+              <span class="menu-title">{{$t('index.Menu')}}</span>
+              <i class="el-icon-menu"></i>
+            </div>
+            <div class="menu-list-popup" v-show="menuListPopupVisible">
+
+              <el-menu
+                  :default-active="menuActiveIndex"
+                  @select="handleSelect"
+                  class="menu"
+              >
+                <template v-for="(item, index) in menuList">
+                  <el-menu-item v-if="!item.children || item.children.length <= 0" :key="'menu-item' + index" :index="item.key">
+                    <span slot="title" class="menu-item-title">{{item['title_' + currLang]}}</span>
+                  </el-menu-item>
+                  <el-submenu v-if="item.children && item.children.length > 0" :index="item.key">
+                    <template slot="title">
+                      <span class="menu-item-title">{{item['title_' + currLang]}}</span>
+                    </template>
+                    <el-menu-item v-for="(item2, index2) in item.children" :key="'submenu' + index2" :index="item2.key">
+                      <span class="submenu-item-title">{{item2['title_' + currLang]}}</span>
+                    </el-menu-item>
+                  </el-submenu>
+                </template>
+
+              </el-menu>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main">
+        <router-view></router-view>
+      </div>
+
+      <div class="footer">
+        <div class="footer-content">
+          <div class="footer-content-top">
+            <div class="footer-content-top-left">
+              <el-image
+                  class="icon"
+                  fit="contain"
+                  src="https://vahala.caltech.edu/static/core/img/caltech-new-logo.png"
+              ></el-image>
+              <div class="title">
+                {{$t('index.CaliforniaInstituteOfTechnology')}}
+              </div>
+            </div>
+            <div class="footer-content-top-right">
+              <div class="text">
+                1200 East California Boulevard
+                <br>
+                Pasadena, California 91125
+              </div>
+              <el-image
+                  class="icon"
+                  fit="contain"
+                  src="https://vahala.caltech.edu/static/theme-v7.0/img/icon-footerpin.png"
+              ></el-image>
+            </div>
+          </div>
+          <div class="footer-content-bottom">
+            <el-link class="link" :underline="false">{{$t('index.Home')}}</el-link>
+            <el-divider direction="vertical"></el-divider>
+            <el-link class="link" :underline="false">{{$t('index.PrivacyNotice')}}</el-link>
+            <el-divider direction="vertical"></el-divider>
+            <el-link class="link" :underline="false">{{$t('index.SiteContentCopyright')}} © 2021</el-link>
+            <el-divider direction="vertical"></el-divider>
+            <el-link class="link" :underline="false">{{$t('index.LogIn')}}</el-link>
+          </div>
         </div>
       </div>
     </div>
@@ -124,12 +117,17 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+import TSINGHUA_UNIVERSITY_logo from '../../assets/icon/TSINGHUA_UNIVERSITY_logo2.png'
+import mixins from '@/mixins/mixins'
 export default {
   name: "index",
+  mixins: [mixins],
   data() {
     return {
-      menuActiveIndex: '1',
-      currLang:'',
+      TSINGHUA_UNIVERSITY_logo: TSINGHUA_UNIVERSITY_logo,  // logo 图标
+      isInit: false,
+      currLang:'',  // 当前的语言
       langOptions:[
         {
           value: 'cn',
@@ -138,14 +136,219 @@ export default {
           value: 'en',
           label: 'English'
         }
-      ]
+      ],
+      menuList: [
+        {
+          key: '1',
+          title_cn: '首页',
+          title_en: 'Home',
+          router: '/home',
+        },
+        {
+          key: '2',
+          title_cn: '研究',
+          title_en: 'Research',
+          router: '/research',
+          children: [
+            {
+              key: '2-1',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            },
+            {
+              key: '2-2',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            }
+          ]
+        },
+        {
+          key: '3',
+          title_cn: '人们',
+          title_en: 'People',
+          router: '/people',
+        },
+        {
+          key: '4',
+          title_cn: '研究',
+          title_en: 'Research',
+          router: '/research',
+          children: [
+            {
+              key: '4-1',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            },
+            {
+              key: '4-2',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            }
+          ]
+        },
+        {
+          key: '5',
+          title_cn: '人们',
+          title_en: 'People',
+          router: '/people',
+        },
+        {
+          key: '6',
+          title_cn: '研究',
+          title_en: 'Research',
+          router: '/research',
+          children: [
+            {
+              key: '6-1',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            },
+            {
+              key: '6-2',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            }
+          ]
+        },
+        {
+          key: '7',
+          title_cn: '人们',
+          title_en: 'People',
+          router: '/people',
+        },
+        {
+          key: '8',
+          title_cn: '研究',
+          title_en: 'Research',
+          router: '/research',
+          children: [
+            {
+              key: '8-1',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            },
+            {
+              key: '8-2',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            }
+          ]
+        },
+        {
+          key: '9',
+          title_cn: '人们',
+          title_en: 'People',
+          router: '/people',
+        },
+        {
+          key: '10',
+          title_cn: '研究',
+          title_en: 'Research',
+          router: '/research',
+          children: [
+            {
+              key: '10-1',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            },
+            {
+              key: '10-2',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            }
+          ]
+        },
+        {
+          key: '11',
+          title_cn: '人们',
+          title_en: 'People',
+          router: '/people',
+        },
+        {
+          key: '12',
+          title_cn: '研究',
+          title_en: 'Research',
+          router: '/research',
+          children: [
+            {
+              key: '12-1',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            },
+            {
+              key: '12-2',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            }
+          ]
+        },
+        {
+          key: '13',
+          title_cn: '人们',
+          title_en: 'People',
+          router: '/people',
+        },
+        {
+          key: '14',
+          title_cn: '研究',
+          title_en: 'Research',
+          router: '/research',
+          children: [
+            {
+              key: '14-1',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            },
+            {
+              key: '14-2',
+              title_cn: '研究',
+              title_en: 'Research',
+              router: '/research-1',
+            }
+          ]
+        },
+      ],
+      menuOverflow: false,  // 菜单栏是否溢出
+      menuListPopupVisible: false,  // 菜单栏弹窗
+      menuActiveIndex: '1',  // 激活的菜单栏
     }
   },
   created() {
-    console.log(localStorage.lang)
     this.currLang = localStorage.lang == undefined?'cn':localStorage.lang
+    this.setCurrLang({
+      currLang: this.currLang
+    })
+  },
+  mounted() {
+    this.init()
   },
   methods: {
+    ...mapMutations(['setCurrLang']),
+    init() {
+      this.isInit = false
+      if (this.currScreenSize === 'lg' && !this.menuOverflow) {
+        let headerMenuDom = document.getElementById('headerMenuId')
+        if (headerMenuDom.scrollWidth > headerMenuDom.offsetWidth || (headerMenuDom.scrollWidth > 1340)) {
+          this.menuOverflow = true
+        } else {
+          this.menuOverflow = false
+        }
+      }
+      this.isInit = true
+    },
     /**
     * 切换菜单
     * */
@@ -158,6 +361,22 @@ export default {
     langChange(e){
       localStorage.setItem('lang', e)
       this.$i18n.locale = e
+      this.setCurrLang({
+        currLang: this.currLang
+      })
+      this.menuOverflow = false
+      this.$nextTick(() => {
+        this.init()
+      })
+    },
+    /**
+    * 切换菜单栏弹出层是否显示
+    * */
+    menuListPopupVisibleChange() {
+      this.menuListPopupVisible = !this.menuListPopupVisible
+    },
+    menuListPopupHide() {
+      this.menuListPopupVisible = false
     }
   }
 }
@@ -166,140 +385,292 @@ export default {
 <style lang="scss" scoped>
 .index_warp {
   width: 100%;
-  .header {
-    width: 100%;
-    height: 80px;
-    padding: 0 90px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
 
-    .header-icon {
+  .content {
+    max-width: 1440px;
+    margin: 0 auto;
+
+    .header {
       width: 100%;
-      max-height: 40px;
-      height: 40px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-start;
-      .icon {
-        height: 100%;
-      }
-      .divider {
-        height: 100%;
-        width: 2px;
-        margin-left: 26px;
-        margin-right: 26px;
-        background-color: #c8c8c8;
-      }
-      .title {
-        font-size: 20px;
-        letter-spacing: -0.56px;
-        color: #666666;
-      }
-    }
-    .actions {
-      .lang-change {
-        width: 100px;
-      }
-    }
-  }
-  .menu_warp {
-    width: 100%;
-    padding: 0 90px;
-    box-sizing: border-box;
-    margin-bottom: 40px;
-    margin-top: 10px;
-
-    & /deep/ .menu {
-      border-bottom: 0;
-      .text {
-        font-size: 22px;
-        font-weight: bold;
-      }
-      .el-menu-item {
-        padding: 0 30px 0 0;
-        border-bottom: 0;
-        &:hover {
-          background-color: #ffffff !important;
-        }
-      }
-      .el-submenu {
-        .el-submenu__title {
-          background-color: #ffffff !important;
-          padding: 0 30px 0 0;
-          border-bottom: 0;
-        }
-      }
-      .is-active {
-        border-bottom: #ffffff;
-      }
-
-    }
-  }
-  .footer {
-    margin-top: 40px;
-    width: 100%;
-    height: 220px;
-    padding: 0 40px;
-    box-sizing: border-box;
-
-    .footer-content {
-      width: 100%;
-      height: 100%;
-      background-color: #003B4C;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      height: 77px;
       padding: 0 50px;
       box-sizing: border-box;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
 
-      .footer-content-top {
+      .header-icon {
         width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        .icon {
+          height: 100%;
+          cursor: pointer;
+        }
+        .divider {
+          height: 100%;
+          width: 2px;
+          margin-left: 26px;
+          margin-right: 26px;
+          background-color: #c8c8c8;
+        }
+        .title {
+          font-size: 24px;
+          letter-spacing: -0.56px;
+          color: #666666;
+          cursor: pointer;
+        }
+      }
+
+      .actions {
+        .lang-change {
+          width: 100px;
+        }
+      }
+
+    }
+
+    .menu-warp {
+      width: 100%;
+      height: 77px;
+      padding: 0 50px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+
+      .menu-list-lg {
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        .footer-content-top-left {
-          .icon {
-            height: 26px;
-            margin-bottom: 10px;
+        justify-content: flex-start;
+
+        .menu-item {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          color: #4a4a4a;
+          font-size: 22px;
+          font-weight: bold;
+          padding: 0 17px;
+          box-sizing: border-box;
+          cursor: pointer;
+          position: relative;
+
+          &:first-child {
+            padding-left: 0;
           }
-          .title {
-            color: #ffffff;
+
+          .menu-item-title {
+            white-space: nowrap;
+            &:hover {
+              color: #D14900;
+            }
+          }
+
+          &:hover {
+            .submenu {
+              display: inline-flex;
+            }
+          }
+
+          .submenu {
+            width: 300px;
+            background-color: #1B1B1B;
+            border-top: 5px solid #D14900;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 20px 25px;
+            box-sizing: border-box;
+            cursor: default;
+            z-index: 99;
+
+            .submit-item {
+              width: 100%;
+              color: #ffffff;
+              font-size: 17px;
+              font-weight: normal;
+              margin-bottom: 15px;
+
+              .submit-item-title {
+                cursor: pointer;
+                white-space: nowrap;
+                &:hover {
+                  //color: #D14900;
+                }
+              }
+
+              &:last-child {
+                //margin-bottom: 0;
+              }
+            }
+          }
+
+        }
+      }
+
+      .menu-list-no-lg {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        .action {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          position: relative;
+          .menu-title {
+            color: #4a4a4a;
             font-size: 15px;
             font-weight: bold;
           }
-        }
-        .footer-content-top-right {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          .icon {
-            height: 26px;
-            margin-left: 10px;
+          .el-icon-menu {
+            color: #696B73;
+            font-size: 20px;
+            line-height: 20px;
+            font-weight: bold;
+            margin-left: 5px;
           }
-          .text {
-            color: #ffffff;
-            font-size: 15px;
-            text-align: right;
-            line-height: 22px;
-          }
-        }
-      }
+          .menu-list-popup {
+            width: 250px;
+            background-color: #1B1B1B;
+            border-top: 5px solid #D14900;
+            position: absolute;
+            top: 40px;
+            left: 0;
+            z-index: 99;
 
-      .footer-content-bottom {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #c8c8c8;
-        font-size: 14px;
-        margin-top: 35px;
+            .menu-item-title {
+              color: #ffffff;
+              font-size: 15px;
+              font-weight: bold;
+            }
+
+            & /deep/ .menu {
+              background-color: #1B1B1B;
+
+              .is-active {
+                background-color: #1B1B1B;
+              }
+
+              .el-menu-item {
+                &:hover {
+                  background-color: #666666;
+                }
+              }
+
+              .el-submenu {
+                .el-submenu__title {
+                  &:hover {
+                    background-color: #666666 !important;
+                  }
+                }
+
+                .el-menu--inline {
+                  background-color: #383838;
+                  .el-menu-item {
+                    .submenu-item-title {
+                      color: #ffffff;
+                    }
+                    &:hover {
+                      background-color: #666666;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
 
+    .main {
+      width: 100%;
+      min-height: calc(100vh - 220px - 60px - 174px);
+      margin-bottom: 60px;
+    }
+
+    .footer {
+      width: 100%;
+      height: 220px;
+
+      .footer-content {
+        width: 100%;
+        height: 100%;
+        background-color: #003B4C;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 50px;
+        box-sizing: border-box;
+
+        .footer-content-top {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 10px;
+          .footer-content-top-left {
+            .icon {
+              height: 26px;
+              margin-bottom: 10px;
+            }
+            .title {
+              color: #ffffff;
+              font-size: 15px;
+              font-weight: bold;
+            }
+          }
+          .footer-content-top-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .icon {
+              height: 29px;
+              margin-left: 10px;
+            }
+            .text {
+              color: #ffffff;
+              font-size: 15px;
+              text-align: right;
+              line-height: 22px;
+            }
+          }
+        }
+
+        .footer-content-bottom {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #c8c8c8;
+          font-size: 14px;
+          padding-top: 20px;
+
+          .link {
+            color: #c8c8c8;
+            &:hover {
+              color: #c8c8c8;
+            }
+          }
+        }
+      }
+
+    }
+
   }
+
 }
 </style>
 <style lang="scss">
