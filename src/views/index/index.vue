@@ -29,7 +29,7 @@
 
         <div class="menu-list-lg" :style="isInit?'':'overflow-x: auto;'" id="headerMenuId" v-if="!menuOverflow && currScreenSize === 'lg'">
           <div class="menu-item" v-for="(item, index) in menuList" :key="'menuList' + index">
-            <span class="menu-item-title">{{item['title_' + currLang]}}</span>
+            <span class="menu-item-title" @click="handleMenuListLgSelect(item)">{{item['title_' + currLang]}}</span>
             <div class="submenu" v-if="item.children && item.children.length > 0">
               <div class="submit-item" v-for="(item2, index2) in item.children" :key="'submenu' + index2">
                 <span class="submit-item-title">{{item2['title_' + currLang]}}</span>
@@ -44,27 +44,60 @@
               <i class="el-icon-menu"></i>
             </div>
             <div class="menu-list-popup" v-show="menuListPopupVisible">
+              <div class="menu-list-popup-content" :style="menuListPopupContentVisible?'left: -230px;':'left: 0px;'">
+                <div class="close-popup">
+                  <i class="el-icon-close"></i>
+                  <span class="close-btn-title">关闭</span>
+                </div>
+                <div class="menu-item" v-for="(item, index) in menuList" :key="'menuList' + index">
+                  <div class="menu-item-title-warp">
+                    <span class="menu-item-title" @click="handleMenuListLgSelect(item)">{{item['title_' + currLang]}}</span>
+                    <span class="icon">
+                    <i v-if="item.children && item.children.length > 0" class="el-icon-arrow-right" @click="menuListPopupContentVisibleChange(item.children)"></i>
+                  </span>
+                  </div>
+                  <!--                <div class="submenu" v-if="item.children && item.children.length > 0">-->
+                  <!--                  <div class="submit-item" v-for="(item2, index2) in item.children" :key="'submenu' + index2">-->
+                  <!--                    <span class="submit-item-title">{{item2['title_' + currLang]}}</span>-->
+                  <!--                  </div>-->
+                  <!--                </div>-->
+                </div>
 
-              <el-menu
-                  :default-active="menuActiveIndex"
-                  @select="handleSelect"
-                  class="menu"
-              >
-                <template v-for="(item, index) in menuList">
-                  <el-menu-item v-if="!item.children || item.children.length <= 0" :key="'menu-item' + index" :index="item.key">
-                    <span slot="title" class="menu-item-title">{{item['title_' + currLang]}}</span>
-                  </el-menu-item>
-                  <el-submenu v-if="item.children && item.children.length > 0" :index="item.key">
-                    <template slot="title">
-                      <span class="menu-item-title">{{item['title_' + currLang]}}</span>
-                    </template>
-                    <el-menu-item v-for="(item2, index2) in item.children" :key="'submenu' + index2" :index="item2.key">
-                      <span class="submenu-item-title">{{item2['title_' + currLang]}}</span>
-                    </el-menu-item>
-                  </el-submenu>
-                </template>
+                <div class="submenu-popup" v-if="menuListPopupContentVisible">
+                  <div class="submenu-popup-header">
+                    <div class="submenu-popup-header-title">
+                      标题
+                    </div>
+                    <div class="action" @click.stop="menuListPopupContentHide">
+                      <i class="el-icon-arrow-left"></i>
+                      <span class="back-text">返回</span>
+                    </div>
+                  </div>
+                  <div class="submit-item" v-for="(item2, index2) in submitList" :key="'submenu' + index2">
+                    <span class="submit-item-title">{{item2['title_' + currLang]}}</span>
+                  </div>
+                </div>
+              </div>
 
-              </el-menu>
+<!--              <el-menu-->
+<!--                  :default-active="menuActiveIndex"-->
+<!--                  @select="handleMenuListNoLgSelect"-->
+<!--                  class="menu"-->
+<!--              >-->
+<!--                <template v-for="(item, index) in menuList">-->
+<!--                  <el-menu-item v-if="!item.children || item.children.length <= 0" :key="'menu-item' + index" :index="item.key">-->
+<!--                    <span slot="title" class="menu-item-title">{{item['title_' + currLang]}}</span>-->
+<!--                  </el-menu-item>-->
+<!--                  <el-submenu v-if="item.children && item.children.length > 0" :index="item.key">-->
+<!--                    <template slot="title">-->
+<!--                      <span class="menu-item-title">{{item['title_' + currLang]}}</span>-->
+<!--                    </template>-->
+<!--                    <el-menu-item v-for="(item2, index2) in item.children" :key="'submenu' + index2" :index="item2.key">-->
+<!--                      <span class="submenu-item-title">{{item2['title_' + currLang]}}</span>-->
+<!--                    </el-menu-item>-->
+<!--                  </el-submenu>-->
+<!--                </template>-->
+<!--              </el-menu>-->
 
             </div>
           </div>
@@ -324,6 +357,8 @@ export default {
       menuOverflow: false,  // 菜单栏是否溢出
       menuListPopupVisible: false,  // 菜单栏弹窗
       menuActiveIndex: '1',  // 激活的菜单栏
+      submitList: [],  // 子菜单列表
+      menuListPopupContentVisible: false,
     }
   },
   created() {
@@ -350,9 +385,16 @@ export default {
       this.isInit = true
     },
     /**
+     * 切换菜单
+     * */
+    handleMenuListLgSelect(obj) {
+      console.log(obj)
+      alert(JSON.stringify(obj))
+    },
+    /**
     * 切换菜单
     * */
-    handleSelect(key, keyPath) {
+    handleMenuListNoLgSelect(key, keyPath) {
       console.log(key, keyPath)
     },
     /**
@@ -377,7 +419,15 @@ export default {
     },
     menuListPopupHide() {
       this.menuListPopupVisible = false
-    }
+    },
+    menuListPopupContentHide() {
+      console.log('---------------')
+      this.menuListPopupContentVisible = false
+    },
+    menuListPopupContentVisibleChange(arr) {
+      this.menuListPopupContentVisible = !this.menuListPopupContentVisible
+      this.submitList = arr
+    },
   }
 }
 </script>
@@ -549,46 +599,162 @@ export default {
             top: 40px;
             left: 0;
             z-index: 99;
+            cursor: default;
+            overflow: hidden;
 
-            .menu-item-title {
-              color: #ffffff;
-              font-size: 15px;
-              font-weight: bold;
-            }
+            .menu-list-popup-content {
+              width: 100%;
+              position: relative;
+              top: 0;
+              left: 0;
+              transition: left 0.3s;
+              padding: 5px 20px 20px 20px;
+              box-sizing: border-box;
 
-            & /deep/ .menu {
-              background-color: #1B1B1B;
+              .close-popup {
+                width: 100%;
+                font-size: 14px;
+                color: #ffffff;
+                font-weight: bold;
+                padding: 10px 0;
+                box-sizing: border-box;
+                border-bottom: 2px solid #323232;
+                margin-bottom: 15px;
+                cursor: pointer;
+                z-index: 99;
 
-              .is-active {
-                background-color: #1B1B1B;
-              }
+                .el-icon-close {
+                }
 
-              .el-menu-item {
-                &:hover {
-                  background-color: #666666;
+                .close-btn-title {
+                  margin-left: 5px;
                 }
               }
 
-              .el-submenu {
-                .el-submenu__title {
-                  &:hover {
-                    background-color: #666666 !important;
-                  }
-                }
+              .menu-item {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
 
-                .el-menu--inline {
-                  background-color: #383838;
-                  .el-menu-item {
-                    .submenu-item-title {
-                      color: #ffffff;
-                    }
+                .menu-item-title-warp {
+                  width: 100%;
+                  font-size: 16px;
+                  font-weight: bold;
+                  color: #ffffff;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  .menu-item-title {
+                    padding: 6px 0;
+                    box-sizing: border-box;
+                    flex: 1;
+                    cursor: pointer;
                     &:hover {
                       background-color: #666666;
                     }
                   }
+                  .icon {
+                    width: 17px;
+                    .el-icon-arrow-right {
+                      cursor: e-resize;
+                    }
+                  }
                 }
               }
+
+              .submenu-popup {
+                width: 230px;
+                background-color: #383838;
+                position: absolute;
+                left: 250px;
+                top: 0;
+                padding: 15px 20px 20px 20px;
+                box-sizing: border-box;
+                cursor: default;
+
+                .submenu-popup-header {
+                  width: 100%;
+                  border-bottom: 2px solid #414141;
+                  padding-bottom: 5px;
+                  box-sizing: border-box;
+                  margin-bottom: 20px;
+
+                  .submenu-popup-header-title {
+                    font-size: 20px;
+                    color: #f0f0f0;
+                    padding-bottom: 18px;
+                    box-sizing: border-box;
+                    font-weight: bold;
+                  }
+                  .action {
+                    width: 100%;
+                    font-size: 14px;
+                    color: #ffffff;
+                    font-weight: bold;
+                    margin-bottom: 15px;
+                    cursor: pointer;
+                  }
+                }
+
+                .submit-item {
+                  width: 100%;
+                  padding: 6px 0;
+                  box-sizing: border-box;
+
+                  &:hover {
+                    background-color: #666666;
+                  }
+
+                  .submit-item-title {
+                    font-size: 16px;
+                    color: #f0f0f0;
+                    font-weight: bold;
+                  }
+                }
+
+              }
             }
+
+            //.menu-item-title {
+            //  color: #ffffff;
+            //  font-size: 15px;
+            //  font-weight: bold;
+            //}
+            //
+            //& /deep/ .menu {
+            //  background-color: #1B1B1B;
+            //
+            //  .is-active {
+            //    background-color: #1B1B1B;
+            //  }
+            //
+            //  .el-menu-item {
+            //    &:hover {
+            //      background-color: #666666;
+            //    }
+            //  }
+            //
+            //  .el-submenu {
+            //    .el-submenu__title {
+            //      &:hover {
+            //        background-color: #666666 !important;
+            //      }
+            //    }
+            //
+            //    .el-menu--inline {
+            //      background-color: #383838;
+            //      .el-menu-item {
+            //        .submenu-item-title {
+            //          color: #ffffff;
+            //        }
+            //        &:hover {
+            //          background-color: #666666;
+            //        }
+            //      }
+            //    }
+            //  }
+            //}
           }
         }
       }
