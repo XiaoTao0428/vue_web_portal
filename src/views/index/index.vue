@@ -27,16 +27,19 @@
 
       <div class="menu-warp">
 
+        <!--    大屏幕时的效果    -->
         <div class="menu-list-lg" :style="isInit?'':'overflow-x: auto;'" id="headerMenuId" v-if="!menuOverflow && currScreenSize === 'lg'">
           <div class="menu-item" v-for="(item, index) in menuList" :key="'menuList' + index">
-            <span class="menu-item-title" @click="handleMenuListLgSelect(item)">{{item['title_' + currLang]}}</span>
+            <span class="menu-item-title" @click="handleMenuListSelect(item)">{{item['title_' + currLang]}}</span>
             <div class="submenu" v-if="item.children && item.children.length > 0">
               <div class="submit-item" v-for="(item2, index2) in item.children" :key="'submenu' + index2">
-                <span class="submit-item-title">{{item2['title_' + currLang]}}</span>
+                <span class="submit-item-title" @click="handleMenuListSelect(item)">{{item2['title_' + currLang]}}</span>
               </div>
             </div>
           </div>
         </div>
+
+        <!--    小屏幕时的效果    -->
         <div class="menu-list-no-lg" v-if="menuOverflow || currScreenSize !== 'lg'">
           <div class="action" v-clickoutside="menuListPopupHide">
             <div @click="menuListPopupVisibleChange">
@@ -45,22 +48,17 @@
             </div>
             <div class="menu-list-popup" v-show="menuListPopupVisible">
               <div class="menu-list-popup-content" :style="menuListPopupContentVisible?'left: -230px;':'left: 0px;'">
-                <div class="close-popup">
+                <div class="close-popup" @click="menuListPopupHide">
                   <i class="el-icon-close"></i>
                   <span class="close-btn-title">关闭</span>
                 </div>
                 <div class="menu-item" v-for="(item, index) in menuList" :key="'menuList' + index">
                   <div class="menu-item-title-warp">
-                    <span class="menu-item-title" @click="handleMenuListLgSelect(item)">{{item['title_' + currLang]}}</span>
+                    <span class="menu-item-title" @click="handleMenuListSelect(item)">{{item['title_' + currLang]}}</span>
                     <span class="icon">
                     <i v-if="item.children && item.children.length > 0" class="el-icon-arrow-right" @click="menuListPopupContentVisibleChange(item.children)"></i>
                   </span>
                   </div>
-                  <!--                <div class="submenu" v-if="item.children && item.children.length > 0">-->
-                  <!--                  <div class="submit-item" v-for="(item2, index2) in item.children" :key="'submenu' + index2">-->
-                  <!--                    <span class="submit-item-title">{{item2['title_' + currLang]}}</span>-->
-                  <!--                  </div>-->
-                  <!--                </div>-->
                 </div>
 
                 <div class="submenu-popup" v-if="menuListPopupContentVisible">
@@ -73,31 +71,11 @@
                       <span class="back-text">返回</span>
                     </div>
                   </div>
-                  <div class="submit-item" v-for="(item2, index2) in submitList" :key="'submenu' + index2">
+                  <div class="submit-item" v-for="(item2, index2) in submitList" :key="'submenu' + index2" @click="handleMenuListSelect(item2)">
                     <span class="submit-item-title">{{item2['title_' + currLang]}}</span>
                   </div>
                 </div>
               </div>
-
-<!--              <el-menu-->
-<!--                  :default-active="menuActiveIndex"-->
-<!--                  @select="handleMenuListNoLgSelect"-->
-<!--                  class="menu"-->
-<!--              >-->
-<!--                <template v-for="(item, index) in menuList">-->
-<!--                  <el-menu-item v-if="!item.children || item.children.length <= 0" :key="'menu-item' + index" :index="item.key">-->
-<!--                    <span slot="title" class="menu-item-title">{{item['title_' + currLang]}}</span>-->
-<!--                  </el-menu-item>-->
-<!--                  <el-submenu v-if="item.children && item.children.length > 0" :index="item.key">-->
-<!--                    <template slot="title">-->
-<!--                      <span class="menu-item-title">{{item['title_' + currLang]}}</span>-->
-<!--                    </template>-->
-<!--                    <el-menu-item v-for="(item2, index2) in item.children" :key="'submenu' + index2" :index="item2.key">-->
-<!--                      <span class="submenu-item-title">{{item2['title_' + currLang]}}</span>-->
-<!--                    </el-menu-item>-->
-<!--                  </el-submenu>-->
-<!--                </template>-->
-<!--              </el-menu>-->
 
             </div>
           </div>
@@ -182,174 +160,54 @@ export default {
           title_cn: '研究',
           title_en: 'Research',
           router: '/research',
-          children: [
-            {
-              key: '2-1',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            },
-            {
-              key: '2-2',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            }
-          ]
         },
         {
           key: '3',
-          title_cn: '人们',
-          title_en: 'People',
-          router: '/people',
+          title_cn: '新闻',
+          title_en: 'News',
+          router: '/news',
         },
         {
           key: '4',
-          title_cn: '研究',
-          title_en: 'Research',
-          router: '/research',
-          children: [
-            {
-              key: '4-1',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            },
-            {
-              key: '4-2',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            }
-          ]
+          title_cn: '出版物',
+          title_en: 'Publications',
+          router: '/publications',
         },
         {
           key: '5',
-          title_cn: '人们',
+          title_cn: '成员',
           title_en: 'People',
           router: '/people',
-        },
-        {
-          key: '6',
-          title_cn: '研究',
-          title_en: 'Research',
-          router: '/research',
           children: [
             {
-              key: '6-1',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
+              key: '5-1',
+              title_cn: '教师',
+              title_en: 'Teacher',
+              router: '/people?search=teacher',
             },
             {
-              key: '6-2',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            }
-          ]
-        },
-        {
-          key: '7',
-          title_cn: '人们',
-          title_en: 'People',
-          router: '/people',
-        },
-        {
-          key: '8',
-          title_cn: '研究',
-          title_en: 'Research',
-          router: '/research',
-          children: [
-            {
-              key: '8-1',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
+              key: '5-2',
+              title_cn: '博士后',
+              title_en: 'Postdoc',
+              router: '/people?search=postdoc',
             },
             {
-              key: '8-2',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            }
-          ]
-        },
-        {
-          key: '9',
-          title_cn: '人们',
-          title_en: 'People',
-          router: '/people',
-        },
-        {
-          key: '10',
-          title_cn: '研究',
-          title_en: 'Research',
-          router: '/research',
-          children: [
-            {
-              key: '10-1',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
+              key: '5-3',
+              title_cn: '博士',
+              title_en: 'Doctor',
+              router: '/people?search=doctor',
             },
             {
-              key: '10-2',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            }
-          ]
-        },
-        {
-          key: '11',
-          title_cn: '人们',
-          title_en: 'People',
-          router: '/people',
-        },
-        {
-          key: '12',
-          title_cn: '研究',
-          title_en: 'Research',
-          router: '/research',
-          children: [
-            {
-              key: '12-1',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
+              key: '5-4',
+              title_cn: '硕士',
+              title_en: 'master',
+              router: '/people?search=master',
             },
             {
-              key: '12-2',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            }
-          ]
-        },
-        {
-          key: '13',
-          title_cn: '人们',
-          title_en: 'People',
-          router: '/people',
-        },
-        {
-          key: '14',
-          title_cn: '研究',
-          title_en: 'Research',
-          router: '/research',
-          children: [
-            {
-              key: '14-1',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
-            },
-            {
-              key: '14-2',
-              title_cn: '研究',
-              title_en: 'Research',
-              router: '/research-1',
+              key: '5-5',
+              title_cn: '校友',
+              title_en: 'Alumni',
+              router: '/people?search=alumni',
             }
           ]
         },
@@ -387,16 +245,17 @@ export default {
     /**
      * 切换菜单
      * */
-    handleMenuListLgSelect(obj) {
+    handleMenuListSelect(obj) {
       console.log(obj)
-      alert(JSON.stringify(obj))
+      this.menuListPopupHide()
+      this.$router.push(obj.router)
     },
-    /**
-    * 切换菜单
-    * */
-    handleMenuListNoLgSelect(key, keyPath) {
-      console.log(key, keyPath)
-    },
+    // /**
+    // * 切换菜单
+    // * */
+    // handleMenuListNoLgSelect(key, keyPath) {
+    //   console.log(key, keyPath)
+    // },
     /**
     * 语言切换
     * */
@@ -416,12 +275,13 @@ export default {
     * */
     menuListPopupVisibleChange() {
       this.menuListPopupVisible = !this.menuListPopupVisible
+      this.menuListPopupContentVisible = false
     },
     menuListPopupHide() {
       this.menuListPopupVisible = false
+      this.menuListPopupContentVisible = false
     },
     menuListPopupContentHide() {
-      console.log('---------------')
       this.menuListPopupContentVisible = false
     },
     menuListPopupContentVisibleChange(arr) {
@@ -709,6 +569,7 @@ export default {
                   .submit-item-title {
                     font-size: 16px;
                     color: #f0f0f0;
+                    width: 100%;
                     font-weight: bold;
                   }
                 }
