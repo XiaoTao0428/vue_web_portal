@@ -7,8 +7,12 @@ import 'element-ui/lib/theme-chalk/index.css';
 import i18n from './i18n/i18n';
 import './assets/css/global.css'
 import storeValue from './store/index'
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 Vue.use(ElementUI)
+
+Vue.use(mavonEditor)
 
 Vue.config.productionTip = false
 

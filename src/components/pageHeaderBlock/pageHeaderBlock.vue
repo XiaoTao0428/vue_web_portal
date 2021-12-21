@@ -1,12 +1,10 @@
 <template>
   <div class="pageHeaderBlock_warp">
     <el-breadcrumb class="breadcrumb" separator="/">
-      <template v-for="(item, index) in breadcrumbList" :key="'breadcrumbList' + index">
-        <el-breadcrumb-item>
-          <a v-if="item.to" :href="item.to">{{item.title}}</a>
-          <span v-else>{{item.title}}</span>
-        </el-breadcrumb-item>
-      </template>
+      <el-breadcrumb-item class="breadcrumb-item" v-for="(item, index) in breadcrumbList" :key="'breadcrumbList' + index">
+        <a class="breadcrumb-item-a" v-if="item.to" :href="item.to">{{item.title}}</a>
+        <span class="breadcrumb-item-span" v-else>{{item.title}}</span>
+      </el-breadcrumb-item>
     </el-breadcrumb>
     <div class="title">
       {{title}}
@@ -22,25 +20,12 @@ export default {
     * 标题
     * */
     title: {
-      type: Text,
-      default: '标题',
+      type: String,
+      default: '',
     },
     breadcrumbList: {
       type: Array,
-      default: () => [
-        {
-          title: '首页',
-          to: '/Home',
-        },
-        {
-          title: '研究',
-          to: '/Research',
-        },
-        {
-          title: '人们',
-          to: '/People',
-        }
-      ]
+      default: () => []
     }
   },
   data() {
@@ -59,9 +44,21 @@ export default {
   padding: 30px 130px;
   box-sizing: border-box;
   margin-bottom: 30px;
-  .breadcrumb {
+  & /deep/ .breadcrumb {
     font-size: 14px;
-    color: #ffffff;
+    padding-bottom: 15px;
+    box-sizing: border-box;
+    .breadcrumb-item {
+      .breadcrumb-item-a {
+        color: #ffffff;
+        &:hover {
+          color: #D14900;
+        }
+      }
+      .breadcrumb-item-span {
+        color: #aaa99f;
+      }
+    }
   }
   .title {
     color: #ffffff;

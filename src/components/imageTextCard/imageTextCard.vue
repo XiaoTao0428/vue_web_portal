@@ -1,5 +1,5 @@
 <template>
-  <div class="imageTextCard_warp">
+  <div class="imageTextCard_warp" @click="handleClick">
     <div class="image-description">
       <img class="image" :src="imageUrl">
       <div class="line"></div>
@@ -22,26 +22,31 @@ export default {
      * 图片地址
      * */
     imageUrl: {
-      type: Text,
+      type: String,
       default: 'https://caltechsites-prod.s3.amazonaws.com/root/images/Lasers.2e16d0ba.fill-710x400-c100.jpg',
     },
     /**
      * 日期
      * */
     date: {
-      type: Text,
+      type: String,
       default: '2020年6月18日'
     },
     /**
      * 描述
      * */
     description: {
-      type: Text,
+      type: String,
       default: '光学微梳装置可能会改善电信、传感器、时钟',
     }
   },
   data() {
     return {
+    }
+  },
+  methods: {
+    handleClick() {
+      this.$emit('handleClick')
     }
   }
 }

@@ -21,6 +21,33 @@ const routes = [
           requireAuth: false,
         },
         component: () => import(/* webpackChunkName: "home" */ '@/views/home/home.vue')
+      },
+      {
+        path: '/manage',
+        name: 'manage',
+        meta: {
+          requireAuth: false,
+        },
+        component: () => import(/* webpackChunkName: "manage" */ '@/views/manage/manage.vue'),
+        redirect: '/pageHeaderMenuManage',
+        children: [
+          {
+            path: '/pageHeaderMenuManage',
+            name: 'pageHeaderMenuManage',
+            meta: {
+              requireAuth: false,
+            },
+            component: () => import(/* webpackChunkName: "pageHeaderMenuManage" */ '@/views/pageHeaderMenuManage/pageHeaderMenuManage.vue'),
+          },
+          {
+            path: '/pageContentManage',
+            name: 'pageContentManage',
+            meta: {
+              requireAuth: false,
+            },
+            component: () => import(/* webpackChunkName: "pageContentManage" */ '@/views/pageContentManage/pageContentManage.vue'),
+          }
+        ]
       }
     ]
   },
