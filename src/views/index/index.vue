@@ -297,6 +297,7 @@ export default {
   width: 100%;
 
   .content {
+    width: 100%;
     max-width: 1440px;
     margin: 0 auto;
 
