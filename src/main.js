@@ -21,7 +21,6 @@ Vue.config.productionTip = false
 * */
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requireAuth)){  // 判断该路由是否需要登录权限
-    console.log('record', record)
     let store2 = JSON.parse(sessionStorage.getItem("store"))
     console.log('store2', store2)
     let token2 = ''
@@ -40,8 +39,6 @@ router.beforeEach((to, from, next) => {
       })
     }
   } else {
-    console.log('to', to)
-    console.log('from', from)
     next()
   }
 })

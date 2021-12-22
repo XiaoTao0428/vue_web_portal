@@ -211,6 +211,12 @@ export default {
             }
           ]
         },
+        {
+          key: '6',
+          title_cn: '管理',
+          title_en: 'Manage',
+          router: '/manage',
+        },
       ],
       menuOverflow: false,  // 菜单栏是否溢出
       menuListPopupVisible: false,  // 菜单栏弹窗
@@ -220,6 +226,12 @@ export default {
     }
   },
   created() {
+    let url = this.$route.path
+    console.log(url)
+    this.setCurrRoutePath({
+      currRoutePath: url
+    })
+
     this.currLang = localStorage.lang == undefined?'cn':localStorage.lang
     this.setCurrLang({
       currLang: this.currLang
@@ -229,7 +241,7 @@ export default {
     this.init()
   },
   methods: {
-    ...mapMutations(['setCurrLang']),
+    ...mapMutations(['setCurrLang', 'setCurrRoutePath']),
     init() {
       this.isInit = false
       if (this.currScreenSize === 'lg' && !this.menuOverflow) {

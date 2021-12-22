@@ -7,9 +7,7 @@ Vue.use(VueRouter)
 //以下代码解决路由地址重复点击的报错问题
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => {
-    router.go(0)
-  })
+  return originalPush.call(this, location).catch(err => err)
 }
 
 const routes = [
