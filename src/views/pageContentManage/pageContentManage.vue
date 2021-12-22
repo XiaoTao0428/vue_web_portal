@@ -1,11 +1,9 @@
 <template>
   <div class="pageContentManage_warp">
     <el-tabs class="tabs" v-model="activeName" @tab-click="handleTabClick">
-      <el-tab-pane class="tab-pane" label="首页" name="first">
-
+      <!--   首页配置   -->
+      <el-tab-pane class="tab-pane" label="首页" name="1">
         <div class="tab-pane-content">
-
-<!--          <modify-paper-content></modify-paper-content>-->
 
           <div class="card home-image">
             <div class="card-title">
@@ -64,13 +62,43 @@
           </div>
 
         </div>
+      </el-tab-pane>
 
+      <el-tab-pane class="tab-pane" label="研究" name="2">
+        <div class="tab-pane-content">
+
+        </div>
       </el-tab-pane>
-      <el-tab-pane label="配置管理" name="second">
-        配置管理
+
+      <!--   新闻页配置   -->
+      <el-tab-pane label="新闻" name="3">
+        <div class="tab-pane-content">
+          <el-table
+              :data="tableData"
+              style="width: 100%">
+            <el-table-column
+                prop="date"
+                label="日期"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="姓名"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                label="地址">
+            </el-table-column>
+          </el-table>
+        </div>
       </el-tab-pane>
-      <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-      <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+
+      <!--   出版物页配置   -->
+      <el-tab-pane label="出版物" name="4">出版物</el-tab-pane>
+
+      <!--   成员页配置   -->
+      <el-tab-pane label="成员" name="5">成员</el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -84,6 +112,14 @@ export default {
   data() {
     return {
       uploadAction: upload_file_URL,
+      rules: {
+        describe: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        imageUrl: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+      },
       uploadHeaders: {},
       activeName: 'first',
       homeImageForm: {
@@ -93,6 +129,24 @@ export default {
       previewDialogVisible: false,
       previewImageUrl: '',
       homePaperValue: '**二万人微软为*微软 微软++ 微软++***',
+
+      tableData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }],
     }
   },
   methods: {

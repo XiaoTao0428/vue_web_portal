@@ -86,7 +86,15 @@ const routes = [
             component: () => import(/* webpackChunkName: "pageContentManage" */ '@/views/pageContentManage/pageContentManage.vue'),
           }
         ]
-      }
+      },
+      {
+        path: '/detailsPage',
+        name: 'detailsPage',
+        meta: {
+          requireAuth: false,
+        },
+        component: () => import(/* webpackChunkName: "detailsPage" */ '@/views/detailsPage/detailsPage.vue')
+      },
     ]
   },
   {

@@ -27,46 +27,116 @@ export default {
   name: "pageHeaderMenuManage",
   data() {
     return {
+      menuList: [
+        {
+          key: '1',
+          title_cn: '首页',
+          title_en: 'Home',
+          router: '/home',
+        },
+        {
+          key: '2',
+          title_cn: '研究方向',
+          title_en: 'Research',
+          router: '/research',
+        },
+        {
+          key: '3',
+          title_cn: '新闻',
+          title_en: 'News',
+          router: '/news',
+        },
+        {
+          key: '4',
+          title_cn: '出版物',
+          title_en: 'Publications',
+          router: '/publications',
+        },
+        {
+          key: '5',
+          title_cn: '成员',
+          title_en: 'People',
+          router: '/people',
+          children: [
+            {
+              key: '5-1',
+              title_cn: '教师',
+              title_en: 'Teacher',
+              router: '/people?search=teacher',
+            },
+            {
+              key: '5-2',
+              title_cn: '博士后',
+              title_en: 'Postdoc',
+              router: '/people?search=postdoc',
+            },
+            {
+              key: '5-3',
+              title_cn: '博士',
+              title_en: 'Doctor',
+              router: '/people?search=doctor',
+            },
+            {
+              key: '5-4',
+              title_cn: '硕士',
+              title_en: 'Master',
+              router: '/people?search=master',
+            },
+            {
+              key: '5-5',
+              title_cn: '校友',
+              title_en: 'Alumni',
+              router: '/people?search=alumni',
+            }
+          ]
+        },
+        {
+          key: '6',
+          title_cn: '管理',
+          title_en: 'Manage',
+          router: '/manage',
+        },
+      ],
       treeList: [
         {
-          key: 'home',
+          key: '1',
           label: '首页',
         },
         {
-          key: 'research',
+          key: '2',
           label: '研究方向',
         },
         {
-          key: 'news',
+          key: '3',
           label: '新闻',
         },
         {
-          key: 'publications',
+          key: '4',
           label: '成果',
         },
         {
-          key: 'people',
+          key: '5',
           label: '成员',
           appendBtnShow: true,
           children: [
             {
-              key: 'people-1',
+              key: '5-1',
               label: '教师',
             },
             {
-              key: 'people-2',
+              key: '5-2',
               label: '博士后',
             },
             {
-              key: 'people-3',
+              key: '5-3',
               label: '博士',
             },
             {
-              key: 'people-4',
+              key: '5-4',
               label: '硕士',
             },
             {
-              key: 'people-5',
+              key: '5-5',
               label: '校友',
             },
           ]
@@ -99,15 +169,15 @@ export default {
      * */
     allowDrop(draggingNode, dropNode, type) {
       if (draggingNode.data.key.indexOf('-') !== -1) {
-        if (dropNode.data.key === 'home' || dropNode.data.key === 'research' || dropNode.data.key === 'news' || dropNode.data.key === 'publications' || dropNode.data.key === 'people') {
+        if (dropNode.data.key === '1' || dropNode.data.key === '2' || dropNode.data.key === '3' || dropNode.data.key === '4' || dropNode.data.key === '5') {
           return false
         }else {
           return type !== 'inner'
         }
-      }else if (dropNode.data.key === 'home' || dropNode.data.key === 'research' || dropNode.data.key === 'news' || dropNode.data.key === 'publications' || dropNode.data.key === 'people') {
+      }else if (dropNode.data.key === '1' || dropNode.data.key === '2' || dropNode.data.key === '3' || dropNode.data.key === '4' || dropNode.data.key === '5') {
         return type !== 'inner'
       }else {
-        if (dropNode.data.key.indexOf('people') !== -1) {
+        if (dropNode.data.key.indexOf('5') !== -1) {
           return false
         }else {
           return type !== 'inner'
@@ -118,7 +188,8 @@ export default {
      * 判断节点能否被拖拽
      * */
     allowDrag(draggingNode) {
-      return draggingNode.data.label.indexOf('5-2') === -1
+      // return draggingNode.data.label.indexOf('5-2') === -1
+      return true
     }
   }
 }

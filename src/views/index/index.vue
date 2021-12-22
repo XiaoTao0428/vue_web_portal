@@ -33,7 +33,7 @@
             <span class="menu-item-title" @click="handleMenuListSelect(item)">{{item['title_' + currLang]}}</span>
             <div class="submenu" v-if="item.children && item.children.length > 0">
               <div class="submit-item" v-for="(item2, index2) in item.children" :key="'submenu' + index2">
-                <span class="submit-item-title" @click="handleMenuListSelect(item)">{{item2['title_' + currLang]}}</span>
+                <span class="submit-item-title" @click="handleMenuListSelect(item2)">{{item2['title_' + currLang]}}</span>
               </div>
             </div>
           </div>
@@ -157,7 +157,7 @@ export default {
         },
         {
           key: '2',
-          title_cn: '研究',
+          title_cn: '研究方向',
           title_en: 'Research',
           router: '/research',
         },
@@ -183,31 +183,31 @@ export default {
               key: '5-1',
               title_cn: '教师',
               title_en: 'Teacher',
-              router: '/people?search=teacher',
+              router: '/people?search=Teacher',
             },
             {
               key: '5-2',
               title_cn: '博士后',
               title_en: 'Postdoc',
-              router: '/people?search=postdoc',
+              router: '/people?search=Postdoc',
             },
             {
               key: '5-3',
               title_cn: '博士',
               title_en: 'Doctor',
-              router: '/people?search=doctor',
+              router: '/people?search=Doctor',
             },
             {
               key: '5-4',
               title_cn: '硕士',
-              title_en: 'master',
-              router: '/people?search=master',
+              title_en: 'Master',
+              router: '/people?search=Master',
             },
             {
               key: '5-5',
               title_cn: '校友',
               title_en: 'Alumni',
-              router: '/people?search=alumni',
+              router: '/people?search=Alumni',
             }
           ]
         },
@@ -237,6 +237,11 @@ export default {
       currLang: this.currLang
     })
   },
+  computed: {
+    currRoutePath() {
+      return this.$store.state.currRoutePath
+    }
+  },
   mounted() {
     this.init()
   },
@@ -258,16 +263,18 @@ export default {
      * 切换菜单
      * */
     handleMenuListSelect(obj) {
-      console.log(obj)
+      let path = obj.router.split('?')[0]
       this.menuListPopupHide()
-      this.$router.push(obj.router)
+      if (this.currRoutePath === path) {
+        this.$router.push(obj.router)
+        this.$router.go(0)
+      }else {
+        this.setCurrRoutePath({
+          currRoutePath: path
+        })
+        this.$router.push(obj.router)
+      }
     },
-    // /**
-    // * 切换菜单
-    // * */
-    // handleMenuListNoLgSelect(key, keyPath) {
-    //   console.log(key, keyPath)
-    // },
     /**
     * 语言切换
     * */

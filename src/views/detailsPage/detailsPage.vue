@@ -1,35 +1,44 @@
 <template>
-  <div class="news_warp">
+  <div class="detailsPage_warp">
     <page-header-block
         :title="pageHeaderBlockTitle"
         :breadcrumb-list="breadcrumbList"
     ></page-header-block>
     <div class="content">
-      <div class="content-item" v-for="(item, index) in 10" :key="'content-item' + index">
-        <image-text-card></image-text-card>
-      </div>
+      <mavon-editor v-model="mavonEditorValue"
+                    :language="'zh-CN'"
+                    :editable="false"
+                    :toolbars-flag="false"
+                    :subfield="false"
+                    :default-open="'preview'"
+      ></mavon-editor>
     </div>
   </div>
 </template>
 
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
-import ImageTextCard from "@/components/imageTextCard/imageTextCard";
 export default {
-  name: "news",
-  components: {ImageTextCard, PageHeaderBlock},
+  name: "detailsPage",
+  components: {PageHeaderBlock},
   data() {
     return {
-      pageHeaderBlockTitle: '新闻',
+      pageHeaderBlockTitle: '某某',
       breadcrumbList: [
         {
           title: '首页',
           to: '/Home',
         },
         {
-          title: '新闻',
+          title: '老师',
+          to: '/Teacher',
+        },
+        {
+          title: '某某',
         }
       ],
+
+      mavonEditorValue: '**二万人微软为*微软 微软++ 微软++***',
 
     }
   }
@@ -37,20 +46,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.news_warp {
+.detailsPage_warp {
   width: 100%;
   .content {
     width: 100%;
     padding: 0 130px;
     box-sizing: border-box;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    .content-item {
-      width: 30%;
-      margin: 0 10px 20px 10px;
-    }
   }
 }
 </style>

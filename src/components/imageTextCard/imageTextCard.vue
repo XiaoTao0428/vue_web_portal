@@ -1,7 +1,11 @@
 <template>
   <div class="imageTextCard_warp" @click="handleClick">
     <div class="image-description">
-      <img class="image" :src="imageUrl">
+      <el-image
+          class="image"
+          :src="imageUrl"
+          fit="contain"
+      ></el-image>
       <div class="line"></div>
     </div>
     <div class="date">
@@ -60,9 +64,8 @@ export default {
     width: 100%;
     margin-bottom: 20px;
     .image {
-      max-width: 100%;
+      width: 100%;
       margin-bottom: -4px;
-      object-fit: contain;
     }
     .line {
       width: 100%;
