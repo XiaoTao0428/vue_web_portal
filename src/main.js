@@ -20,9 +20,7 @@ Vue.config.productionTip = false
 * 路由判断登录 根据路由配置文件的参数
 * */
 router.beforeEach((to, from, next) => {
-  console.log('to', to)
   if (to.matched.some(record => record.meta.requireAuth)){  // 判断该路由是否需要登录权限
-    console.log('record', record)
     let store2 = JSON.parse(sessionStorage.getItem("store"))
     console.log('store2', store2)
     let token2 = ''
