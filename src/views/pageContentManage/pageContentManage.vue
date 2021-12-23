@@ -66,7 +66,24 @@
 
       <el-tab-pane class="tab-pane" label="研究" name="2">
         <div class="tab-pane-content">
-
+          <el-table
+              :data="tableData"
+              style="width: 100%">
+            <el-table-column
+                prop="date"
+                label="日期"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="姓名"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                label="地址">
+            </el-table-column>
+          </el-table>
         </div>
       </el-tab-pane>
 
@@ -95,10 +112,52 @@
       </el-tab-pane>
 
       <!--   出版物页配置   -->
-      <el-tab-pane label="出版物" name="4">出版物</el-tab-pane>
+      <el-tab-pane label="出版物" name="4">
+        <div class="tab-pane-content">
+          <el-table
+              :data="tableData"
+              style="width: 100%">
+            <el-table-column
+                prop="date"
+                label="日期"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="姓名"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                label="地址">
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
 
       <!--   成员页配置   -->
-      <el-tab-pane label="成员" name="5">成员</el-tab-pane>
+      <el-tab-pane label="成员" name="5">
+        <div class="tab-pane-content">
+          <el-table
+              :data="tableData"
+              style="width: 100%">
+            <el-table-column
+                prop="datef"
+                label="日期"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="姓名"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                label="地址">
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -121,7 +180,7 @@ export default {
         ],
       },
       uploadHeaders: {},
-      activeName: 'first',
+      activeName: '1',
       homeImageForm: {
         describe: '',
         imageUrl: '',
