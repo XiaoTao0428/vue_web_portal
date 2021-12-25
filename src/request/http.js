@@ -41,18 +41,6 @@ axios.interceptors.response.use(
             })
             return ''
         }
-        if ( response.data && response.data.code === 403) {
-            Message({
-                showClose: true,
-                message: '登陆已过期',
-                type: 'error',
-                duration: 1500,
-            })
-
-            window.selfRouter('/login')
-
-            return ''
-        }
 
         // 如果返回的状态码为200，说明接口请求成功，可以正常拿到数据
         // 否则的话抛出错误
@@ -79,7 +67,6 @@ axios.interceptors.response.use(
                 type: 'error',
                 duration: 1500,
             })
-            // Message.error(error.response.data.message)
         }
 
         return ''

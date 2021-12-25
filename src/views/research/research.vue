@@ -1,13 +1,26 @@
 <template>
   <div class="research_warp">
-    <page-header-block
-        :title="pageHeaderBlockTitle"
-        :breadcrumb-list="breadcrumbList"
-    ></page-header-block>
+    <div class="header">
+      <page-header-block
+          :title="pageHeaderBlockTitle"
+          :breadcrumb-list="breadcrumbList"
+      ></page-header-block>
+    </div>
     <div class="content">
-      <div class="content-item" v-for="(item, index) in 10" :key="'content-item' + index">
-        <image-text-card></image-text-card>
-      </div>
+      <el-row class="row" :gutter="20" v-for="(item, index) in newResearchDirectionList" :key="'row' + index">
+        <el-col :span="24/colNum" v-for="(item2, index2) in item" :key="'col' + index2">
+          <image-text-card></image-text-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="footer">
+      <el-pagination
+          background
+          layout="prev, pager, next"
+          :current-page.sync="currentPage"
+          @current-change="currentPageChange"
+          :page-count="pageCount">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -15,24 +28,64 @@
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import ImageTextCard from "@/components/imageTextCard/imageTextCard";
+import mixins from "@/mixins/mixins";
 export default {
   name: "research",
+  mixins: [mixins],
   components: {ImageTextCard, PageHeaderBlock},
   data() {
     return {
-      pageHeaderBlockTitle: '研究方向',
       breadcrumbList: [
         {
           title: '首页',
-          to: '/Home',
+          to: '/home',
         },
         {
           title: '研究方向',
         }
       ],
+      /**
+      * 研究方向列表
+      * */
+      researchDirectionList: [1,2,3,4,5,6,7,8,9,10],
+      newResearchDirectionList: [],
+      colNum: 3,
+
+      currentPage: 2,
+      pageCount: 20,
     }
   },
+  computed: {
+    pageHeaderBlockTitle() {
+      return this.breadcrumbList[this.breadcrumbList.length - 1].title
+    }
+  },
+  created() {
+    this.initList(this.colNum)
+  },
   methods: {
+    initList(num) {
+      if (num > 1) {
+        this.researchDirectionList.forEach((item, index) => {
+          let i = parseInt(index/num)
+          if (this.newResearchDirectionList[i] && this.newResearchDirectionList[i].length) {
+            this.newResearchDirectionList[i].push(item)
+          }else {
+            this.newResearchDirectionList[i] = []
+            this.newResearchDirectionList[i].push(item)
+          }
+        })
+      }else {
+        this.newResearchDirectionList = this.researchDirectionList
+      }
+      console.log('newResearchDirectionList', this.newResearchDirectionList)
+    },
+    /**
+     * 当前页码切换时触发
+     * */
+    currentPageChange() {
+      console.log('currentPage', this.currentPage)
+    }
   }
 }
 </script>
@@ -40,18 +93,28 @@ export default {
 <style lang="scss" scoped>
 .research_warp {
   width: 100%;
+  .header {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
   .content {
     width: 100%;
-    padding: 0 130px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 50px;
     box-sizing: border-box;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    .content-item {
-      width: 30%;
-      margin: 0 10px 20px 10px;
+    .row {
+      width: 100%;
+      margin-bottom: 60px;
     }
+    .content-item {
+    }
+  }
+  .footer {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    text-align: center;
   }
 }
 </style>

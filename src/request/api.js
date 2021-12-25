@@ -1,9 +1,9 @@
 import { get, post } from './http'
 
 /**
- * 获取验证码
+ * 登录
  */
-export const SendMsgCodeApi = param => post('/utils/send-msg-code/', param)
+export const PostUserLoginApi = param => post('/user/login/', param)
 
 
 /**

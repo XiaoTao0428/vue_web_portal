@@ -37,6 +37,10 @@
               </div>
             </div>
           </div>
+
+          <div class="menu-item" v-if="!token">
+            <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">管理</span>
+          </div>
         </div>
 
         <!--    小屏幕时的效果    -->
@@ -58,6 +62,13 @@
                     <span class="icon">
                     <i v-if="item.children && item.children.length > 0" class="el-icon-arrow-right" @click="menuListPopupContentVisibleChange(item.children)"></i>
                   </span>
+                  </div>
+                </div>
+
+                <div class="menu-item" v-if="!token">
+                  <div class="menu-item-title-warp">
+                    <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">管理</span>
+                    <span class="icon"></span>
                   </div>
                 </div>
 
@@ -113,13 +124,14 @@
             </div>
           </div>
           <div class="footer-content-bottom">
-            <el-link class="link" :underline="false">{{$t('index.Home')}}</el-link>
+            <span class="link" @click="handleMenuListSelect({router: '/home'})">{{$t('index.Home')}}</span>
             <el-divider direction="vertical"></el-divider>
-            <el-link class="link" :underline="false">{{$t('index.PrivacyNotice')}}</el-link>
+            <span class="link">{{$t('index.PrivacyNotice')}}</span>
             <el-divider direction="vertical"></el-divider>
-            <el-link class="link" :underline="false">{{$t('index.SiteContentCopyright')}} © 2021</el-link>
+            <span>{{$t('index.SiteContentCopyright')}} © 2021</span>
             <el-divider direction="vertical"></el-divider>
-            <el-link class="link" :underline="false">{{$t('index.LogIn')}}</el-link>
+            <span v-if="!token" class="link" @click="handleMenuListSelect({router: '/login'})">{{$t('index.LogIn')}}</span>
+            <span v-if="token" class="link" @click="logout">退出</span>
           </div>
         </div>
       </div>
@@ -211,18 +223,20 @@ export default {
             }
           ]
         },
-        {
-          key: '6',
-          title_cn: '管理',
-          title_en: 'Manage',
-          router: '/manage',
-        },
       ],
       menuOverflow: false,  // 菜单栏是否溢出
       menuListPopupVisible: false,  // 菜单栏弹窗
       menuActiveIndex: '1',  // 激活的菜单栏
       submitList: [],  // 子菜单列表
       menuListPopupContentVisible: false,
+    }
+  },
+  computed: {
+    token() {
+      return this.$store.state.token
+    },
+    currRoutePath() {
+      return this.$store.state.currRoutePath
     }
   },
   created() {
@@ -237,16 +251,11 @@ export default {
       currLang: this.currLang
     })
   },
-  computed: {
-    currRoutePath() {
-      return this.$store.state.currRoutePath
-    }
-  },
   mounted() {
     this.init()
   },
   methods: {
-    ...mapMutations(['setCurrLang', 'setCurrRoutePath']),
+    ...mapMutations(['setCurrLang', 'setCurrRoutePath', 'logout']),
     init() {
       this.isInit = false
       if (this.currScreenSize === 'lg' && !this.menuOverflow) {
@@ -296,16 +305,31 @@ export default {
       this.menuListPopupVisible = !this.menuListPopupVisible
       this.menuListPopupContentVisible = false
     },
+    /**
+     * 菜单栏弹出层关闭
+     * */
     menuListPopupHide() {
       this.menuListPopupVisible = false
       this.menuListPopupContentVisible = false
     },
+    /**
+    * 菜单栏内容弹出层关闭
+    * */
     menuListPopupContentHide() {
       this.menuListPopupContentVisible = false
     },
+    /**
+     * 切换菜单栏内容弹出层是否显示
+     * */
     menuListPopupContentVisibleChange(arr) {
       this.menuListPopupContentVisible = !this.menuListPopupContentVisible
       this.submitList = arr
+    },
+    /**
+    * 退出
+    * */
+    logout() {
+      this.logout()
     },
   }
 }
@@ -317,11 +341,11 @@ export default {
 
   .content {
     width: 100%;
-    max-width: 1440px;
-    margin: 0 auto;
 
     .header {
       width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
       height: 77px;
       padding: 0 50px;
       box-sizing: border-box;
@@ -364,10 +388,13 @@ export default {
 
     .menu-warp {
       width: 100%;
+      max-width: 1440px;
       height: 77px;
       padding: 0 50px;
       box-sizing: border-box;
       margin-bottom: 20px;
+      margin-left: auto;
+      margin-right: auto;
 
       .menu-list-lg {
         width: 100%;
@@ -420,7 +447,7 @@ export default {
             padding: 20px 25px;
             box-sizing: border-box;
             cursor: default;
-            z-index: 99;
+            z-index: 999;
 
             .submit-item {
               width: 100%;
@@ -649,6 +676,8 @@ export default {
 
     .footer {
       width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
       height: 220px;
 
       .footer-content {
@@ -707,6 +736,7 @@ export default {
 
           .link {
             color: #c8c8c8;
+            cursor: pointer;
             &:hover {
               color: #c8c8c8;
             }

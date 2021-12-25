@@ -7,6 +7,14 @@ export default new Vuex.Store({
   state: {
     currLang: '',  // 当前的语言
     currRoutePath: '',  // 当前页面的url
+    token: '',  // 用户token
+    userInfo: {
+      name_cn: '',  // 中文名
+      name_en: '',  // 英文名
+      gender: 1,  // 1：男  0：女
+      contact_cn: '',  // 联系方式中文
+      contact_en: '',  // 联系方式英文
+    },
   },
   mutations: {
     /**
@@ -20,6 +28,40 @@ export default new Vuex.Store({
      * */
     setCurrRoutePath(state, param) {
       state.currRoutePath = param.currRoutePath
+    },
+    /**
+     * 登录
+     * */
+    login(state, param) {
+      if (param.token !== undefined) {
+        state.token = param.token
+      }
+      if (param.userInfo.name_cn !== undefined) {
+        state.userInfo.name_cn = param.userInfo.name_cn
+      }
+      if (param.userInfo.name_en !== undefined) {
+        state.userInfo.name_en = param.userInfo.name_en
+      }
+      if (param.userInfo.gender !== undefined) {
+        state.userInfo.gender = param.userInfo.gender
+      }
+      if (param.userInfo.contact_cn !== undefined) {
+        state.userInfo.contact_cn = param.userInfo.contact_cn
+      }
+      if (param.userInfo.contact_en !== undefined) {
+        state.userInfo.contact_en = param.userInfo.contact_en
+      }
+    },
+    /**
+     * 登出
+     * */
+    logout(state, param) {
+      state.token = ''
+      state.userInfo.name_cn = ''
+      state.userInfo.name_en = ''
+      state.userInfo.gender = 1
+      state.userInfo.contact_cn = ''
+      state.userInfo.contact_en = ''
     },
   },
   actions: {

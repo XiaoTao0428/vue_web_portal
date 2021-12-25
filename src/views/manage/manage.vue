@@ -1,6 +1,8 @@
 <template>
   <div class="manage_warp">
-    <page-header-block :title="pageHeaderBlockTitle" :breadcrumb-list="breadcrumbList"></page-header-block>
+    <div class="header">
+      <page-header-block :title="pageHeaderBlockTitle" :breadcrumb-list="breadcrumbList"></page-header-block>
+    </div>
     <div class="content">
 
       <div class="sidebar">
@@ -40,7 +42,6 @@ export default {
     return {
       menuDefaultActive: '1',
 
-      pageHeaderBlockTitle: '管理',
       breadcrumbList: [
         {
           title: '首页',
@@ -51,6 +52,11 @@ export default {
         }
       ],
 
+    }
+  },
+  computed: {
+    pageHeaderBlockTitle() {
+      return this.breadcrumbList[this.breadcrumbList.length - 1].title
     }
   },
   created() {
@@ -85,14 +91,22 @@ export default {
 .manage_warp {
   width: 100%;
   height: 100%;
-
+  .header {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
   .content {
     width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 30px;
+    box-sizing: border-box;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
 
     .sidebar {
+      width: 200px;
       margin-right: 30px;
     }
 

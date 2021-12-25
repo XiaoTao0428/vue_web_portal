@@ -1,23 +1,25 @@
 <template>
   <div class="publications_warp">
-    <page-header-block
-        :title="pageHeaderBlockTitle"
-        :breadcrumb-list="breadcrumbList"
-    ></page-header-block>
+    <div class="header">
+      <page-header-block
+          :title="pageHeaderBlockTitle"
+          :breadcrumb-list="breadcrumbList"
+      ></page-header-block>
+    </div>
     <div class="content">
-      <div class="group">
+      <div class="group" v-for="(item, index) in paperList" :key="'group' + index">
         <div class="group-title">
-          教师
+          {{item.groupTitle}}
         </div>
         <div class="group-content">
-          <div class="content-item" v-for="(item, index) in 5" :key="'group-item' + index">
+          <div class="content-item" v-for="(item2, index2) in item.data" :key="'group-item' + index2">
             <div class="participant">
-              <i>Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park</i>
+              <i>{{item2.participant}}</i>
             </div>
             <div class="content-item-title">
-              <b>"Extending the spectrum of fully integrated photonics"</b>
+              <b>"{{item2.title}}"</b>
             </div>
-            <div class="link">arXiv:2112.02923</div>
+            <div class="link">{{item2.linkText}}</div>
           </div>
         </div>
       </div>
@@ -32,27 +34,77 @@ export default {
   components: {PageHeaderBlock},
   data() {
     return {
-      pageHeaderBlockTitle: '成果',
       breadcrumbList: [
         {
           title: '首页',
-          to: '/Home',
+          to: '/home',
         },
         {
           title: '成果',
         }
       ],
+
+      /**
+      * 论文列表
+      * */
+      paperList: [
+        {
+          groupTitle: '2021 Publications',
+          data: [
+            {
+              participant: 'Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park',
+              title: 'Extending the spectrum of fully integrated photonics',
+              linkText: 'arXiv:2112.02923',
+              to: '',
+            },
+            {
+              participant: 'Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park',
+              title: 'Extending the spectrum of fully integrated photonics',
+              linkText: 'arXiv:2112.02923',
+              to: '',
+            }
+          ]
+        },
+        {
+          groupTitle: '2021 Publications',
+          data: [
+            {
+              participant: 'Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park',
+              title: 'Extending the spectrum of fully integrated photonics',
+              linkText: 'arXiv:2112.02923',
+              to: '',
+            },
+            {
+              participant: 'Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park',
+              title: 'Extending the spectrum of fully integrated photonics',
+              linkText: 'arXiv:2112.02923',
+              to: '',
+            }
+          ]
+        }
+      ],
     }
-  }
+  },
+  computed: {
+    pageHeaderBlockTitle() {
+      return this.breadcrumbList[this.breadcrumbList.length - 1].title
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .publications_warp {
   width: 100%;
+  .header {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
   .content {
     width: 100%;
-    padding: 0 130px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 50px;
     box-sizing: border-box;
     .group {
       width: 100%;
@@ -60,8 +112,10 @@ export default {
       align-items: flex-start;
       justify-content: space-between;
       .group-title {
-        width: 200px;
+        width: 300px;
         padding-right: 20px;
+        font-size: 22px;
+        color: #333333;
       }
       .group-content {
         flex: 1;
@@ -72,7 +126,7 @@ export default {
           margin: 0 10px 20px 10px;
           color: #333333;
           font-size: 18px;
-          line-height: 30px;
+          line-height: 28px;
 
           .participant {
           }

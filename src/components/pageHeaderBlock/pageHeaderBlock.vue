@@ -2,7 +2,7 @@
   <div class="pageHeaderBlock_warp">
     <el-breadcrumb class="breadcrumb" separator="/">
       <el-breadcrumb-item class="breadcrumb-item" v-for="(item, index) in breadcrumbList" :key="'breadcrumbList' + index">
-        <a class="breadcrumb-item-a" v-if="item.to" :href="item.to">{{item.title}}</a>
+        <span class="breadcrumb-item-a" v-if="item.to" @click="handleMenuListSelect(item)">{{item.title}}</span>
         <span class="breadcrumb-item-span" v-else>{{item.title}}</span>
       </el-breadcrumb-item>
     </el-breadcrumb>
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import {mapMutations} from "vuex";
+
 export default {
   name: "pageHeaderBlock",
   props: {
@@ -30,6 +32,27 @@ export default {
   },
   data() {
     return {}
+  },
+  computed: {
+    currRoutePath() {
+      return this.$store.state.currRoutePath
+    }
+  },
+  methods: {
+    ...mapMutations(['setCurrRoutePath']),
+    handleMenuListSelect(obj) {
+
+      let path = obj.to.split('?')[0]
+      if (this.currRoutePath === path) {
+        this.$router.push(obj.to)
+        this.$router.go(0)
+      }else {
+        this.setCurrRoutePath({
+          currRoutePath: path
+        })
+        this.$router.push(obj.to)
+      }
+    }
   }
 }
 </script>
@@ -43,7 +66,7 @@ export default {
   //padding-right: 50px;
   padding: 30px 130px;
   box-sizing: border-box;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   & /deep/ .breadcrumb {
     font-size: 14px;
     padding-bottom: 15px;
@@ -51,6 +74,7 @@ export default {
     .breadcrumb-item {
       .breadcrumb-item-a {
         color: #ffffff;
+        cursor: pointer;
         &:hover {
           color: #D14900;
         }

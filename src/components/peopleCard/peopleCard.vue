@@ -22,7 +22,7 @@ export default {
      * */
     imageUrl: {
       type: String,
-      default: 'https://caltechsites-prod.s3.amazonaws.com/root/images/Lasers.2e16d0ba.fill-710x400-c100.jpg',
+      default: 'https://caltechsites-prod.s3.amazonaws.com/vahala/People/images/Boqiang.original.jpg',
     },
     /**
      * 描述
@@ -44,13 +44,12 @@ export default {
 
   .image-description {
     width: 100%;
-    margin-bottom: 20px;
     .image {
       width: 100%;
     }
   }
 
-  .description {
+  .introduction {
     font-size: 22px;
     color: #000000;
     font-weight: bold;
