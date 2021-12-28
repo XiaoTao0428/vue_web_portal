@@ -149,6 +149,7 @@ export default {
       .markdown-warp {
         box-shadow: none !important;
         z-index: 1;
+        font-size: 20px;
         & /deep/ .v-show-content {
           padding: 0;
           background-color: #ffffff !important;

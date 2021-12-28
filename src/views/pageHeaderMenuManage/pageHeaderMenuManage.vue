@@ -18,9 +18,39 @@
             添加
           </el-button>
         </span>
+        <span v-if="data.delBtnShow && data.delBtnShow === true">
+          <el-button type="text" size="mini" @click.stop="delTreeNode(data)">
+            删除
+          </el-button>
+        </span>
       </span>
       </el-tree>
     </div>
+
+<!--    <el-dialog-->
+<!--        title="添加"-->
+<!--        :visible.sync="dialogVisible"-->
+<!--        width="500px"-->
+<!--    >-->
+<!--      <span>这是一段信息</span>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="dialogVisible = false">取 消</el-button>-->
+<!--        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
+
+<!--    <el-dialog-->
+<!--        title="删除"-->
+<!--        :visible.sync="dialogVisible"-->
+<!--        width="500px"-->
+<!--    >-->
+<!--      <span>这是一段信息</span>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="dialogVisible = false">取 消</el-button>-->
+<!--        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
+
   </div>
 </template>
 
@@ -88,11 +118,89 @@ export default {
     * 添加子节点
     * */
     appendTreeNode(data) {
-      const newChild = { key: parseInt(Math.random() * 10 + 10), label: 'testtest', children: [] }
-      if (!data.children) {
-        this.$set(data, 'children', [])
+      console.log(data)
+      let max = 1
+      let arr = []
+      if (data.children) {
+        data.children.forEach((item, index) => {
+          arr = item.key.split('-')
+          if (parseInt(arr[arr.length - 1]) > max) {
+            max = parseInt(arr[arr.length - 1])
+          }
+        })
+        max++
+        if (arr.length > 1) {
+          let key = ''
+          arr.forEach((item, index) => {
+            if (index < arr.length - 1) {
+              key += item + '-'
+            }else {
+              key += max.toString()
+            }
+          })
+
+          console.log(key)
+          const newChild = {
+            key: key,
+            label: 'test',
+            delBtnShow: true,
+          }
+          data.children.push(newChild)
+        }else {
+          let key = max.toString()
+          console.log(key)
+          const newChild = {
+            key: key,
+            label: 'test',
+            delBtnShow: true,
+          }
+          data.children.push(newChild)
+        }
+      }else {
+        let key = ''
+        if (data.key !== 'root') {
+          key = data.key + '-' + '1'
+        }else {
+          key = '1'
+        }
+        const newChild = {
+          key: key,
+          label: 'test',
+          delBtnShow: true,
+        }
+        if (!data.children) {
+          this.$set(data, 'children', [])
+        }
+        data.children.push(newChild)
       }
-      data.children.push(newChild)
+
+    },
+    /**
+     * 删除指定节点
+     * */
+    delTreeNode(data) {
+      console.log(data)
+      this.delNode(this.treeList[0].children, data.key)
+      console.log(this.treeList[0].children)
+    },
+    /**
+     * 删除节点
+     * */
+    delNode(arr, key) {
+      try {
+        arr.forEach((item, index) => {
+          if (item.key === key) {
+            arr.splice(index, 1)
+            throw Error()
+          }else {
+            console.log('item.children', item.children)
+            if (item.children && item.children.length > 0) {
+              this.delNode(item.children, key)
+            }
+          }
+        })
+      } catch (e) {
+      }
     },
     /**
      * 节点拖动结束
