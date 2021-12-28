@@ -52,7 +52,7 @@
             </div>
 
             <mavon-editor v-model="homePaperValue"
-                          :language="'zh-CN'"
+                          :language="mavonEditorLang"
             ></mavon-editor>
 
             <div class="btn-warp">
@@ -158,6 +158,15 @@
           </el-table>
         </div>
       </el-tab-pane>
+
+      <!--   自定义页配置   -->
+      <el-tab-pane v-for="(item, index) in newMenuList" :key="'tab-pane' + index" :label="item['title_' + currLang]" :name="item.key">
+        <div class="tab-pane-content">
+          <mavon-editor v-model="newMenuListPageData[index].data"
+                        :language="mavonEditorLang"
+          ></mavon-editor>
+        </div>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -170,6 +179,79 @@ export default {
   components: {ModifyPaperContent},
   data() {
     return {
+      menuList: [
+        {
+          key: '1',
+          title_cn: '首页',
+          title_en: 'Home',
+          router: '/home',
+        },
+        {
+          key: '2',
+          title_cn: '研究方向',
+          title_en: 'Research',
+          router: '/research',
+        },
+        {
+          key: '3',
+          title_cn: '新闻',
+          title_en: 'News',
+          router: '/news',
+        },
+        {
+          key: '4',
+          title_cn: '出版物',
+          title_en: 'Publications',
+          router: '/publications',
+        },
+        {
+          key: '5',
+          title_cn: '成员',
+          title_en: 'People',
+          router: '/people',
+          children: [
+            {
+              key: '5-1',
+              title_cn: '教师',
+              title_en: 'Teacher',
+              router: '/people?search=Teacher',
+            },
+            {
+              key: '5-2',
+              title_cn: '博士后',
+              title_en: 'Postdoc',
+              router: '/people?search=Postdoc',
+            },
+            {
+              key: '5-3',
+              title_cn: '博士',
+              title_en: 'Doctor',
+              router: '/people?search=Doctor',
+            },
+            {
+              key: '5-4',
+              title_cn: '硕士',
+              title_en: 'Master',
+              router: '/people?search=Master',
+            },
+            {
+              key: '5-5',
+              title_cn: '校友',
+              title_en: 'Alumni',
+              router: '/people?search=Alumni',
+            }
+          ]
+        },
+        {
+          key: '6',
+          title_cn: '测试',
+          title_en: 'Test',
+          router: '/test',
+        },
+      ],
+      newMenuList: [],
+      newMenuListPageData: [],
+
       uploadAction: upload_file_URL,
       rules: {
         describe: [
@@ -208,7 +290,34 @@ export default {
       }],
     }
   },
+  computed: {
+    currLang() {
+      return this.$store.state.currLang
+    },
+    mavonEditorLang() {
+      let str = 'zh-CN'
+      if (this.currLang === 'en') {
+        str = 'en'
+      }
+      return str
+    }
+  },
+  mounted() {
+    this.loadMenuList()
+  },
   methods: {
+    loadMenuList() {
+      this.menuList.forEach((item, index) => {
+        if (item.key && parseInt(item.key) > 5) {
+          this.newMenuList.push(item)
+          let obj = {
+            key: item.key,
+            data: ''
+          }
+          this.newMenuListPageData.push(obj)
+        }
+      })
+    },
     handleTabClick(tab) {
       console.log(tab)
     },
