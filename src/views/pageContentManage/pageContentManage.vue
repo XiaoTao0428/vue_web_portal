@@ -36,7 +36,7 @@
               </el-form>
 
               <div class="btn-warp">
-                <el-button>提 交</el-button>
+                <el-button type="primary">提 交</el-button>
               </div>
 
               <el-dialog :visible.sync="previewDialogVisible">
@@ -51,12 +51,12 @@
               2、首页左侧文章
             </div>
 
-            <mavon-editor v-model="homePaperValue"
+            <mavon-editor class="mavon-editor-warp" v-model="homePaperValue"
                           :language="mavonEditorLang"
             ></mavon-editor>
 
             <div class="btn-warp">
-              <el-button>提 交</el-button>
+              <el-button type="primary">提 交</el-button>
             </div>
 
           </div>
@@ -162,9 +162,26 @@
       <!--   自定义页配置   -->
       <el-tab-pane v-for="(item, index) in newMenuList" :key="'tab-pane' + index" :label="item['title_' + currLang]" :name="item.key">
         <div class="tab-pane-content">
-          <mavon-editor v-model="newMenuListPageData[index].data"
-                        :language="mavonEditorLang"
-          ></mavon-editor>
+          <div class="content-cn">
+            <div class="content-title">
+              1、中文版
+            </div>
+            <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].data"
+                          :language="mavonEditorLang"
+            ></mavon-editor>
+          </div>
+          <div class="content-en">
+            <div class="content-title">
+              2、英文版
+            </div>
+            <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].data"
+                          :language="mavonEditorLang"
+            ></mavon-editor>
+          </div>
+
+          <div class="submit-btn">
+            <el-button type="primary">提 交</el-button>
+          </div>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -362,6 +379,10 @@ export default {
 .pageContentManage_warp {
   width: 100%;
 
+  .mavon-editor-warp {
+    max-height: 800px;
+  }
+
   .tabs {
     width: 100%;
 
@@ -390,8 +411,26 @@ export default {
             margin-top: 20px;
           }
         }
+
+      }
+
+    }
+
+    .content-cn,.content-en {
+      margin-bottom: 40px;
+      .content-title {
+        font-size: 20px;
+        margin-bottom: 10px;
       }
     }
+    .content-en {
+
+    }
+
+    .submit-btn {
+      width: 100%;
+    }
+
   }
 }
 </style>

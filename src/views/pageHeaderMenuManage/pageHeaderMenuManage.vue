@@ -35,10 +35,10 @@
       <div class="dialog-content">
         <el-form ref="appendNodeFormRef" :rules="rules" :model="appendNodeForm" label-width="160px">
           <el-form-item label="节点名（中文）" prop="name_cn">
-            <el-input v-model="appendNodeForm.name_cn"></el-input>
+            <el-input v-model="appendNodeForm.name_cn" placeholder="例如：首页"></el-input>
           </el-form-item>
-          <el-form-item label="Node name (English)" prop="name_en">
-            <el-input v-model="appendNodeForm.name_en"></el-input>
+          <el-form-item label="节点名（英文）" prop="name_en">
+            <el-input v-model="appendNodeForm.name_en" placeholder="例如：Home"></el-input>
           </el-form-item>
           <el-form-item label="路由名" prop="router">
             <el-input placeholder="例如：首页的路由是 /home ，不能包含 /、?、=、& 等特殊字符 " v-model="appendNodeForm.router">
@@ -164,7 +164,7 @@ export default {
         name_en: [
           {
             required: true,
-            message: 'Please enter the node name',
+            message: '请输入节点名称',
             trigger: 'change'
           },
         ],
