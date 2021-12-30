@@ -40,7 +40,10 @@
               </div>
 
               <el-dialog :visible.sync="previewDialogVisible">
-                <img width="100%" :src="previewImageUrl" alt="">
+                <el-image
+                    style="width: 100%"
+                    :src="previewImageUrl"
+                    fit="contain"></el-image>
               </el-dialog>
 
             </div>
@@ -66,107 +69,180 @@
 
       <el-tab-pane class="tab-pane" label="研究" name="2">
         <div class="tab-pane-content">
+          <el-button class="add-btn" type="primary" @click="">新 增</el-button>
           <el-table
               :data="tableData"
               style="width: 100%">
             <el-table-column
                 prop="date"
-                label="日期"
+                label="标题"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="时间"
                 width="180">
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="姓名"
-                width="180">
+                label="图片"
+                width="300">
+              <template slot-scope="scope">
+                <div class="table-column-img">
+                  <img src="">
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
-                prop="address"
-                label="地址">
+                prop="name"
+                label="操作"
+                width="250">
+              <template slot-scope="scope">
+                <div class="table-column-action">
+                  <el-button type="primary" @click="toEditDetails">编辑详情</el-button>
+                  <el-button type="danger" @click="toEditDetails">删 除</el-button>
+                </div>
+              </template>
             </el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
 
       <!--   新闻页配置   -->
-      <el-tab-pane label="新闻" name="3">
+      <el-tab-pane class="tab-pane" label="新闻" name="3">
         <div class="tab-pane-content">
+          <el-button class="add-btn" type="primary" @click="">新 增</el-button>
           <el-table
               :data="tableData"
               style="width: 100%">
             <el-table-column
                 prop="date"
-                label="日期"
+                label="标题"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="时间"
                 width="180">
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="姓名"
-                width="180">
+                label="图片"
+                width="300">
+              <template slot-scope="scope">
+                <div class="table-column-img">
+                  <img src="">
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
-                prop="address"
-                label="地址">
+                prop="name"
+                label="操作"
+                width="250">
+              <template slot-scope="scope">
+                <div class="table-column-action">
+                  <el-button type="primary" @click="toEditDetails">编辑详情</el-button>
+                  <el-button type="danger" @click="toEditDetails">删 除</el-button>
+                </div>
+              </template>
             </el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
 
       <!--   出版物页配置   -->
-      <el-tab-pane label="出版物" name="4">
+      <el-tab-pane class="tab-pane" label="出版物" name="4">
         <div class="tab-pane-content">
+          <el-button class="add-btn" type="primary" @click="">新 增</el-button>
           <el-table
               :data="tableData"
               style="width: 100%">
             <el-table-column
                 prop="date"
-                label="日期"
+                label="标题"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="参与者"
                 width="180">
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="姓名"
+                label="链接名称"
                 width="180">
             </el-table-column>
             <el-table-column
-                prop="address"
-                label="地址">
+                prop="name"
+                label="链接地址"
+                width="180">
+            </el-table-column>
+
+            <el-table-column
+                prop="name"
+                label="操作"
+                width="250">
+              <template slot-scope="scope">
+                <div class="table-column-action">
+                  <el-button type="primary" @click="toEditDetails">编辑详情</el-button>
+                  <el-button type="danger" @click="toEditDetails">删 除</el-button>
+                </div>
+              </template>
             </el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
 
       <!--   成员页配置   -->
-      <el-tab-pane label="成员" name="5">
+      <el-tab-pane class="tab-pane" label="成员" name="5">
         <div class="tab-pane-content">
+          <el-button class="add-btn" type="primary" @click="">新 增</el-button>
           <el-table
               :data="tableData"
               style="width: 100%">
             <el-table-column
-                prop="datef"
-                label="日期"
+                prop="date"
+                label="姓名"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="职位"
                 width="180">
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="姓名"
-                width="180">
+                label="图片"
+                width="300">
+              <template slot-scope="scope">
+                <div class="table-column-img">
+                  <img src="">
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
-                prop="address"
-                label="地址">
+                prop="name"
+                label="操作"
+                width="250">
+              <template slot-scope="scope">
+                <div class="table-column-action">
+                  <el-button type="primary" @click="toEditDetails">编辑详情</el-button>
+                  <el-button type="danger" @click="toEditDetails">删 除</el-button>
+                </div>
+              </template>
             </el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
 
       <!--   自定义页配置   -->
-      <el-tab-pane v-for="(item, index) in newMenuList" :key="'tab-pane' + index" :label="item['title_' + currLang]" :name="item.key">
+      <el-tab-pane class="tab-pane" v-for="(item, index) in newMenuList" :key="'tab-pane' + index" :label="item['title_' + currLang]" :name="item.key">
         <div class="tab-pane-content">
           <div class="content-cn">
             <div class="content-title">
               1、中文版
             </div>
-            <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].data"
+            <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].value_cn"
                           :language="mavonEditorLang"
             ></mavon-editor>
           </div>
@@ -174,7 +250,7 @@
             <div class="content-title">
               2、英文版
             </div>
-            <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].data"
+            <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].value_en"
                           :language="mavonEditorLang"
             ></mavon-editor>
           </div>
@@ -185,87 +261,50 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+
+    <el-dialog
+        title="编辑详情"
+        :visible.sync="editDetailsDialogVisible"
+        width="1400px"
+        custom-class="edit_details_dialog_warp"
+        :before-close="editDetailsDialogCancel">
+      <div class="dialog-content">
+        <div class="content-cn">
+          <div class="content-title">
+            1、中文版
+          </div>
+          <mavon-editor class="mavon-editor-warp" v-model="pageDetails.data_cn"
+                        :language="mavonEditorLang"
+          ></mavon-editor>
+        </div>
+        <div class="content-cn">
+          <div class="content-title">
+            2、英文版
+          </div>
+          <mavon-editor class="mavon-editor-warp" v-model="pageDetails.data_en"
+                        :language="mavonEditorLang"
+          ></mavon-editor>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDetailsDialogCancel">取 消</el-button>
+        <el-button type="primary" @click="editDetailsDialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import ModifyPaperContent from "@/components/modifyPaperContent/modifyPaperContent";
 import {upload_file_URL} from '@/config/baseURL'
+import {GetTabManagementTabListApi, GetTabEditTabApi} from "@/request/api";
 export default {
   name: "pageContentManage",
   components: {ModifyPaperContent},
   data() {
     return {
-      menuList: [
-        {
-          key: '1',
-          title_cn: '首页',
-          title_en: 'Home',
-          router: '/home',
-        },
-        {
-          key: '2',
-          title_cn: '研究方向',
-          title_en: 'Research',
-          router: '/research',
-        },
-        {
-          key: '3',
-          title_cn: '新闻',
-          title_en: 'News',
-          router: '/news',
-        },
-        {
-          key: '4',
-          title_cn: '出版物',
-          title_en: 'Publications',
-          router: '/publications',
-        },
-        {
-          key: '5',
-          title_cn: '成员',
-          title_en: 'People',
-          router: '/people',
-          children: [
-            {
-              key: '5-1',
-              title_cn: '教师',
-              title_en: 'Teacher',
-              router: '/people?search=Teacher',
-            },
-            {
-              key: '5-2',
-              title_cn: '博士后',
-              title_en: 'Postdoc',
-              router: '/people?search=Postdoc',
-            },
-            {
-              key: '5-3',
-              title_cn: '博士',
-              title_en: 'Doctor',
-              router: '/people?search=Doctor',
-            },
-            {
-              key: '5-4',
-              title_cn: '硕士',
-              title_en: 'Master',
-              router: '/people?search=Master',
-            },
-            {
-              key: '5-5',
-              title_cn: '校友',
-              title_en: 'Alumni',
-              router: '/people?search=Alumni',
-            }
-          ]
-        },
-        {
-          key: '6',
-          title_cn: '测试',
-          title_en: 'Test',
-          router: '/test',
-        },
-      ],
+      menuList: [],
       newMenuList: [],
       newMenuListPageData: [],
 
@@ -288,23 +327,31 @@ export default {
       previewImageUrl: '',
       homePaperValue: '**二万人微软为*微软 微软++ 微软++***',
 
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      pageDetails: {
+        data_cn: '',
+        data_en: '',
+      },
+      editDetailsDialogVisible: false,
+
+      tableData: [
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }
+      ],
     }
   },
   computed: {
@@ -320,23 +367,57 @@ export default {
     }
   },
   mounted() {
-    this.loadMenuList()
+    this.loadData()
+    if (parseInt(this.activeName) > 5) {
+      this.loadCustomPageData()
+    }
   },
   methods: {
-    loadMenuList() {
-      this.menuList.forEach((item, index) => {
-        if (item.key && parseInt(item.key) > 5) {
-          this.newMenuList.push(item)
-          let obj = {
-            key: item.key,
-            data: ''
+    /**
+     * 获取数据
+     * */
+    async loadData() {
+      const res = await GetTabManagementTabListApi()
+      console.log(res)
+      if (res) {
+        this.menuList = res.tab_list
+        this.menuList.forEach((item, index) => {
+          if (item.key && parseInt(item.key) > 5) {
+            this.newMenuList.push(item)
+            let obj = {
+              ...item,
+              value_cn: '',
+              value_en: '',
+            }
+            this.newMenuListPageData.push(obj)
           }
-          this.newMenuListPageData.push(obj)
+        })
+      }
+    },
+    /**
+    * 获取自定义页的数据
+    * */
+    async loadCustomPageData() {
+      if (parseInt(this.activeName) > 5) {
+        let id = ''
+        this.newMenuList.forEach((item, index) => {
+          if ((item.key === this.activeName)) {
+            id = item.id
+          }
+        })
+        const res = await GetTabEditTabApi({
+          tab_id: id
+        })
+        console.log(res)
+        if (res) {
+
         }
-      })
+      }
     },
     handleTabClick(tab) {
-      console.log(tab)
+      if (parseInt(this.activeName) > 5) {
+        this.loadCustomPageData()
+      }
     },
     beforeImageUpload(file) {
       const fileType = file.type
@@ -371,6 +452,16 @@ export default {
     handleImageUploadSuccess(res, file) {
       console.log('handleImageUploadSuccess', res)
     },
+    toEditDetails(data) {
+      console.log(data)
+      this.editDetailsDialogVisible = true
+    },
+    editDetailsDialogConfirm() {
+      this.editDetailsDialogCancel()
+    },
+    editDetailsDialogCancel() {
+      this.editDetailsDialogVisible = false
+    },
   }
 }
 </script>
@@ -380,7 +471,7 @@ export default {
   width: 100%;
 
   .mavon-editor-warp {
-    max-height: 800px;
+    max-height: 600px;
   }
 
   .tabs {
@@ -391,6 +482,14 @@ export default {
 
       .tab-pane-content {
         width: 100%;
+
+        .add-btn {
+          margin-bottom: 10px;
+        }
+
+        .table-column-action {
+
+        }
 
         .card {
           width: 100%;
@@ -430,6 +529,22 @@ export default {
     .submit-btn {
       width: 100%;
     }
+
+  }
+}
+</style>
+
+<style lang="scss">
+.edit_details_dialog_warp {
+  width: 100%;
+  .content-cn,.content-en {
+    margin-bottom: 40px;
+    .content-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+  }
+  .content-en {
 
   }
 }

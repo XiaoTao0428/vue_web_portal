@@ -64,7 +64,7 @@ const routes = [
         path: '/manage',
         name: 'manage',
         meta: {
-          requireAuth: false,
+          requireAuth: true,
         },
         component: () => import(/* webpackChunkName: "manage" */ '@/views/manage/manage.vue'),
         redirect: '/pageHeaderMenuManage',
@@ -94,7 +94,15 @@ const routes = [
           requireAuth: false,
         },
         component: () => import(/* webpackChunkName: "detailsPage" */ '@/views/detailsPage/detailsPage.vue')
-      }
+      },
+      {
+        path: '/customPage',
+        name: 'customPage',
+        meta: {
+          requireAuth: false,
+        },
+        component: () => import(/* webpackChunkName: "detailsPage" */ '@/views/customPage/customPage.vue')
+      },
     ]
   },
   {

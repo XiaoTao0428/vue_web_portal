@@ -10,8 +10,8 @@
           真是抱歉，找不到页面
         </div>
         <div class="actions">
-          <el-button>返回上一页</el-button>
-          <el-button>返回首页</el-button>
+          <el-button @click="goBack">返回上一页</el-button>
+          <el-button @click="goHome">返回首页</el-button>
         </div>
       </div>
     </div>
@@ -23,6 +23,14 @@ export default {
   name: "NotFound404",
   data() {
     return {}
+  },
+  methods: {
+    goBack() {
+      this.$router.go(-1)
+    },
+    goHome() {
+      this.$router.push('/home')
+    }
   }
 }
 </script>

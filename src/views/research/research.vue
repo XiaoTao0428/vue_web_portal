@@ -68,7 +68,7 @@ export default {
       if (num > 1) {
         this.researchDirectionList.forEach((item, index) => {
           let i = parseInt(index/num)
-          if (this.newResearchDirectionList[i] && this.newResearchDirectionList[i].length) {
+          if (this.newResearchDirectionList[i] && this.newResearchDirectionList[i].length > 0) {
             this.newResearchDirectionList[i].push(item)
           }else {
             this.newResearchDirectionList[i] = []

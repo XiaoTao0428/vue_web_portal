@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
     else {
-      // share.message.warning('请先去登陆')
+      ElementUI.Message.warning('请先去登陆')
       next({
         path: '/login',
         query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由

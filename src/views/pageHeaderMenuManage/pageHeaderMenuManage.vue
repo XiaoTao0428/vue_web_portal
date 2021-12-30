@@ -1,6 +1,6 @@
 <template>
   <div class="pageHeaderMenuManage_warp">
-    <div class="content">
+    <div class="content" v-loading="loading">
       <el-tree
           class="tree"
           :data="treeList"
@@ -30,6 +30,7 @@
     <el-dialog
         title="添加节点"
         :visible.sync="appendDialogVisible"
+        :before-close="appendDialogCancel"
         width="700px"
     >
       <div class="dialog-content">
@@ -49,7 +50,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="appendDialogCancel">取 消</el-button>
-        <el-button type="primary" @click="appendDialogConfirm">确 定</el-button>
+        <el-button type="primary" :loading="submitBtnLoading" @click="appendDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -61,7 +62,7 @@
       <span>确定要删除此节点吗？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="delDialogConfirm">确 定</el-button>
+        <el-button type="primary" :loading="submitBtnLoading" @click="delDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -69,82 +70,21 @@
 </template>
 
 <script>
+import {GetTabManagementTabListApi, PostTabAddTabApi, PostTabDeleteTabApi, PostTabSortTabApi} from "@/request/api";
+
 export default {
   name: "pageHeaderMenuManage",
   data() {
     return {
+      loading: true,
       treeList: [
         {
           key: 'root',
           title_cn: '根目录',
           title_en: 'Root directory',
           appendBtnShow: true,
-          children: [
-            {
-              key: '1',
-              title_cn: '首页',
-              title_en: 'Home',
-              router: '/home',
-            },
-            {
-              key: '2',
-              title_cn: '研究方向',
-              title_en: 'Research',
-              router: '/research',
-            },
-            {
-              key: '3',
-              title_cn: '新闻',
-              title_en: 'News',
-              router: '/news',
-            },
-            {
-              key: '4',
-              title_cn: '出版物',
-              title_en: 'Publications',
-              router: '/publications',
-            },
-            {
-              key: '5',
-              title_cn: '成员',
-              title_en: 'People',
-              router: '/people',
-              appendBtnShow: true,
-              children: [
-                {
-                  key: '5-1',
-                  title_cn: '教师',
-                  title_en: 'Teacher',
-                  router: '/people?search=Teacher',
-                },
-                {
-                  key: '5-2',
-                  title_cn: '博士后',
-                  title_en: 'Postdoc',
-                  router: '/people?search=Postdoc',
-                },
-                {
-                  key: '5-3',
-                  title_cn: '博士',
-                  title_en: 'Doctor',
-                  router: '/people?search=Doctor',
-                },
-                {
-                  key: '5-4',
-                  title_cn: '硕士',
-                  title_en: 'Master',
-                  router: '/people?search=Master',
-                },
-                {
-                  key: '5-5',
-                  title_cn: '校友',
-                  title_en: 'Alumni',
-                  router: '/people?search=Alumni',
-                }
-              ]
-            }
-          ]
-        },
+          children: []
+        }
       ],
       appendDialogVisible: false,
       appendNodeData: null,
@@ -181,6 +121,7 @@ export default {
       },
       delDialogVisible: false,
       delNodeData: null,
+      submitBtnLoading: false,
     }
   },
   computed: {
@@ -188,7 +129,36 @@ export default {
       return this.$store.state.currLang
     }
   },
+  async mounted() {
+    this.loading = true
+    await this.loadData()
+    this.loading = false
+  },
   methods: {
+    /**
+    * 获取数据
+    * */
+    async loadData() {
+      const res = await GetTabManagementTabListApi()
+      console.log(res)
+      if (res) {
+        let arr = res.tab_list
+        arr.forEach((item, index) => {
+          if (item.key === '5') {
+            item.appendBtnShow = true
+            item.children.forEach((item2, index2) => {
+              if (item2.key!== '5-1') {
+                item2.delBtnShow = true
+              }
+            })
+          }
+          if (item.key !== '1' && item.key !== '2' && item.key !== '3' && item.key !== '4' && item.key !== '5') {
+            item.delBtnShow = true
+          }
+        })
+        this.treeList[0].children = arr
+      }
+    },
     /**
      * 添加节点弹窗取消
      * */
@@ -202,7 +172,9 @@ export default {
     appendDialogConfirm() {
       this.$refs.appendNodeFormRef.validate(async (valid) => {
         if (valid) {
+          this.submitBtnLoading = true
           let newChild = {
+            id: '',
             key: '',
             title_cn: this.appendNodeForm.name_cn,
             title_en: this.appendNodeForm.name_en,
@@ -212,12 +184,12 @@ export default {
           if (this.appendNodeData.key === '5') {
             newChild.router = '/people?search=' + this.appendNodeForm.router
           }else {
-            newChild.router = '/' + this.appendNodeForm.router
+            newChild.router = '/customPage?pageName=' + this.appendNodeForm.router
           }
 
           let max = 1
           let arr = []
-          if (this.appendNodeData.children) {
+          if (this.appendNodeData.children && this.appendNodeData.children.length > 0) {
             this.appendNodeData.children.forEach((item, index) => {
               arr = item.key.split('-')
               if (parseInt(arr[arr.length - 1]) > max) {
@@ -236,11 +208,9 @@ export default {
               })
 
               newChild.key = key
-              this.appendNodeData.children.push(newChild)
             }else {
               let key = max.toString()
               newChild.key = key
-              this.appendNodeData.children.push(newChild)
             }
           }else {
             let key = ''
@@ -253,12 +223,33 @@ export default {
             if (!this.appendNodeData.children) {
               this.$set(this.appendNodeData, 'children', [])
             }
-            this.appendNodeData.children.push(newChild)
           }
-
           console.log('treeList', this.treeList)
 
+          let param = {
+            key: newChild.key,
+            title_cn: newChild.title_cn,
+            title_en: newChild.title_en,
+            router: newChild.router,
+            tab_content_cn: '',
+            tab_content_en: '',
+          }
+          if (newChild.key.indexOf('-') !== -1) {
+            let arr = newChild.key.split('-')
+            param.parent_key = arr[0]
+          }
+          console.log('param', param)
+          const res = await PostTabAddTabApi({...param})
+          console.log(res)
+          if (res) {
+            newChild.id = res.new_tab_info.id
+            this.appendNodeData.children.push(newChild)
+            this.$message.success('新增成功')
+          }
+
+          this.appendNodeData = null
           this.appendDialogCancel()
+          this.submitBtnLoading = false
         }
       })
 
@@ -311,10 +302,20 @@ export default {
     /**
      * 删除节点弹窗确定
      * */
-    delDialogConfirm() {
-      this.delNode(this.treeList[0].children, this.delNodeData.key)
+    async delDialogConfirm() {
+      this.submitBtnLoading = true
+      console.log('delNodeData', this.delNodeData)
+      const res = await PostTabDeleteTabApi({
+        tab_id: this.delNodeData.id
+      })
+      console.log(res)
+      if (res) {
+        this.delNode(this.treeList[0].children, this.delNodeData.key)
+        this.$message.success('删除成功')
+      }
+      this.delNodeData = null
       this.delDialogVisible = false
-      console.log('treeList', this.treeList)
+      this.submitBtnLoading = false
     },
     /**
      * 删除指定节点
@@ -334,7 +335,6 @@ export default {
             arr.splice(index, 1)
             throw Error()
           }else {
-            console.log('item.children', item.children)
             if (item.children && item.children.length > 0) {
               this.delNode(item.children, key)
             }
@@ -347,34 +347,80 @@ export default {
      * 节点拖动结束
      * */
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drag end: ', dropNode && dropNode.label, dropType)
+      console.log('tree drag end: ',draggingNode.key, dropNode.key, dropType)
     },
     /**
     * 拖拽成功完成时触发的事件
     * */
-    handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drop: ', dropNode.label, dropType)
-      console.log('---treeList---', this.treeList)
+    async handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('tree drag: ',draggingNode, dropNode, dropType)
+
+      this.loading = true
+      let node = []
+      node = this.getNode(this.treeList[0].children, draggingNode.key)
+      console.log('node', node)
+      let param = []
+      node.forEach((item, index) => {
+        param.push(item.id)
+      })
+      const res = await PostTabSortTabApi({
+        tab_id_list: JSON.stringify(param)
+      })
+      console.log(res)
+      if (res) {
+        this.$message.success('操作成功')
+      }
+      this.loading = false
+    },
+    /**
+     * 获取节点
+     * */
+    getNode(arr, key) {
+      console.log(arr, key)
+      let data = []
+      try {
+        arr.forEach((item, index) => {
+          if (item.key === key) {
+            data = arr
+            throw Error()
+          }else {
+            if (item.children && item.children.length > 0) {
+              let newData = this.getNode(item.children, key)
+              if (newData) {
+                data = newData
+                throw Error()
+              }
+            }
+          }
+        })
+      } catch (e) {
+      }
+      return data
     },
     /**
      * 拖拽时判定目标节点能否被放置
      * */
     allowDrop(draggingNode, dropNode, type) {
-      if (draggingNode.data.key.indexOf('-') !== -1) {
-        if (dropNode.data.key === '1' || dropNode.data.key === '2' || dropNode.data.key === '3' || dropNode.data.key === '4' || dropNode.data.key === '5') {
-          return false
-        }else {
-          return type !== 'inner'
-        }
-      }else if (dropNode.data.key === '1' || dropNode.data.key === '2' || dropNode.data.key === '3' || dropNode.data.key === '4' || dropNode.data.key === '5') {
-        return type !== 'inner'
+      if (dropNode.data.key === 'root') {
+        return false
       }else {
-        if (dropNode.data.key.indexOf('5') !== -1) {
-          return false
-        }else {
+        if (draggingNode.data.key.indexOf('-') !== -1) {
+          if (dropNode.data.key === '1' || dropNode.data.key === '2' || dropNode.data.key === '3' || dropNode.data.key === '4' || dropNode.data.key === '5') {
+            return false
+          }else {
+            return type !== 'inner'
+          }
+        }else if (dropNode.data.key === '1' || dropNode.data.key === '2' || dropNode.data.key === '3' || dropNode.data.key === '4' || dropNode.data.key === '5') {
           return type !== 'inner'
+        }else {
+          if (dropNode.data.key.indexOf('5') !== -1) {
+            return false
+          }else {
+            return type !== 'inner'
+          }
         }
       }
+
     },
     /**
      * 判断节点能否被拖拽

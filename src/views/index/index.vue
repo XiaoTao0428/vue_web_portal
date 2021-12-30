@@ -38,7 +38,7 @@
             </div>
           </div>
 
-          <div class="menu-item" v-if="!token">
+          <div class="menu-item" v-if="token">
             <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">管理</span>
           </div>
         </div>
@@ -65,7 +65,7 @@
                   </div>
                 </div>
 
-                <div class="menu-item" v-if="!token">
+                <div class="menu-item" v-if="token">
                   <div class="menu-item-title-warp">
                     <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">管理</span>
                     <span class="icon"></span>
@@ -131,7 +131,7 @@
             <span>{{$t('index.SiteContentCopyright')}} © 2021</span>
             <el-divider direction="vertical"></el-divider>
             <span v-if="!token" class="link" @click="handleMenuListSelect({router: '/login'})">{{$t('index.LogIn')}}</span>
-            <span v-if="token" class="link" @click="logout">退出</span>
+            <span v-if="token" class="link" @click="userLogout">退出</span>
           </div>
         </div>
       </div>
@@ -143,6 +143,7 @@
 import { mapMutations } from 'vuex'
 import TSINGHUA_UNIVERSITY_logo from '../../assets/icon/TSINGHUA_UNIVERSITY_logo2.png'
 import mixins from '@/mixins/mixins'
+import {GetTabTabListApi} from '@/request/api'
 export default {
   name: "index",
   mixins: [mixins],
@@ -160,7 +161,8 @@ export default {
           label: 'English'
         }
       ],
-      menuList: [
+      menuList: [],
+      menuList2: [
         {
           key: '1',
           title_cn: '首页',
@@ -251,11 +253,15 @@ export default {
       currLang: this.currLang
     })
   },
-  mounted() {
+  async mounted() {
     this.init()
+    await this.loadData()
   },
   methods: {
     ...mapMutations(['setCurrLang', 'setCurrRoutePath', 'logout']),
+    /**
+    * 初始化页面宽度
+    * */
     init() {
       this.isInit = false
       if (this.currScreenSize === 'lg' && !this.menuOverflow) {
@@ -267,6 +273,16 @@ export default {
         }
       }
       this.isInit = true
+    },
+    /**
+    * 获取数据
+    * */
+    async loadData() {
+      const res = await GetTabTabListApi()
+      console.log(res)
+      if (res) {
+        this.menuList = res.tab_list
+      }
     },
     /**
      * 切换菜单
@@ -328,8 +344,9 @@ export default {
     /**
     * 退出
     * */
-    logout() {
-      this.logout()
+    userLogout() {
+      this.logout({})
+      this.$router.push('/home')
     },
   }
 }

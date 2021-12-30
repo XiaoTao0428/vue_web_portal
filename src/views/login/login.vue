@@ -17,6 +17,7 @@
         <el-form-item label="" prop="password">
           <el-input v-model="loginForm.password"
                     placeholder="请输入密码"
+                    type="password"
           >
             <div class="icon" slot="prefix">
               <img src="../../assets/icon/password.png">
@@ -39,8 +40,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: '',
-        password: '',
+        username: 'admin',
+        password: 'admin',
       },
       rules: {
         username: [
@@ -74,6 +75,8 @@ export default {
                 contact_en: res.user_info.contact_en,  // 联系方式英文
               },
             })
+            this.$message.success('登录成功')
+            await this.$router.push('/home')
           }
         }
       });

@@ -32,13 +32,13 @@ axios.interceptors.response.use(
     response => {
 
         if ( response.data && response.data.code === 500) {
-            // Message.error('服务器内部错误')
-            Message({
-                showClose: true,
-                message: '服务器内部错误',
-                type: 'error',
-                duration: 1500,
-            })
+            Message.error('服务器内部错误')
+            // Message({
+            //     showClose: true,
+            //     message: '服务器内部错误',
+            //     type: 'error',
+            //     duration: 1500,
+            // })
             return ''
         }
 
@@ -48,12 +48,13 @@ axios.interceptors.response.use(
             return Promise.resolve(response.data.data)
         }
         else {
-            Message({
-                showClose: true,
-                message: response.data.data.message,
-                type: 'error',
-                duration: 1500,
-            })
+            // Message({
+            //     showClose: true,
+            //     message: response.data.message,
+            //     type: 'error',
+            //     duration: 1500,
+            // })
+            Message.error(response.data.message)
             return ''
         }
     },
