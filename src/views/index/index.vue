@@ -1,7 +1,7 @@
 <template>
   <div class="index_warp">
     <div class="content">
-      <div class="header">
+      <div :class="headerClassName">
         <div class="header-icon">
           <el-image
               class="icon"
@@ -97,7 +97,7 @@
         <router-view></router-view>
       </div>
 
-      <div class="footer">
+      <div v-if="currScreenSize !== 'xs'" :class="footerClassName">
         <div class="footer-content">
           <div class="footer-content-top">
             <div class="footer-content-top-left">
@@ -128,6 +128,32 @@
             <el-divider direction="vertical"></el-divider>
             <span class="link">{{$t('index.PrivacyNotice')}}</span>
             <el-divider direction="vertical"></el-divider>
+            <span>{{$t('index.SiteContentCopyright')}} © 2021</span>
+            <el-divider direction="vertical"></el-divider>
+            <span v-if="!token" class="link" @click="handleMenuListSelect({router: '/login'})">{{$t('index.LogIn')}}</span>
+            <span v-if="token" class="link" @click="userLogout">退出</span>
+          </div>
+        </div>
+      </div>
+      <div v-if="currScreenSize === 'xs'" class="footer-xs">
+        <div class="footer-content">
+          <div class="footer-content-top">
+            <el-image
+                class="icon"
+                fit="contain"
+                src="https://vahala.caltech.edu/static/core/img/caltech-new-logo.png"
+            ></el-image>
+            <div class="title">
+              {{$t('index.CaliforniaInstituteOfTechnology')}}
+            </div>
+          </div>
+          <div class="footer-content-bottom">
+            <span class="link" @click="handleMenuListSelect({router: '/home'})">{{$t('index.Home')}}</span>
+            <el-divider direction="vertical"></el-divider>
+            <span class="link">{{$t('index.PrivacyNotice')}}</span>
+            <el-divider direction="vertical"></el-divider>
+          </div>
+          <div class="footer-content-bottom">
             <span>{{$t('index.SiteContentCopyright')}} © 2021</span>
             <el-divider direction="vertical"></el-divider>
             <span v-if="!token" class="link" @click="handleMenuListSelect({router: '/login'})">{{$t('index.LogIn')}}</span>
@@ -359,7 +385,7 @@ export default {
   .content {
     width: 100%;
 
-    .header {
+    .header-lg,.header-md,.header-sm {
       width: 100%;
       max-width: 1440px;
       margin: 0 auto;
@@ -394,13 +420,54 @@ export default {
           cursor: pointer;
         }
       }
-
       .actions {
         .lang-change {
           width: 100px;
         }
       }
+    }
+    .header-xs {
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 50px 0 50px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
 
+      .header-icon {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        .icon {
+          width: 80%;
+          max-width: 120px;
+          min-width: 80px;
+          cursor: pointer;
+        }
+        .divider {
+          height: 100%;
+          width: 2px;
+          margin-left: 26px;
+          margin-right: 26px;
+          background-color: #c8c8c8;
+        }
+        .title {
+          font-size: 24px;
+          letter-spacing: -0.56px;
+          color: #666666;
+          cursor: pointer;
+        }
+      }
+      .actions {
+        margin-top: 10px;
+        .lang-change {
+          width: 100px;
+        }
+      }
     }
 
     .menu-warp {
@@ -691,7 +758,7 @@ export default {
       margin-bottom: 60px;
     }
 
-    .footer {
+    .footer-lg,.footer-md,.footer-sm {
       width: 100%;
       max-width: 1440px;
       margin: 0 auto;
@@ -760,9 +827,62 @@ export default {
           }
         }
       }
+    }
+    .footer-xs {
+      width: 100%;
+
+      .footer-content {
+        width: 100%;
+        height: 100%;
+        background-color: #003B4C;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 50px;
+        box-sizing: border-box;
+        .footer-content-top {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          .icon {
+            height: 26px;
+            margin-bottom: 10px;
+          }
+          .title {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: bold;
+          }
+        }
+        .footer-content-bottom {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          color: #c8c8c8;
+          font-size: 14px;
+          padding-top: 20px;
+
+          &:last-child {
+            padding-top: 10px;
+          }
+
+          .link {
+            color: #c8c8c8;
+            cursor: pointer;
+            &:hover {
+              color: #c8c8c8;
+            }
+          }
+        }
+      }
 
     }
-
   }
 
 }

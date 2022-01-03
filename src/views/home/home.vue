@@ -1,7 +1,7 @@
 <template>
   <div class="home_warp">
 
-    <div class="content">
+    <div :class="contentClassName">
 
       <div class="home-left">
         <mavon-editor class="markdown-warp" v-model="mavonEditorValue"
@@ -119,7 +119,7 @@ export default {
   computed: {
     currLang() {
       return this.$store.state.currLang
-    }
+    },
   },
   created() {
   },
@@ -133,12 +133,12 @@ export default {
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 50px;
-  box-sizing: border-box;
 
 
-  .content {
+  .content-md,.content-lg {
     width: 100%;
+    padding: 0 50px;
+    box-sizing: border-box;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -160,6 +160,121 @@ export default {
       flex: 1;
       margin-left: 20px;
 
+      .picture-introduction {
+        width: 100%;
+        margin-bottom: 30px;
+        position: relative;
+        .image {
+          max-width: 100%;
+        }
+        .image-msg {
+          position: absolute;
+          bottom: 4px;
+          left: 0;
+          padding: 16px 18px;
+          box-sizing: border-box;
+          color: #ffffff;
+          background-color: rgba(0, 0, 0, 0.54);
+        }
+      }
+
+      .news-header {
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-bottom: 30px;
+
+        .news-header-title {
+          color: #000000;
+          font-size: 40px;
+        }
+        .link {
+          color: #003b4c;
+          font-size: 14px;
+          height: 32px;
+          &:hover {
+            color: #D14900;
+          }
+          .el-icon-arrow-right {
+            color: #D14900;
+            font-weight: bold;
+          }
+        }
+      }
+
+      .news-content {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        .new-item {
+          flex: 1;
+          &:first-child {
+            margin-right: 10px;
+          }
+          &:last-child {
+            margin-left: 10px;
+          }
+
+          .image-description {
+            width: 100%;
+            margin-bottom: 20px;
+            .image {
+              max-width: 100%;
+              margin-bottom: -4px;
+            }
+            .line {
+              width: 100%;
+              height: 4px;
+              background-image: linear-gradient(90deg, #f9be01 0%, #c75000 100%);
+            }
+          }
+
+          .date {
+            font-size: 12px;
+            color: #D14900;
+            font-weight: bold;
+            margin-bottom: 10px;
+
+            .el-icon-menu {
+              font-size: 16px;
+              color: #AAA99F;
+              margin-right: 5px;
+            }
+          }
+
+          .description {
+            font-size: 22px;
+            color: #000000;
+            font-weight: bold;
+          }
+        }
+
+      }
+
+    }
+  }
+
+  .content-sm,.content-xs {
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+
+    .home-left {
+      .markdown-warp {
+        box-shadow: none !important;
+        z-index: 1;
+        font-size: 20px;
+        & /deep/ .v-show-content {
+          padding: 0;
+          background-color: #ffffff !important;
+        }
+      }
+    }
+    .home-right {
       .picture-introduction {
         width: 100%;
         margin-bottom: 30px;
