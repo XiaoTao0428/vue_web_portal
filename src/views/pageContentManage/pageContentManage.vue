@@ -10,11 +10,11 @@
               1、首页右侧主图
             </div>
             <div class="card-content">
-              <el-form ref="homeImageForm" :model="homeImageForm" label-width="80px">
-                <el-form-item label="图片描述">
+              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="80px">
+                <el-form-item label="图片描述" prop="describe">
                   <el-input type="textarea" v-model="homeImageForm.describe" :rows="3"></el-input>
                 </el-form-item>
-                <el-form-item label="图片上传">
+                <el-form-item label="图片上传" prop="imageUrl">
                   <el-upload
                       :action="uploadAction"
                       :headers="uploadHeaders"
@@ -36,15 +36,8 @@
               </el-form>
 
               <div class="btn-warp">
-                <el-button type="primary">提 交</el-button>
+                <el-button type="primary" @click="homeImageFormSubmit">提 交</el-button>
               </div>
-
-              <el-dialog :visible.sync="previewDialogVisible">
-                <el-image
-                    style="width: 100%"
-                    :src="previewImageUrl"
-                    fit="contain"></el-image>
-              </el-dialog>
 
             </div>
           </div>
@@ -69,7 +62,7 @@
 
       <el-tab-pane class="tab-pane" label="研究" name="2">
         <div class="tab-pane-content">
-          <el-button class="add-btn" type="primary" @click="">新 增</el-button>
+          <el-button class="add-btn" type="primary" @click="addResearch">新 增</el-button>
           <el-table
               :data="tableData"
               style="width: 100%">
@@ -99,8 +92,8 @@
                 width="250">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button type="primary" @click="toEditDetails">编辑详情</el-button>
-                  <el-button type="danger" @click="toEditDetails">删 除</el-button>
+                  <el-button type="primary" @click="editDetails">编辑详情</el-button>
+                  <el-button type="danger" @click="editDetails">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -111,7 +104,7 @@
       <!--   新闻页配置   -->
       <el-tab-pane class="tab-pane" label="新闻" name="3">
         <div class="tab-pane-content">
-          <el-button class="add-btn" type="primary" @click="">新 增</el-button>
+          <el-button class="add-btn" type="primary" @click="addNew">新 增</el-button>
           <el-table
               :data="tableData"
               style="width: 100%">
@@ -138,11 +131,12 @@
             <el-table-column
                 prop="name"
                 label="操作"
-                width="250">
+                width="320">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button type="primary" @click="toEditDetails">编辑详情</el-button>
-                  <el-button type="danger" @click="toEditDetails">删 除</el-button>
+                  <el-button @click="">置 顶</el-button>
+                  <el-button type="primary" @click="editDetails">编辑详情</el-button>
+                  <el-button type="danger" @click="editDetails">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -153,7 +147,7 @@
       <!--   出版物页配置   -->
       <el-tab-pane class="tab-pane" label="出版物" name="4">
         <div class="tab-pane-content">
-          <el-button class="add-btn" type="primary" @click="">新 增</el-button>
+          <el-button class="add-btn" type="primary" @click="addPublication">新 增</el-button>
           <el-table
               :data="tableData"
               style="width: 100%">
@@ -184,8 +178,8 @@
                 width="250">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button type="primary" @click="toEditDetails">编辑详情</el-button>
-                  <el-button type="danger" @click="toEditDetails">删 除</el-button>
+                  <el-button type="primary" @click="editDetails">编辑详情</el-button>
+                  <el-button type="danger" @click="editDetails">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -226,8 +220,8 @@
                 width="250">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button type="primary" @click="toEditDetails">编辑详情</el-button>
-                  <el-button type="danger" @click="toEditDetails">删 除</el-button>
+                  <el-button type="primary" @click="editDetails">编辑详情</el-button>
+                  <el-button type="danger" @click="editDetails">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -256,12 +250,21 @@
           </div>
 
           <div class="submit-btn">
-            <el-button type="primary">提 交</el-button>
+            <el-button type="primary" @click="customPageSubmit(item)">提 交</el-button>
           </div>
         </div>
       </el-tab-pane>
     </el-tabs>
 
+    <!--  图片预览  -->
+    <el-dialog :visible.sync="previewDialogVisible">
+      <el-image
+          style="width: 100%"
+          :src="previewImageUrl"
+          fit="contain"></el-image>
+    </el-dialog>
+
+    <!--  编辑详情弹窗  -->
     <el-dialog
         title="编辑详情"
         :visible.sync="editDetailsDialogVisible"
@@ -292,6 +295,136 @@
       </span>
     </el-dialog>
 
+    <!--  新增研究方向  -->
+    <el-dialog
+        title="新增研究方向"
+        :visible.sync="addResearchDialogVisible"
+        width="800px"
+        custom-class="add_research_dialog_warp"
+        :before-close="addResearchDialogCancel">
+      <div class="dialog-content">
+        <el-form :model="addResearchForm" :rules="rules" ref="addResearchFormRef" label-width="140px">
+          <el-form-item label="研究标题（中文）" prop="title_cn">
+            <el-input v-model="addResearchForm.title_cn" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="研究标题（英文）" prop="title_en">
+            <el-input v-model="addResearchForm.title_en" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="开始日期" prop="time">
+            <el-date-picker
+                v-model="addResearchForm.time"
+                type="date"
+                placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="图片描述" prop="imageUrl">
+            <el-upload
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :multiple="false"
+                name="image"
+                :limit="1"
+                list-type="picture-card"
+                :on-exceed="handleImageUploadExceed"
+                :on-preview="handleImageUploadPreview"
+                :before-upload="beforeImageUpload"
+                :on-remove="handleAddResearchImageUploadRemove"
+                :on-success="handleAddResearchImageUploadSuccess"
+            >
+              <img v-if="addResearchForm.imageUrl" :src="addResearchForm.imageUrl" class="avatar">
+              <i  v-if="!addResearchForm.imageUrl" class="el-icon-plus avatar-uploader-icon"></i>
+              <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addResearchDialogCancel">取 消</el-button>
+        <el-button type="primary" @click="addResearchDialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!--  新增新闻  -->
+    <el-dialog
+        title="新增新闻"
+        :visible.sync="addNewDialogVisible"
+        width="800px"
+        custom-class="add_new_dialog_warp"
+        :before-close="addNewDialogCancel">
+      <div class="dialog-content">
+        <el-form :model="addNewForm" :rules="rules" ref="addNewFormRef" label-width="140px">
+          <el-form-item label="研究标题（中文）" prop="title_cn">
+            <el-input v-model="addNewForm.title_cn" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="研究标题（英文）" prop="title_en">
+            <el-input v-model="addNewForm.title_en" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="日期" prop="date">
+            <el-date-picker
+                v-model="addNewForm.date"
+                type="date"
+                placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="图片描述" prop="imageUrl">
+            <el-upload
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :multiple="false"
+                name="image"
+                :limit="1"
+                list-type="picture-card"
+                :on-exceed="handleImageUploadExceed"
+                :on-preview="handleImageUploadPreview"
+                :before-upload="beforeImageUpload"
+                :on-remove="handleAddNewImageUploadRemove"
+                :on-success="handleAddNewImageUploadSuccess"
+            >
+              <img v-if="addNewForm.imageUrl" :src="addNewForm.imageUrl" class="avatar">
+              <i  v-if="!addNewForm.imageUrl" class="el-icon-plus avatar-uploader-icon"></i>
+              <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addNewDialogCancel">取 消</el-button>
+        <el-button type="primary" @click="addNewDialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!--  新增发布的成果  -->
+    <el-dialog
+        title="新增发布的成果"
+        :visible.sync="addPublicationDialogVisible"
+        width="800px"
+        custom-class="add_publication_dialog_warp"
+        :before-close="addPublicationDialogCancel">
+      <div class="dialog-content">
+        <el-form :model="addPublicationForm" :rules="rules" ref="addPublicationFormRef" label-width="140px">
+          <el-form-item label="标题（中文）" prop="title_cn">
+            <el-input v-model="addPublicationForm.title_cn" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="标题（英文）" prop="title_en">
+            <el-input v-model="addPublicationForm.title_en" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="作者" prop="title_en">
+            <el-input type="textarea" :rows="3" v-model="addPublicationForm.author" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="期刊名称" prop="journalTitle">
+            <el-input v-model="addPublicationForm.journalTitle" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="期刊地址" prop="journalTitle">
+            <el-input v-model="addPublicationForm.journalUrl" placeholder="请输入"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addPublicationDialogCancel">取 消</el-button>
+        <el-button type="primary" @click="addPublicationDialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -316,6 +449,24 @@ export default {
         imageUrl: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
+        title_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        title_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        date: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        author: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        journalTitle: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        journalUrl: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
       },
       uploadHeaders: {},
       activeName: '1',
@@ -331,7 +482,45 @@ export default {
         data_cn: '',
         data_en: '',
       },
+
+      /**
+      * 编辑详情
+      * */
       editDetailsDialogVisible: false,
+
+      /**
+      * 新增研究方向
+      * */
+      addResearchDialogVisible: false,
+      addResearchForm: {
+        title_cn: '',
+        title_en: '',
+        date: '',
+        imageUrl: '',
+      },
+
+      /**
+       * 新增新闻
+       * */
+      addNewDialogVisible: false,
+      addNewForm: {
+        title_cn: '',
+        title_en: '',
+        date: '',
+        imageUrl: '',
+      },
+
+      /**
+       * 新增发布过的成果
+       * */
+      addPublicationDialogVisible: false,
+      addPublicationForm: {
+        title_cn: '',
+        title_en: '',
+        author: '',
+        journalTitle: '',
+        journalUrl: '',
+      },
 
       tableData: [
         {
@@ -414,11 +603,17 @@ export default {
         }
       }
     },
+    /**
+    * 切换tab页时触发
+    * */
     handleTabClick(tab) {
       if (parseInt(this.activeName) > 5) {
         this.loadCustomPageData()
       }
     },
+    /**
+    * 上传首页图片时，在上传前触发
+    * */
     beforeImageUpload(file) {
       const fileType = file.type
       const isLt2M = file.size / 1024 / 1024 <= 2;
@@ -438,30 +633,165 @@ export default {
 
       return isJPGOrPng && isLt2M
     },
+    /**
+     * 上传首页图片时，超出了数量上限触发
+     * */
     handleImageUploadExceed(files, fileList) {
       this.$message.warning('超出了数量上限！')
     },
+    /**
+     * 上传首页图片时，图片预览
+     * */
     handleImageUploadPreview(file) {
       console.log(file.url)
       this.previewImageUrl = file.url
       this.previewDialogVisible = true
     },
+    /**
+     * 上传首页图片时，图片删除
+     * */
     handleImageUploadRemove(file, fileList) {
       this.homeImageForm.imageUrl = ''
     },
+    /**
+     * 上传首页图片时，图片上传成功
+     * */
     handleImageUploadSuccess(res, file) {
       console.log('handleImageUploadSuccess', res)
     },
-    toEditDetails(data) {
+    /**
+    * 首页图片表单提交时触发
+    * */
+    homeImageFormSubmit() {
+      this.$refs.homeImageForm.validate(async (valid) => {
+        if (valid) {
+
+        }
+      })
+    },
+    /**
+     * 去编辑详情
+     * */
+    editDetails(data) {
       console.log(data)
       this.editDetailsDialogVisible = true
     },
+    /**
+     * 编辑详情弹窗提交时触发
+     * */
     editDetailsDialogConfirm() {
       this.editDetailsDialogCancel()
     },
+    /**
+     * 编辑详情弹窗关闭时触发
+     * */
     editDetailsDialogCancel() {
       this.editDetailsDialogVisible = false
     },
+    /**
+    * 新增研究方向
+    * */
+    addResearch() {
+      this.addResearchDialogVisible = true
+    },
+    /**
+     * 新增研究方向弹窗提交时触发
+     * */
+    addResearchDialogConfirm() {
+      this.$refs.addResearchFormRef.validate(async (valid) => {
+        if (valid) {
+          this.addResearchDialogCancel()
+        }
+      })
+    },
+    /**
+     * 新增研究方向弹窗关闭时触发
+     * */
+    addResearchDialogCancel() {
+      this.$refs.addResearchFormRef.resetFields()
+      this.addResearchDialogVisible = false
+    },
+    /**
+     * 新增研究方向弹窗中，图片删除时触发
+     * */
+    handleAddResearchImageUploadRemove(file, fileList) {
+      this.addResearchForm.imageUrl = ''
+    },
+    /**
+     * 新增研究方向弹窗中，图片上传成功时触发
+     * */
+    handleAddResearchImageUploadSuccess(res, file) {
+
+    },
+
+    /**
+     * 新增新闻
+     * */
+    addNew() {
+      this.addNewDialogVisible = true
+    },
+    /**
+     * 新增新闻弹窗提交时触发
+     * */
+    addNewDialogConfirm() {
+      this.$refs.addNewFormRef.validate(async (valid) => {
+        if (valid) {
+          this.addNewDialogCancel()
+        }
+      })
+    },
+    /**
+     * 新增新闻弹窗关闭时触发
+     * */
+    addNewDialogCancel() {
+      this.$refs.addNewFormRef.resetFields()
+      this.addNewDialogVisible = false
+    },
+    /**
+     * 新增新闻弹窗中，图片删除时触发
+     * */
+    handleAddNewImageUploadRemove(file, fileList) {
+      this.addNewForm.imageUrl = ''
+    },
+    /**
+     * 新增新闻弹窗中，图片上传成功时触发
+     * */
+    handleAddNewImageUploadSuccess(res, file) {
+
+    },
+
+    /**
+     * 新增发布的成果
+     * */
+    addPublication() {
+      this.addPublicationDialogVisible = true
+    },
+    /**
+     * 新增发布的成果弹窗提交时触发
+     * */
+    addPublicationDialogConfirm() {
+      this.$refs.addPublicationFormRef.validate(async (valid) => {
+        if (valid) {
+          this.addPublicationDialogCancel()
+        }
+      })
+    },
+    /**
+     * 新增发布的成果弹窗关闭时触发
+     * */
+    addPublicationDialogCancel() {
+      this.$refs.addPublicationFormRef.resetFields()
+      this.addPublicationDialogVisible = false
+    },
+
+    /**
+    * 自定义页内容编辑的提交
+    * */
+    customPageSubmit(obj) {
+      console.log(obj)
+
+    },
+
   }
 }
 </script>

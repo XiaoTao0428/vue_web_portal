@@ -153,6 +153,18 @@ export default {
             }
           ]
         },
+        {
+          key: '6',
+          router: '/customPage?pageName=test',
+          title_cn: '测试',
+          title_en: 'Test',
+        },
+        {
+          key: '7',
+          router: '/customPage?pageName=test2',
+          title_cn: '测试2',
+          title_en: 'Test2',
+        }
       ],
     }
   },
@@ -162,6 +174,9 @@ export default {
     }
   },
   created() {
+
+  },
+  mounted() {
     console.log(this.$route.query)
     if (this.$route.query && this.$route.query.search) {
       let search = this.$route.query.search
@@ -179,8 +194,6 @@ export default {
       })
     }
     this.initPeopleList(this.colNum)
-  },
-  mounted() {
   },
   methods: {
     /**

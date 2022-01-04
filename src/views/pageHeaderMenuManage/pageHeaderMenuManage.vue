@@ -354,6 +354,8 @@ export default {
     * */
     async handleDrop(draggingNode, dropNode, dropType, ev) {
       console.log('tree drag: ',draggingNode, dropNode, dropType)
+      console.log('key', draggingNode.key)
+      console.log('this.treeList[0].children', this.treeList[0].children)
 
       this.loading = true
       let node = []
@@ -376,7 +378,6 @@ export default {
      * 获取节点
      * */
     getNode(arr, key) {
-      console.log(arr, key)
       let data = []
       try {
         arr.forEach((item, index) => {
@@ -386,7 +387,7 @@ export default {
           }else {
             if (item.children && item.children.length > 0) {
               let newData = this.getNode(item.children, key)
-              if (newData) {
+              if (newData && newData.length > 0) {
                 data = newData
                 throw Error()
               }
