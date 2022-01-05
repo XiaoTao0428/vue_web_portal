@@ -1,5 +1,5 @@
 <template>
-  <div class="news_warp">
+  <div class="news_warp" v-loading="dataLoading">
     <div class="header">
       <page-header-block
           :title="pageHeaderBlockTitle"
@@ -13,7 +13,7 @@
         </el-col>
       </el-row>
     </div>
-    <div class="footer">
+    <div class="footer" v-if="newsList && newsList.length > 0">
       <el-pagination
           background
           layout="prev, pager, next"
@@ -28,6 +28,7 @@
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import ImageTextCard from "@/components/imageTextCard/imageTextCard";
+import {GetNewsNewsListApi} from '@/request/api'
 export default {
   name: "news",
   components: {ImageTextCard, PageHeaderBlock},
@@ -42,14 +43,15 @@ export default {
           title: '新闻',
         }
       ],
+      dataLoading: false,
       /**
        * 新闻列表
        * */
-      newsList: [1,2,3,4,5,6,7,8,9,10],
+      newsList: [],
       newNewsList: [],
       colNum: 3,
 
-      currentPage: 2,
+      currentPage: 1,
       pageCount: 20,
     }
   },
@@ -59,9 +61,27 @@ export default {
     }
   },
   created() {
+  },
+  async mounted() {
+    await this.loadData()
     this.initList(this.colNum)
   },
   methods: {
+    /**
+    * 获取数据
+    * */
+    async loadData() {
+      this.dataLoading = true
+      const res = await GetNewsNewsListApi({
+        page_num: this.currentPage,
+        page_size: this.pageCount,
+      })
+      console.log(res)
+      if (res) {
+        this.newsList = res.news_info_list
+      }
+      this.dataLoading = false
+    },
     /**
     * 初始化层级列表
     * */

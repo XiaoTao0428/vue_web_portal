@@ -60,6 +60,7 @@
         </div>
       </el-tab-pane>
 
+      <!--   研究页配置   -->
       <el-tab-pane class="tab-pane" label="研究" name="2">
         <div class="tab-pane-content">
           <el-button class="add-btn" type="primary" @click="addResearch">新 增</el-button>
@@ -103,10 +104,10 @@
 
       <!--   新闻页配置   -->
       <el-tab-pane class="tab-pane" label="新闻" name="3">
-        <div class="tab-pane-content">
+        <div class="tab-pane-content" v-loading="newsListLoading">
           <el-button class="add-btn" type="primary" @click="addNew">新 增</el-button>
           <el-table
-              :data="tableData"
+              :data="newsTableData"
               style="width: 100%">
             <el-table-column
                 prop="date"
@@ -141,6 +142,15 @@
               </template>
             </el-table-column>
           </el-table>
+          <div class="footer" v-if="newsListLoading && newsListLoading.length > 0">
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :current-page.sync="currentNewsPage"
+                @current-change="currentNewsPageChange"
+                :page-count="pageNewsCount">
+            </el-pagination>
+          </div>
         </div>
       </el-tab-pane>
 
@@ -231,7 +241,7 @@
 
       <!--   自定义页配置   -->
       <el-tab-pane class="tab-pane" v-for="(item, index) in newMenuList" :key="'tab-pane' + index" :label="item['title_' + currLang]" :name="item.key">
-        <div class="tab-pane-content">
+        <div class="tab-pane-content" v-loading="customPageLoading">
           <div class="content-cn">
             <div class="content-title">
               1、中文版
@@ -250,7 +260,7 @@
           </div>
 
           <div class="submit-btn">
-            <el-button type="primary" @click="customPageSubmit(item)">提 交</el-button>
+            <el-button type="primary" :loading="btnLoading" @click="customPageSubmit(item)">提 交</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -431,13 +441,13 @@
 <script>
 import ModifyPaperContent from "@/components/modifyPaperContent/modifyPaperContent";
 import {upload_file_URL} from '@/config/baseURL'
-import {GetTabManagementTabListApi, GetTabEditTabApi} from "@/request/api";
+import {GetTabManagementTabListApi, GetTabEditTabApi, PostTabEditTabApi, GetNewsManagementNewsListApi, PostNewsAddNewsApi} from "@/request/api";
+import {mapMutations} from "vuex";
 export default {
   name: "pageContentManage",
   components: {ModifyPaperContent},
   data() {
     return {
-      menuList: [],
       newMenuList: [],
       newMenuListPageData: [],
 
@@ -478,15 +488,17 @@ export default {
       previewImageUrl: '',
       homePaperValue: '**二万人微软为*微软 微软++ 微软++***',
 
-      pageDetails: {
-        data_cn: '',
-        data_en: '',
-      },
+      customPageLoading: false,
+      btnLoading: false,
 
       /**
       * 编辑详情
       * */
       editDetailsDialogVisible: false,
+      pageDetails: {
+        data_cn: '',
+        data_en: '',
+      },
 
       /**
       * 新增研究方向
@@ -502,6 +514,10 @@ export default {
       /**
        * 新增新闻
        * */
+      newsListLoading: false,
+      currentNewsPage: 1,
+      pageNewsCount: 20,
+      newsTableData: [],
       addNewDialogVisible: false,
       addNewForm: {
         title_cn: '',
@@ -553,40 +569,44 @@ export default {
         str = 'en'
       }
       return str
+    },
+    menuList() {
+      return this.$store.state.menuList
     }
   },
   mounted() {
-    this.loadData()
+    this.initData()
     if (parseInt(this.activeName) > 5) {
       this.loadCustomPageData()
+    }else {
+      if (this.activeName === '3') {
+        this.loadNewsData()
+      }
     }
   },
   methods: {
+    ...mapMutations(['setMenuList']),
     /**
      * 获取数据
      * */
-    async loadData() {
-      const res = await GetTabManagementTabListApi()
-      console.log(res)
-      if (res) {
-        this.menuList = res.tab_list
-        this.menuList.forEach((item, index) => {
-          if (item.key && parseInt(item.key) > 5) {
-            this.newMenuList.push(item)
-            let obj = {
-              ...item,
-              value_cn: '',
-              value_en: '',
-            }
-            this.newMenuListPageData.push(obj)
+    async initData() {
+      this.menuList.forEach((item, index) => {
+        if (item.key && parseInt(item.key) > 5) {
+          this.newMenuList.push(item)
+          let obj = {
+            ...item,
+            value_cn: '',
+            value_en: '',
           }
-        })
-      }
+          this.newMenuListPageData.push(obj)
+        }
+      })
     },
     /**
     * 获取自定义页的数据
     * */
     async loadCustomPageData() {
+      this.customPageLoading = true
       if (parseInt(this.activeName) > 5) {
         let id = ''
         this.newMenuList.forEach((item, index) => {
@@ -597,11 +617,17 @@ export default {
         const res = await GetTabEditTabApi({
           tab_id: id
         })
-        console.log(res)
+        console.log('GetTabEditTabApi', res)
         if (res) {
-
+          this.newMenuListPageData.forEach((item, index) => {
+            if (item.key === res.tab_info.key) {
+              item.value_cn = res.tab_info.tab_content.content_cn
+              item.value_en = res.tab_info.tab_content.content_en
+            }
+          })
         }
       }
+      this.customPageLoading = false
     },
     /**
     * 切换tab页时触发
@@ -609,6 +635,10 @@ export default {
     handleTabClick(tab) {
       if (parseInt(this.activeName) > 5) {
         this.loadCustomPageData()
+      }else {
+        if (this.activeName === '3') {
+          this.loadNewsData()
+        }
       }
     },
     /**
@@ -725,6 +755,27 @@ export default {
     },
 
     /**
+    * 获取新闻列表
+    * */
+    async loadNewsData() {
+      this.newsListLoading = true
+      const res = await GetNewsManagementNewsListApi({
+        page_num: this.currentNewsPage,
+        page_size: this.pageNewsCount,
+      })
+      console.log(res)
+      if (res) {
+        this.newsTableData = res.news_info_list
+      }
+      this.newsListLoading = false
+    },
+    /**
+     * 新增页面页码切换时触发
+     * */
+    currentNewsPageChange() {
+
+    },
+    /**
      * 新增新闻
      * */
     addNew() {
@@ -736,6 +787,15 @@ export default {
     addNewDialogConfirm() {
       this.$refs.addNewFormRef.validate(async (valid) => {
         if (valid) {
+
+          const res = await PostNewsAddNewsApi({
+
+          })
+          console.log(res)
+          if (res) {
+
+          }
+
           this.addNewDialogCancel()
         }
       })
@@ -787,9 +847,31 @@ export default {
     /**
     * 自定义页内容编辑的提交
     * */
-    customPageSubmit(obj) {
+    async customPageSubmit(obj) {
+      this.btnLoading = true
       console.log(obj)
-
+      let param = {
+        content_cn: '',
+        content_en: '',
+      }
+      this.newMenuListPageData.forEach((item, index) => {
+        if (item.key === obj.key) {
+          param.content_cn = item.value_cn
+          param.content_en = item.value_en
+        }
+      })
+      const res = await PostTabEditTabApi({
+        tab_id: obj.id,
+        key: obj.key,
+        tab_content_cn: param.content_cn,
+        tab_content_en: param.content_en,
+      })
+      console.log(res)
+      if (res) {
+        this.$message.success('操作成功')
+        this.loadCustomPageData()
+      }
+      this.btnLoading = false
     },
 
   }

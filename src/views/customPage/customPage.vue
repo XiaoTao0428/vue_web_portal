@@ -6,8 +6,8 @@
           :breadcrumb-list="breadcrumbList"
       ></page-header-block>
     </div>
-    <div class="content">
-      <mavon-editor v-model="mavonEditorValue"
+    <div class="content" v-loading="dataLoading">
+      <mavon-editor v-model="mavonEditorValue['content_' + currLang]"
                     class="markdown-warp"
                     :language="'zh-CN'"
                     :editable="false"
@@ -21,11 +21,13 @@
 
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
+import {GetTabTabDetailApi} from '@/request/api'
 export default {
   name: "customPage",
   components: {PageHeaderBlock},
   data() {
     return {
+      dataLoading: false,
       currPageName: '',
       breadcrumbList: [
         {
@@ -37,89 +39,21 @@ export default {
         }
       ],
 
-      menuList: [
-        {
-          key: '1',
-          title_cn: '首页',
-          title_en: 'Home',
-          router: '/home',
-        },
-        {
-          key: '2',
-          title_cn: '研究方向',
-          title_en: 'Research',
-          router: '/research',
-        },
-        {
-          key: '3',
-          title_cn: '新闻',
-          title_en: 'News',
-          router: '/news',
-        },
-        {
-          key: '4',
-          title_cn: '出版物',
-          title_en: 'Publications',
-          router: '/publications',
-        },
-        {
-          key: '5',
-          title_cn: '成员',
-          title_en: 'People',
-          router: '/people',
-          children: [
-            {
-              key: '5-1',
-              title_cn: '教师',
-              title_en: 'Teacher',
-              router: '/people?search=Teacher',
-            },
-            {
-              key: '5-2',
-              title_cn: '博士后',
-              title_en: 'Postdoc',
-              router: '/people?search=Postdoc',
-            },
-            {
-              key: '5-3',
-              title_cn: '博士',
-              title_en: 'Doctor',
-              router: '/people?search=Doctor',
-            },
-            {
-              key: '5-4',
-              title_cn: '硕士',
-              title_en: 'Master',
-              router: '/people?search=Master',
-            },
-            {
-              key: '5-5',
-              title_cn: '校友',
-              title_en: 'Alumni',
-              router: '/people?search=Alumni',
-            }
-          ]
-        },
-        {
-          key: '6',
-          router: '/customPage?pageName=test',
-          title_cn: '测试',
-          title_en: 'Test',
-        },
-        {
-          key: '7',
-          router: '/customPage?pageName=test2',
-          title_cn: '测试2',
-          title_en: 'Test2',
-        }
-      ],
-
-      mavonEditorValue: '',
+      mavonEditorValue: {
+        content_cn: '',
+        content_en: '',
+      },
     }
   },
   computed: {
+    currLang() {
+      return this.$store.state.currLang
+    },
     pageHeaderBlockTitle() {
       return this.breadcrumbList[this.breadcrumbList.length - 1].title
+    },
+    menuList() {
+      return this.$store.state.menuList
     }
   },
   created() {
@@ -132,13 +66,16 @@ export default {
     /**
      * 初始化页面头部卡片
      * */
-    initPageHeaderBlock() {
+    async initPageHeaderBlock() {
+      let id = ''
       this.menuList.forEach((item, index) => {
         let newPageName = this.getUrlParam(item.router, 'pageName')
         if (newPageName === this.currPageName) {
           this.breadcrumbList[1].title = item.title_cn
+          id = item.id
         }
       })
+      await this.loadData(id)
     },
     /**
     * 获取url链接中的指定参数
@@ -158,6 +95,22 @@ export default {
       }
 
       return param
+    },
+    /**
+    * 获取数据
+    * */
+    async loadData(id) {
+      this.dataLoading = true
+      const res = await GetTabTabDetailApi({
+        tab_id: id
+      })
+      console.log('GetTabTabDetailApi', res)
+      if (res) {
+        this.mavonEditorValue.content_cn = res.tab_info.tab_content.content_cn
+        this.mavonEditorValue.content_en = res.tab_info.tab_content.content_en
+        console.log(this.mavonEditorValue)
+      }
+      this.dataLoading = false
     },
   }
 }

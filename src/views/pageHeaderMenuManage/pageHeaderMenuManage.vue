@@ -1,6 +1,6 @@
 <template>
   <div class="pageHeaderMenuManage_warp">
-    <div class="content" v-loading="loading">
+    <div class="content" v-loading="dataLoading">
       <el-tree
           class="tree"
           :data="treeList"
@@ -71,12 +71,13 @@
 
 <script>
 import {GetTabManagementTabListApi, PostTabAddTabApi, PostTabDeleteTabApi, PostTabSortTabApi} from "@/request/api";
+import {mapMutations} from "vuex";
 
 export default {
   name: "pageHeaderMenuManage",
   data() {
     return {
-      loading: true,
+      dataLoading: false,
       treeList: [
         {
           key: 'root',
@@ -127,37 +128,48 @@ export default {
   computed: {
     currLang() {
       return this.$store.state.currLang
+    },
+    menuList() {
+      return this.$store.state.menuList
     }
   },
   async mounted() {
-    this.loading = true
-    await this.loadData()
-    this.loading = false
+    this.initData()
   },
   methods: {
+    ...mapMutations(['setMenuList']),
+    initData() {
+      let arr = [...this.menuList]
+      arr.forEach((item, index) => {
+        if (item.key === '5') {
+          item.appendBtnShow = true
+          item.children.forEach((item2, index2) => {
+            if (item2.key!== '5-1') {
+              item2.delBtnShow = true
+            }
+          })
+        }
+        if (item.key !== '1' && item.key !== '2' && item.key !== '3' && item.key !== '4' && item.key !== '5') {
+          item.delBtnShow = true
+        }
+      })
+      this.treeList[0].children = arr
+    },
     /**
     * 获取数据
     * */
     async loadData() {
+      this.dataLoading = true
       const res = await GetTabManagementTabListApi()
       console.log(res)
       if (res) {
-        let arr = res.tab_list
-        arr.forEach((item, index) => {
-          if (item.key === '5') {
-            item.appendBtnShow = true
-            item.children.forEach((item2, index2) => {
-              if (item2.key!== '5-1') {
-                item2.delBtnShow = true
-              }
-            })
-          }
-          if (item.key !== '1' && item.key !== '2' && item.key !== '3' && item.key !== '4' && item.key !== '5') {
-            item.delBtnShow = true
-          }
+        this.setMenuList({
+          menuList: res.tab_list
         })
-        this.treeList[0].children = arr
+
+        this.initData()
       }
+      this.dataLoading = false
     },
     /**
      * 添加节点弹窗取消
@@ -245,6 +257,7 @@ export default {
             newChild.id = res.new_tab_info.id
             this.appendNodeData.children.push(newChild)
             this.$message.success('新增成功')
+            this.loadData()
           }
 
           this.appendNodeData = null
@@ -312,6 +325,7 @@ export default {
       if (res) {
         this.delNode(this.treeList[0].children, this.delNodeData.key)
         this.$message.success('删除成功')
+        this.loadData()
       }
       this.delNodeData = null
       this.delDialogVisible = false
@@ -357,7 +371,7 @@ export default {
       console.log('key', draggingNode.key)
       console.log('this.treeList[0].children', this.treeList[0].children)
 
-      this.loading = true
+      this.dataLoading = true
       let node = []
       node = this.getNode(this.treeList[0].children, draggingNode.key)
       console.log('node', node)
@@ -371,8 +385,9 @@ export default {
       console.log(res)
       if (res) {
         this.$message.success('操作成功')
+        this.loadData()
       }
-      this.loading = false
+      this.dataLoading = false
     },
     /**
      * 获取节点

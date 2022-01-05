@@ -11,6 +11,31 @@ export const PostUserLoginApi = param => post('/user/login/', param)
 export const GetTabTabListApi = (obj) => get('/tab/tab-list/', obj)
 
 /**
+ * 获取tab页面详情
+ */
+export const GetTabTabDetailApi = (obj) => get('/tab/tab-detail/', obj)
+
+/**
+ * 获取新闻列表
+ */
+export const GetNewsNewsListApi = (obj) => get('/news/news-list/', obj)
+
+/**
+ * 获取新闻详情
+ */
+export const GetNewsNewsDetailApi = (obj) => get('/news/news-detail/', obj)
+
+/**
+ * 获取新闻列表（管理员）
+ */
+export const GetNewsManagementNewsListApi = (obj) => get('/news/management-news-list/', obj)
+
+/**
+ * 新增新闻（管理员）
+ */
+export const PostNewsAddNewsApi = (param) => post('/news/add-news/', param)
+
+/**
  * 获取tab列表（管理员）
  */
 export const GetTabManagementTabListApi = (obj) => get('/tab/management-tab-list/', obj)
@@ -36,6 +61,6 @@ export const PostTabSortTabApi = (param) => post('/tab/sort-tab/', param)
 export const GetTabEditTabApi = (obj) => get('/tab/edit-tab/', obj)
 
 /**
- * 根据token获取头像
+ * 编辑tab详情（管理员）
  */
-export const GetEmployeeAvatarApi = (obj) => get('/employee/employee-avatar/', obj)
+export const PostTabEditTabApi = (param) => post('/tab/edit-tab/', param)

@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     currLang: '',  // 当前的语言
+    menuList: [],  // 菜单栏列表
     currRoutePath: '',  // 当前页面的url
     token: '',  // 用户token
     userInfo: {
@@ -22,6 +23,12 @@ export default new Vuex.Store({
     * */
     setCurrLang(state, param) {
       state.currLang = param.currLang
+    },
+    /**
+     * 设置当前的 menuList
+     * */
+    setMenuList(state, param) {
+      state.menuList = [...param.menuList]
     },
     /**
      * 设置当前的 currRoutePath

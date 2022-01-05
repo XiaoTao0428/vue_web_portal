@@ -1,6 +1,6 @@
 <template>
   <div class="index_warp">
-    <div class="content">
+    <div class="content" v-loading="dataLoading">
       <div :class="headerClassName">
         <div class="header-icon">
           <el-image
@@ -178,6 +178,7 @@ export default {
       TSINGHUA_UNIVERSITY_logo: TSINGHUA_UNIVERSITY_logo,  // logo 图标
       isInit: false,
       currLang:'',  // 当前的语言
+      dataLoading: false,
       langOptions:[
         {
           value: 'cn',
@@ -187,7 +188,6 @@ export default {
           label: 'English'
         }
       ],
-      menuList: [],
       menuList2: [
         {
           key: '1',
@@ -263,6 +263,9 @@ export default {
     token() {
       return this.$store.state.token
     },
+    menuList() {
+      return this.$store.state.menuList
+    },
     currRoutePath() {
       return this.$store.state.currRoutePath
     }
@@ -284,7 +287,7 @@ export default {
     await this.loadData()
   },
   methods: {
-    ...mapMutations(['setCurrLang', 'setCurrRoutePath', 'logout']),
+    ...mapMutations(['setCurrLang', 'setCurrRoutePath', 'logout', 'setMenuList']),
     /**
     * 初始化页面宽度
     * */
@@ -304,11 +307,15 @@ export default {
     * 获取数据
     * */
     async loadData() {
+      this.dataLoading = true
       const res = await GetTabTabListApi()
       console.log(res)
       if (res) {
-        this.menuList = res.tab_list
+        this.setMenuList({
+          menuList: res.tab_list
+        })
       }
+      this.dataLoading = false
     },
     /**
      * 切换菜单
