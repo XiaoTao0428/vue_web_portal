@@ -28,8 +28,7 @@
                       :on-remove="handleImageUploadRemove"
                       :on-success="handleImageUploadSuccess"
                   >
-                    <img v-if="homeImageForm.imageUrl" :src="homeImageForm.imageUrl" class="avatar">
-                    <i  v-if="!homeImageForm.imageUrl" class="el-icon-plus avatar-uploader-icon"></i>
+                    <i class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
                   </el-upload>
                 </el-form-item>
@@ -110,45 +109,63 @@
               :data="newsTableData"
               style="width: 100%">
             <el-table-column
-                prop="date"
-                label="标题"
+                prop="title_cn"
+                label="标题（中文）"
             >
             </el-table-column>
             <el-table-column
-                prop="name"
-                label="时间"
-                width="180">
+                prop="title_en"
+                label="标题（英文）"
+            >
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="preface_cn"
+                label="前言（中文）"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="preface_en"
+                label="前言（英文）"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="news_date"
+                label="日期"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="cover_image"
                 label="图片"
-                width="300">
+                width="100">
               <template slot-scope="scope">
                 <div class="table-column-img">
-                  <img src="">
+                  <el-image
+                      style="max-width: 100px; max-height: 100px"
+                      :src="scope.row.cover_image"
+                      fit="contain"></el-image>
                 </div>
               </template>
             </el-table-column>
             <el-table-column
                 prop="name"
                 label="操作"
-                width="320">
+                width="260">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button @click="">置 顶</el-button>
-                  <el-button type="primary" @click="editDetails">编辑详情</el-button>
-                  <el-button type="danger" @click="editDetails">删 除</el-button>
+                  <el-button size="mini" @click="">置 顶</el-button>
+                  <el-button size="mini" type="primary" @click="editDetails(scope.row)">编辑内容</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delNew(scope.row)">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
           </el-table>
-          <div class="footer" v-if="newsListLoading && newsListLoading.length > 0">
+          <div class="footer" v-if="newsTableData && newsTableData.length > 0">
             <el-pagination
                 background
                 layout="prev, pager, next"
                 :current-page.sync="currentNewsPage"
                 @current-change="currentNewsPageChange"
-                :page-count="pageNewsCount">
+                :total="pageNewsCount">
             </el-pagination>
           </div>
         </div>
@@ -278,7 +295,7 @@
     <el-dialog
         title="编辑详情"
         :visible.sync="editDetailsDialogVisible"
-        width="1400px"
+        width="80%"
         custom-class="edit_details_dialog_warp"
         :before-close="editDetailsDialogCancel">
       <div class="dialog-content">
@@ -301,7 +318,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDetailsDialogCancel">取 消</el-button>
-        <el-button type="primary" @click="editDetailsDialogConfirm">确 定</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="editDetailsDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -341,7 +358,7 @@
                 :on-remove="handleAddResearchImageUploadRemove"
                 :on-success="handleAddResearchImageUploadSuccess"
             >
-              <img v-if="addResearchForm.imageUrl" :src="addResearchForm.imageUrl" class="avatar">
+              <img v-if="addResearchForm.imageUrl" :src="fileBeforeUrl + '' + addResearchForm.imageUrl" class="avatar">
               <i  v-if="!addResearchForm.imageUrl" class="el-icon-plus avatar-uploader-icon"></i>
               <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
             </el-upload>
@@ -363,25 +380,33 @@
         :before-close="addNewDialogCancel">
       <div class="dialog-content">
         <el-form :model="addNewForm" :rules="rules" ref="addNewFormRef" label-width="140px">
-          <el-form-item label="研究标题（中文）" prop="title_cn">
+          <el-form-item label="新闻标题（中文）" prop="title_cn">
             <el-input v-model="addNewForm.title_cn" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="研究标题（英文）" prop="title_en">
+          <el-form-item label="新闻标题（英文）" prop="title_en">
             <el-input v-model="addNewForm.title_en" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="新闻前言（中文）" prop="preface_cn">
+            <el-input v-model="addNewForm.preface_cn" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="新闻前言（英文）" prop="preface_en">
+            <el-input v-model="addNewForm.preface_en" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="日期" prop="date">
             <el-date-picker
                 v-model="addNewForm.date"
                 type="date"
+                value-format="yyyy-MM-dd"
                 placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="图片描述" prop="imageUrl">
             <el-upload
+                ref="addNewFormUploadRef"
                 :action="uploadAction"
                 :headers="uploadHeaders"
                 :multiple="false"
-                name="image"
+                name="file"
                 :limit="1"
                 list-type="picture-card"
                 :on-exceed="handleImageUploadExceed"
@@ -390,8 +415,7 @@
                 :on-remove="handleAddNewImageUploadRemove"
                 :on-success="handleAddNewImageUploadSuccess"
             >
-              <img v-if="addNewForm.imageUrl" :src="addNewForm.imageUrl" class="avatar">
-              <i  v-if="!addNewForm.imageUrl" class="el-icon-plus avatar-uploader-icon"></i>
+              <i class="el-icon-plus avatar-uploader-icon"></i>
               <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
             </el-upload>
           </el-form-item>
@@ -399,7 +423,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addNewDialogCancel">取 消</el-button>
-        <el-button type="primary" @click="addNewDialogConfirm">确 定</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="addNewDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -440,8 +464,15 @@
 
 <script>
 import ModifyPaperContent from "@/components/modifyPaperContent/modifyPaperContent";
-import {upload_file_URL} from '@/config/baseURL'
-import {GetTabManagementTabListApi, GetTabEditTabApi, PostTabEditTabApi, GetNewsManagementNewsListApi, PostNewsAddNewsApi} from "@/request/api";
+import {upload_file_URL, file_before_url} from '@/config/baseURL'
+import {
+  GetTabManagementTabListApi,
+  GetTabEditTabApi,
+  PostTabEditTabApi,
+  GetNewsManagementNewsListApi,
+  PostNewsAddNewsApi,
+  PostNewsEditNewsApi, PostNewsDeleteNewsApi
+} from "@/request/api";
 import {mapMutations} from "vuex";
 export default {
   name: "pageContentManage",
@@ -450,7 +481,7 @@ export default {
     return {
       newMenuList: [],
       newMenuListPageData: [],
-
+      fileBeforeUrl: file_before_url,
       uploadAction: upload_file_URL,
       rules: {
         describe: [
@@ -477,8 +508,17 @@ export default {
         journalUrl: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
+        preface_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        preface_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+
       },
-      uploadHeaders: {},
+      uploadHeaders: {
+        Authorization: '',
+      },
       activeName: '1',
       homeImageForm: {
         describe: '',
@@ -490,10 +530,12 @@ export default {
 
       customPageLoading: false,
       btnLoading: false,
+      pageSize: 10,
 
       /**
       * 编辑详情
       * */
+      currEditId: '',
       editDetailsDialogVisible: false,
       pageDetails: {
         data_cn: '',
@@ -516,12 +558,14 @@ export default {
        * */
       newsListLoading: false,
       currentNewsPage: 1,
-      pageNewsCount: 20,
+      pageNewsCount: 0,
       newsTableData: [],
       addNewDialogVisible: false,
       addNewForm: {
         title_cn: '',
         title_en: '',
+        preface_cn: '',
+        preface_en: '',
         date: '',
         imageUrl: '',
       },
@@ -572,6 +616,17 @@ export default {
     },
     menuList() {
       return this.$store.state.menuList
+    },
+    token() {
+      return this.$store.state.token;
+    }
+  },
+  watch: {
+    token: {
+      handler: function () {
+        this.uploadHeaders.Authorization = this.token
+      },
+      immediate: true
     }
   },
   mounted() {
@@ -704,13 +759,38 @@ export default {
      * */
     editDetails(data) {
       console.log(data)
+      this.currEditId = data.id
+      this.pageDetails.data_cn = data.content_cn
+      this.pageDetails.data_en = data.content_en
       this.editDetailsDialogVisible = true
     },
     /**
      * 编辑详情弹窗提交时触发
      * */
-    editDetailsDialogConfirm() {
+    async editDetailsDialogConfirm() {
+
+      if (!this.pageDetails.data_cn || !this.pageDetails.data_en) {
+        this.$message.warning('详情内容不能为空')
+        return
+      }
+      if (this.btnLoading) {
+        return;
+      }
+      this.btnLoading = true
+
+      const res = await PostNewsEditNewsApi({
+        news_id: this.currEditId,
+        content_cn: this.pageDetails.data_cn,
+        content_en: this.pageDetails.data_en,
+      })
+      console.log(res)
+      if (res) {
+        this.$message.success('修改成功')
+      }
+
+      this.btnLoading = false
       this.editDetailsDialogCancel()
+      this.loadNewsData()
     },
     /**
      * 编辑详情弹窗关闭时触发
@@ -761,19 +841,20 @@ export default {
       this.newsListLoading = true
       const res = await GetNewsManagementNewsListApi({
         page_num: this.currentNewsPage,
-        page_size: this.pageNewsCount,
+        page_size: this.pageSize,
       })
       console.log(res)
       if (res) {
         this.newsTableData = res.news_info_list
+        // this.pageNewsCount = res.total_num
       }
       this.newsListLoading = false
     },
     /**
-     * 新增页面页码切换时触发
+     * 新闻页面页码切换时触发
      * */
     currentNewsPageChange() {
-
+      this.loadNewsData()
     },
     /**
      * 新增新闻
@@ -787,16 +868,24 @@ export default {
     addNewDialogConfirm() {
       this.$refs.addNewFormRef.validate(async (valid) => {
         if (valid) {
-
+          this.btnLoading = true
           const res = await PostNewsAddNewsApi({
-
+            title_cn: this.addNewForm.title_cn,
+            title_en: this.addNewForm.title_en,
+            cover_image: this.addNewForm.imageUrl,
+            preface_cn: this.addNewForm.preface_cn,
+            preface_en: this.addNewForm.preface_en,
+            news_date: this.addNewForm.date,
+            content_cn: '',
+            content_en: '',
           })
           console.log(res)
           if (res) {
-
+            this.$message.success('新增成功')
           }
-
           this.addNewDialogCancel()
+          this.loadNewsData()
+          this.btnLoading = false
         }
       })
     },
@@ -804,6 +893,7 @@ export default {
      * 新增新闻弹窗关闭时触发
      * */
     addNewDialogCancel() {
+      this.$refs.addNewFormUploadRef.clearFiles()
       this.$refs.addNewFormRef.resetFields()
       this.addNewDialogVisible = false
     },
@@ -817,7 +907,29 @@ export default {
      * 新增新闻弹窗中，图片上传成功时触发
      * */
     handleAddNewImageUploadSuccess(res, file) {
-
+      console.log(res, file)
+      if (res.code === 200) {
+        this.addNewForm.imageUrl = res.data.path
+      }
+    },
+    /**
+     * 删除新闻
+     * */
+    async delNew(data) {
+      console.log(data)
+      this.newsTableData.forEach((item, index) => {
+        if (item.id === data.id) {
+          this.$set(item, 'isLoading', true)
+        }
+      })
+      const res = await PostNewsDeleteNewsApi({
+        news_id: data.id
+      })
+      console.log(res)
+      if (res) {
+        this.$message.success('删除成功')
+      }
+      this.loadNewsData()
     },
 
     /**

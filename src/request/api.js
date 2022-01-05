@@ -36,6 +36,16 @@ export const GetNewsManagementNewsListApi = (obj) => get('/news/management-news-
 export const PostNewsAddNewsApi = (param) => post('/news/add-news/', param)
 
 /**
+ * 编辑新闻详情（管理员）
+ */
+export const PostNewsEditNewsApi = (param) => post('/news/edit-news/', param)
+
+/**
+ * 删除新闻（管理员）
+ */
+export const PostNewsDeleteNewsApi = (param) => post('/news/delete-news/', param)
+
+/**
  * 获取tab列表（管理员）
  */
 export const GetTabManagementTabListApi = (obj) => get('/tab/management-tab-list/', obj)

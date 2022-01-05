@@ -9,7 +9,11 @@
     <div class="content">
       <el-row class="row" :gutter="20" v-for="(item, index) in newNewsList" :key="'row' + index">
         <el-col :span="24/colNum" v-for="(item2, index2) in item" :key="'col' + index2">
-          <image-text-card></image-text-card>
+          <image-text-card
+              :image-url="item2.cover_image"
+              :date="item2.news_date"
+              :description="item2['title_' + currLang]"
+          ></image-text-card>
         </el-col>
       </el-row>
     </div>
@@ -48,17 +52,22 @@ export default {
        * 新闻列表
        * */
       newsList: [],
+      newsList2: [1,2,3,4,5],
       newNewsList: [],
       colNum: 3,
 
       currentPage: 1,
-      pageCount: 20,
+      pageSize: 20,
+      pageCount: 0,
     }
   },
   computed: {
     pageHeaderBlockTitle() {
       return this.breadcrumbList[this.breadcrumbList.length - 1].title
-    }
+    },
+    currLang() {
+      return this.$store.state.currLang
+    },
   },
   created() {
   },
@@ -74,11 +83,12 @@ export default {
       this.dataLoading = true
       const res = await GetNewsNewsListApi({
         page_num: this.currentPage,
-        page_size: this.pageCount,
+        page_size: this.pageSize,
       })
       console.log(res)
       if (res) {
         this.newsList = res.news_info_list
+        this.pageCount = res.num_of_pages
       }
       this.dataLoading = false
     },
@@ -86,19 +96,21 @@ export default {
     * 初始化层级列表
     * */
     initList(num) {
+      let arr = [...this.newNewsList]
       if (num > 1) {
         this.newsList.forEach((item, index) => {
           let i = parseInt(index/num)
-          if (this.newNewsList[i] && this.newNewsList[i].length) {
-            this.newNewsList[i].push(item)
+          if (arr[i] && arr[i].length) {
+            arr[i].push(item)
           }else {
-            this.newNewsList[i] = []
-            this.newNewsList[i].push(item)
+            arr[i] = []
+            arr[i].push(item)
           }
         })
       }else {
-        this.newNewsList = this.newsList
+        arr = [...this.newsList]
       }
+      this.newNewsList = [...arr]
       console.log('newNewsList', this.newNewsList)
     },
     /**

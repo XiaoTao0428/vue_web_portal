@@ -26,7 +26,7 @@
         </el-form-item>
       </el-form>
       <div class="btn">
-        <el-button type="primary" @click="submitForm">登 录</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="submitForm">登 录</el-button>
       </div>
     </div>
   </div>
@@ -39,6 +39,7 @@ export default {
   name: "login",
   data() {
     return {
+      btnLoading: false,
       loginForm: {
         username: 'admin',
         password: 'admin',
@@ -58,7 +59,7 @@ export default {
     submitForm() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (valid) {
-          console.log(valid)
+          this.btnLoading = true
           const res = await PostUserLoginApi({
             username: this.loginForm.username,
             password: this.loginForm.password
@@ -78,6 +79,7 @@ export default {
             this.$message.success('登录成功')
             await this.$router.push('/home')
           }
+          this.btnLoading = false
         }
       });
     },
