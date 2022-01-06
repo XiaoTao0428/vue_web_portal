@@ -86,6 +86,11 @@ export const PostNewsDeleteNewsApi = (param) => post('/news/delete-news/', param
 export const GetPublicationManagementPublicationListApi = (obj) => get('/publication/management-publication-list/', obj)
 
 /**
+ * 新增成果物（管理员）
+ */
+export const PostPublicationAddPublicationApi = (param) => post('/publication/add-publication/', param)
+
+/**
  * 获取tab列表（管理员）
  */
 export const GetTabManagementTabListApi = (obj) => get('/tab/management-tab-list/', obj)

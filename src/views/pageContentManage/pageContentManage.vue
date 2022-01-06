@@ -201,24 +201,39 @@
               :data="publicationTableData"
               style="width: 100%">
             <el-table-column
-                prop="date"
-                label="标题"
+                prop="title_cn"
+                label="标题（中文）"
             >
             </el-table-column>
             <el-table-column
-                prop="name"
-                label="参与者"
-                width="180">
+                prop="title_en"
+                label="标题（英文）"
+            >
             </el-table-column>
             <el-table-column
-                prop="name"
-                label="链接名称"
-                width="180">
+                prop="authors_cn"
+                label="标题（中文）"
+            >
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="authors_en"
+                label="标题（英文）"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="issn"
                 label="链接地址"
-                width="180">
+            >
+            </el-table-column>
+            <el-table-column
+                prop="publish_link"
+                label="链接地址"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="publish_date"
+                label="链接地址"
+            >
             </el-table-column>
 
             <el-table-column
@@ -472,14 +487,26 @@
           <el-form-item label="标题（英文）" prop="title_en">
             <el-input v-model="addPublicationForm.title_en" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="作者" prop="title_en">
-            <el-input type="textarea" v-model="addPublicationForm.author" placeholder="请输入"></el-input>
+          <el-form-item label="作者（中文）" prop="authors_cn">
+            <el-input type="textarea" v-model="addPublicationForm.authors_cn" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="期刊名称" prop="journalTitle">
-            <el-input v-model="addPublicationForm.journalTitle" placeholder="请输入"></el-input>
+          <el-form-item label="作者（英文）" prop="authors_en">
+            <el-input type="textarea" v-model="addPublicationForm.authors_en" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="期刊地址" prop="journalTitle">
-            <el-input v-model="addPublicationForm.journalUrl" placeholder="请输入"></el-input>
+          <el-form-item label="期刊名称" prop="issn">
+            <el-input v-model="addPublicationForm.issn" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="期刊发布日期" prop="publish_date">
+            <el-date-picker
+                v-model="addPublicationForm.publish_date"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="期刊链接地址" prop="publish_link">
+            <el-input v-model="addPublicationForm.publish_link" placeholder="请输入"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -505,7 +532,10 @@ import {
   PostNewsDeleteNewsApi,
   GetResearchManagementResearchListApi,
   GetResearchAddResearchApi,
-  PostResearchDeleteResearchApi, GetResearchEditResearchApi, GetPublicationManagementPublicationListApi
+  PostResearchDeleteResearchApi,
+  GetResearchEditResearchApi,
+  GetPublicationManagementPublicationListApi,
+  PostPublicationAddPublicationApi
 } from "@/request/api";
 import {mapMutations} from "vuex";
 export default {
@@ -548,7 +578,21 @@ export default {
         preface_en: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
-
+        authors_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        authors_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        issn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        publish_link: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        publish_date: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
       },
       uploadHeaders: {
         Authorization: '',
@@ -620,9 +664,11 @@ export default {
       addPublicationForm: {
         title_cn: '',
         title_en: '',
-        author: '',
-        journalTitle: '',
-        journalUrl: '',
+        authors_cn: '',
+        authors_en: '',
+        publish_link: '',
+        publish_date: '',
+        issn: '',
       },
 
       tableData: [
@@ -1100,14 +1146,14 @@ export default {
       this.$refs.addPublicationFormRef.validate(async (valid) => {
         if (valid) {
           this.btnLoading = true
-          const res = await GetResearchAddResearchApi({
-            title_cn: this.addResearchForm.title_cn,
-            title_en: this.addResearchForm.title_en,
-            cover_image: this.addResearchForm.imageUrl,
-            preface_cn: this.addResearchForm.preface_cn,
-            preface_en: this.addResearchForm.preface_en,
-            content_cn: '',
-            content_en: '',
+          const res = await PostPublicationAddPublicationApi({
+            title_cn: this.addPublicationForm.title_cn,
+            title_en: this.addPublicationForm.title_en,
+            authors_cn: this.addPublicationForm.authors_cn,
+            authors_en: this.addPublicationForm.authors_en,
+            publish_link: this.addPublicationForm.publish_link,
+            publish_date: this.addPublicationForm.publish_date,
+            issn: this.addPublicationForm.issn,
           })
           console.log(res)
           if (res) {
