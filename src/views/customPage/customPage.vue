@@ -126,6 +126,8 @@ export default {
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
+    padding: 0 50px;
+    box-sizing: border-box;
     .markdown-warp {
       box-shadow: none !important;
       z-index: 1;

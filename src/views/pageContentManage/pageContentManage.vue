@@ -61,43 +61,65 @@
 
       <!--   研究页配置   -->
       <el-tab-pane class="tab-pane" label="研究" name="2">
-        <div class="tab-pane-content">
+        <div class="tab-pane-content" v-loading="researchListLoading">
           <el-button class="add-btn" type="primary" @click="addResearch">新 增</el-button>
           <el-table
-              :data="tableData"
+              :data="researchTableData"
               style="width: 100%">
             <el-table-column
-                prop="date"
-                label="标题"
+                prop="title_cn"
+                label="标题（中文）"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="title_en"
+                label="标题（英文）"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="preface_cn"
+                label="前言（中文）"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="preface_en"
+                label="前言（英文）"
             >
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="时间"
-                width="180">
-            </el-table-column>
-            <el-table-column
-                prop="name"
                 label="图片"
-                width="300">
+                width="100">
               <template slot-scope="scope">
                 <div class="table-column-img">
-                  <img src="">
+                  <el-image
+                      style="max-width: 100px; max-height: 100px"
+                      :src="scope.row.cover_image"
+                      fit="contain"></el-image>
                 </div>
               </template>
             </el-table-column>
             <el-table-column
                 prop="name"
                 label="操作"
-                width="250">
+                width="220">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button type="primary" @click="editDetails">编辑详情</el-button>
-                  <el-button type="danger" @click="editDetails">删 除</el-button>
+                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑详情</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delResearch(scope.row)">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
           </el-table>
+          <div class="footer" v-if="researchTableData && researchTableData.length > 0">
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :current-page.sync="currentResearchPage"
+                @current-change="currentResearchPageChange"
+                :total="pageResearchCount">
+            </el-pagination>
+          </div>
         </div>
       </el-tab-pane>
 
@@ -149,11 +171,11 @@
             <el-table-column
                 prop="name"
                 label="操作"
-                width="260">
+                width="300">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button size="mini" @click="">置 顶</el-button>
-                  <el-button size="mini" type="primary" @click="editDetails(scope.row)">编辑内容</el-button>
+                  <el-button size="mini" :loading="scope.row.isLoading" @click="">置 顶</el-button>
+                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑内容</el-button>
                   <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delNew(scope.row)">删 除</el-button>
                 </div>
               </template>
@@ -173,10 +195,10 @@
 
       <!--   出版物页配置   -->
       <el-tab-pane class="tab-pane" label="出版物" name="4">
-        <div class="tab-pane-content">
+        <div class="tab-pane-content" v-loading="publicationListLoading">
           <el-button class="add-btn" type="primary" @click="addPublication">新 增</el-button>
           <el-table
-              :data="tableData"
+              :data="publicationTableData"
               style="width: 100%">
             <el-table-column
                 prop="date"
@@ -205,12 +227,21 @@
                 width="250">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button type="primary" @click="editDetails">编辑详情</el-button>
-                  <el-button type="danger" @click="editDetails">删 除</el-button>
+                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑详情</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="editDetails(scope.row)">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
           </el-table>
+          <div class="footer" v-if="publicationTableData && publicationTableData.length > 0">
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :current-page.sync="currentPublicationPage"
+                @current-change="currentPublicationPageChange"
+                :total="pagePublicationCount">
+            </el-pagination>
+          </div>
         </div>
       </el-tab-pane>
 
@@ -337,19 +368,19 @@
           <el-form-item label="研究标题（英文）" prop="title_en">
             <el-input v-model="addResearchForm.title_en" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="开始日期" prop="time">
-            <el-date-picker
-                v-model="addResearchForm.time"
-                type="date"
-                placeholder="选择日期">
-            </el-date-picker>
+          <el-form-item label="研究前言（中文）" prop="preface_cn">
+            <el-input type="textarea" v-model="addResearchForm.preface_cn" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="研究前言（英文）" prop="preface_en">
+            <el-input type="textarea" v-model="addResearchForm.preface_en" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="图片描述" prop="imageUrl">
             <el-upload
+                ref="addResearchFormUploadRef"
                 :action="uploadAction"
                 :headers="uploadHeaders"
                 :multiple="false"
-                name="image"
+                name="file"
                 :limit="1"
                 list-type="picture-card"
                 :on-exceed="handleImageUploadExceed"
@@ -358,8 +389,7 @@
                 :on-remove="handleAddResearchImageUploadRemove"
                 :on-success="handleAddResearchImageUploadSuccess"
             >
-              <img v-if="addResearchForm.imageUrl" :src="fileBeforeUrl + '' + addResearchForm.imageUrl" class="avatar">
-              <i  v-if="!addResearchForm.imageUrl" class="el-icon-plus avatar-uploader-icon"></i>
+              <i class="el-icon-plus avatar-uploader-icon"></i>
               <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
             </el-upload>
           </el-form-item>
@@ -367,7 +397,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addResearchDialogCancel">取 消</el-button>
-        <el-button type="primary" @click="addResearchDialogConfirm">确 定</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="addResearchDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -387,10 +417,10 @@
             <el-input v-model="addNewForm.title_en" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="新闻前言（中文）" prop="preface_cn">
-            <el-input v-model="addNewForm.preface_cn" placeholder="请输入"></el-input>
+            <el-input type="textarea" v-model="addNewForm.preface_cn" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="新闻前言（英文）" prop="preface_en">
-            <el-input v-model="addNewForm.preface_en" placeholder="请输入"></el-input>
+            <el-input type="textarea" v-model="addNewForm.preface_en" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="日期" prop="date">
             <el-date-picker
@@ -443,7 +473,7 @@
             <el-input v-model="addPublicationForm.title_en" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="作者" prop="title_en">
-            <el-input type="textarea" :rows="3" v-model="addPublicationForm.author" placeholder="请输入"></el-input>
+            <el-input type="textarea" v-model="addPublicationForm.author" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="期刊名称" prop="journalTitle">
             <el-input v-model="addPublicationForm.journalTitle" placeholder="请输入"></el-input>
@@ -455,7 +485,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addPublicationDialogCancel">取 消</el-button>
-        <el-button type="primary" @click="addPublicationDialogConfirm">确 定</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="addPublicationDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -471,7 +501,11 @@ import {
   PostTabEditTabApi,
   GetNewsManagementNewsListApi,
   PostNewsAddNewsApi,
-  PostNewsEditNewsApi, PostNewsDeleteNewsApi
+  PostNewsEditNewsApi,
+  PostNewsDeleteNewsApi,
+  GetResearchManagementResearchListApi,
+  GetResearchAddResearchApi,
+  PostResearchDeleteResearchApi, GetResearchEditResearchApi, GetPublicationManagementPublicationListApi
 } from "@/request/api";
 import {mapMutations} from "vuex";
 export default {
@@ -545,11 +579,16 @@ export default {
       /**
       * 新增研究方向
       * */
+      researchListLoading: false,
+      currentResearchPage: 1,
+      pageResearchCount: 0,
+      researchTableData: [],
       addResearchDialogVisible: false,
       addResearchForm: {
         title_cn: '',
         title_en: '',
-        date: '',
+        preface_cn: '',
+        preface_en: '',
         imageUrl: '',
       },
 
@@ -573,6 +612,10 @@ export default {
       /**
        * 新增发布过的成果
        * */
+      publicationListLoading: false,
+      currentPublicationPage: 1,
+      pagePublicationCount: 0,
+      publicationTableData: [],
       addPublicationDialogVisible: false,
       addPublicationForm: {
         title_cn: '',
@@ -634,8 +677,14 @@ export default {
     if (parseInt(this.activeName) > 5) {
       this.loadCustomPageData()
     }else {
+      if (this.activeName === '2') {
+        this.loadResearchData()
+      }
       if (this.activeName === '3') {
         this.loadNewsData()
+      }
+      if (this.activeName === '4') {
+        this.loadPublicationData()
       }
     }
   },
@@ -691,8 +740,14 @@ export default {
       if (parseInt(this.activeName) > 5) {
         this.loadCustomPageData()
       }else {
+        if (this.activeName === '2') {
+          this.loadResearchData()
+        }
         if (this.activeName === '3') {
           this.loadNewsData()
+        }
+        if (this.activeName === '4') {
+          this.loadPublicationData()
         }
       }
     },
@@ -778,25 +833,64 @@ export default {
       }
       this.btnLoading = true
 
-      const res = await PostNewsEditNewsApi({
-        news_id: this.currEditId,
-        content_cn: this.pageDetails.data_cn,
-        content_en: this.pageDetails.data_en,
-      })
+      let res = null
+
+      if (this.activeName === '2') {
+        res = await GetResearchEditResearchApi({
+          research_id: this.currEditId,
+          content_cn: this.pageDetails.data_cn,
+          content_en: this.pageDetails.data_en,
+        })
+      }
+      if (this.activeName === '3') {
+        res = await PostNewsEditNewsApi({
+          news_id: this.currEditId,
+          content_cn: this.pageDetails.data_cn,
+          content_en: this.pageDetails.data_en,
+        })
+      }
+
       console.log(res)
       if (res) {
         this.$message.success('修改成功')
       }
 
       this.btnLoading = false
+      if (this.activeName === '2') {
+        this.loadResearchData()
+      }
+      if (this.activeName === '3') {
+        this.loadNewsData()
+      }
       this.editDetailsDialogCancel()
-      this.loadNewsData()
     },
     /**
      * 编辑详情弹窗关闭时触发
      * */
     editDetailsDialogCancel() {
       this.editDetailsDialogVisible = false
+    },
+    /**
+     * 获取研究方向
+     * */
+    async loadResearchData() {
+      this.researchListLoading = true
+      const res = await GetResearchManagementResearchListApi({
+        page_num: this.currentResearchPage,
+        page_size: this.pageSize,
+      })
+      console.log(res)
+      if (res) {
+        this.researchTableData = res.research_info_list
+        this.pageResearchCount = res.num_of_pages
+      }
+      this.researchListLoading = false
+    },
+    /**
+     * 研究方向表格页码切换时触发
+     * */
+    currentResearchPageChange() {
+      this.loadResearchData()
     },
     /**
     * 新增研究方向
@@ -810,7 +904,23 @@ export default {
     addResearchDialogConfirm() {
       this.$refs.addResearchFormRef.validate(async (valid) => {
         if (valid) {
+          this.btnLoading = true
+          const res = await GetResearchAddResearchApi({
+            title_cn: this.addResearchForm.title_cn,
+            title_en: this.addResearchForm.title_en,
+            cover_image: this.addResearchForm.imageUrl,
+            preface_cn: this.addResearchForm.preface_cn,
+            preface_en: this.addResearchForm.preface_en,
+            content_cn: '',
+            content_en: '',
+          })
+          console.log(res)
+          if (res) {
+            this.$message.success('新增成功')
+          }
           this.addResearchDialogCancel()
+          this.btnLoading = false
+          this.loadResearchData()
         }
       })
     },
@@ -818,6 +928,7 @@ export default {
      * 新增研究方向弹窗关闭时触发
      * */
     addResearchDialogCancel() {
+      this.$refs.addResearchFormUploadRef.clearFiles()
       this.$refs.addResearchFormRef.resetFields()
       this.addResearchDialogVisible = false
     },
@@ -831,7 +942,29 @@ export default {
      * 新增研究方向弹窗中，图片上传成功时触发
      * */
     handleAddResearchImageUploadSuccess(res, file) {
-
+      console.log(res, file)
+      if (res.code === 200) {
+        this.addResearchForm.imageUrl = res.data.path
+      }
+    },
+    /**
+     * 删除研究方向
+     * */
+    async delResearch(data) {
+      console.log(data)
+      this.researchTableData.forEach((item, index) => {
+        if (item.id === data.id) {
+          this.$set(item, 'isLoading', true)
+        }
+      })
+      const res = await PostResearchDeleteResearchApi({
+        research_id: data.id
+      })
+      console.log(res)
+      if (res) {
+        this.$message.success('删除成功')
+      }
+      this.loadResearchData()
     },
 
     /**
@@ -846,7 +979,7 @@ export default {
       console.log(res)
       if (res) {
         this.newsTableData = res.news_info_list
-        // this.pageNewsCount = res.total_num
+        this.pageNewsCount = res.num_of_pages
       }
       this.newsListLoading = false
     },
@@ -884,8 +1017,8 @@ export default {
             this.$message.success('新增成功')
           }
           this.addNewDialogCancel()
-          this.loadNewsData()
           this.btnLoading = false
+          this.loadNewsData()
         }
       })
     },
@@ -933,6 +1066,28 @@ export default {
     },
 
     /**
+     * 获取发布的成果列表
+     * */
+    async loadPublicationData() {
+      this.publicationListLoading = true
+      const res = await GetPublicationManagementPublicationListApi({
+        page_num: this.currentPublicationPage,
+        page_size: this.pageSize,
+      })
+      console.log(res)
+      if (res) {
+        this.publicationTableData = res.publication_info_list
+        this.pagePublicationCount = res.num_of_pages
+      }
+      this.publicationListLoading = false
+    },
+    /**
+     * 发布的成果表格页码切换时触发
+     * */
+    currentPublicationPageChange() {
+      this.loadPublicationData()
+    },
+    /**
      * 新增发布的成果
      * */
     addPublication() {
@@ -944,7 +1099,23 @@ export default {
     addPublicationDialogConfirm() {
       this.$refs.addPublicationFormRef.validate(async (valid) => {
         if (valid) {
+          this.btnLoading = true
+          const res = await GetResearchAddResearchApi({
+            title_cn: this.addResearchForm.title_cn,
+            title_en: this.addResearchForm.title_en,
+            cover_image: this.addResearchForm.imageUrl,
+            preface_cn: this.addResearchForm.preface_cn,
+            preface_en: this.addResearchForm.preface_en,
+            content_cn: '',
+            content_en: '',
+          })
+          console.log(res)
+          if (res) {
+            this.$message.success('新增成功')
+          }
           this.addPublicationDialogCancel()
+          this.btnLoading = false
+          this.loadPublicationData()
         }
       })
     },
@@ -1033,6 +1204,10 @@ export default {
           .btn-warp {
             margin-top: 20px;
           }
+        }
+
+        .footer {
+          margin-top: 20px;
         }
 
       }

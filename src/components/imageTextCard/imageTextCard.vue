@@ -8,7 +8,7 @@
       ></el-image>
       <div class="line"></div>
     </div>
-    <div class="date">
+    <div class="date" v-if="date">
       <i class="el-icon-menu"></i>
       <span>{{date}}</span>
     </div>
@@ -34,7 +34,7 @@ export default {
      * */
     date: {
       type: String,
-      default: '2020年6月18日'
+      default: ''
     },
     /**
      * 描述

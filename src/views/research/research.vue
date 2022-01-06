@@ -1,5 +1,5 @@
 <template>
-  <div class="research_warp">
+  <div class="research_warp" v-loading="dataLoading">
     <div class="header">
       <page-header-block
           :title="pageHeaderBlockTitle"
@@ -9,11 +9,14 @@
     <div class="content">
       <el-row class="row" :gutter="20" v-for="(item, index) in newResearchDirectionList" :key="'row' + index">
         <el-col :span="24/colNum" v-for="(item2, index2) in item" :key="'col' + index2">
-          <image-text-card></image-text-card>
+          <image-text-card
+              :image-url="item2.cover_image"
+              :description="item2['title_' + currLang]"
+          ></image-text-card>
         </el-col>
       </el-row>
     </div>
-    <div class="footer">
+    <div class="footer" v-if="researchDirectionList && researchDirectionList.length > 0">
       <el-pagination
           background
           layout="prev, pager, next"
@@ -29,12 +32,14 @@
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import ImageTextCard from "@/components/imageTextCard/imageTextCard";
 import mixins from "@/mixins/mixins";
+import {GetResearchTesearchListApi} from '@/request/api'
 export default {
   name: "research",
   mixins: [mixins],
   components: {ImageTextCard, PageHeaderBlock},
   data() {
     return {
+      dataLoading: false,
       breadcrumbList: [
         {
           title: '首页',
@@ -47,37 +52,66 @@ export default {
       /**
       * 研究方向列表
       * */
-      researchDirectionList: [1,2,3,4,5,6,7,8,9,10],
+      researchDirectionList: [],
       newResearchDirectionList: [],
       colNum: 3,
 
-      currentPage: 2,
-      pageCount: 20,
+
+      currentPage: 1,
+      pageSize: 20,
+      pageCount: 0,
     }
   },
   computed: {
     pageHeaderBlockTitle() {
       return this.breadcrumbList[this.breadcrumbList.length - 1].title
-    }
+    },
+    currLang() {
+      return this.$store.state.currLang
+    },
   },
-  created() {
-    this.initList(this.colNum)
+  mounted() {
+    this.loadData()
   },
   methods: {
+    /**
+     * 获取数据
+     * */
+    async loadData() {
+      this.dataLoading = true
+      const res = await GetResearchTesearchListApi({
+        page_num: this.currentPage,
+        page_size: this.pageSize,
+      })
+      console.log(res)
+      if (res) {
+        this.researchDirectionList = res.research_info_list
+        this.pageCount = res.num_of_pages
+      }
+
+      this.initList(this.colNum)
+
+      this.dataLoading = false
+    },
+    /**
+     * 初始化层级列表
+     * */
     initList(num) {
+      let arr = [...this.newResearchDirectionList]
       if (num > 1) {
         this.researchDirectionList.forEach((item, index) => {
           let i = parseInt(index/num)
-          if (this.newResearchDirectionList[i] && this.newResearchDirectionList[i].length > 0) {
-            this.newResearchDirectionList[i].push(item)
+          if (arr[i] && arr[i].length) {
+            arr[i].push(item)
           }else {
-            this.newResearchDirectionList[i] = []
-            this.newResearchDirectionList[i].push(item)
+            arr[i] = []
+            arr[i].push(item)
           }
         })
       }else {
-        this.newResearchDirectionList = this.researchDirectionList
+        arr = [...this.researchDirectionList]
       }
+      this.newResearchDirectionList = [...arr]
       console.log('newResearchDirectionList', this.newResearchDirectionList)
     },
     /**
@@ -85,6 +119,7 @@ export default {
      * */
     currentPageChange() {
       console.log('currentPage', this.currentPage)
+      this.loadData()
     }
   }
 }

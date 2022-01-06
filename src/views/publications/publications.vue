@@ -1,5 +1,5 @@
 <template>
-  <div class="publications_warp">
+  <div class="publications_warp" v-loading="dataLoading">
     <div class="header">
       <page-header-block
           :title="pageHeaderBlockTitle"
@@ -24,11 +24,21 @@
         </div>
       </div>
     </div>
+    <div class="footer" v-if="publicationList && publicationList.length > 0">
+      <el-pagination
+          background
+          layout="prev, pager, next"
+          :current-page.sync="currentPage"
+          @current-change="currentPageChange"
+          :page-count="pageCount">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
+import {GetPublicationPublicationListApi} from "@/request/api";
 export default {
   name: "publications",
   components: {PageHeaderBlock},
@@ -43,6 +53,13 @@ export default {
           title: '成果',
         }
       ],
+      dataLoading: false,
+
+      currentPage: 1,
+      pageSize: 20,
+      pageCount: 0,
+
+      publicationList: [],
 
       /**
       * 论文列表
@@ -90,6 +107,33 @@ export default {
       return this.breadcrumbList[this.breadcrumbList.length - 1].title
     }
   },
+  mounted() {
+    this.loadData()
+  },
+  methods: {
+    /**
+     * 获取数据
+     * */
+    async loadData() {
+      this.dataLoading = true
+      const res = await GetPublicationPublicationListApi({
+        page_num: this.currentPage,
+        page_size: this.pageSize,
+      })
+      console.log(res)
+      if (res) {
+        this.publicationList = res.publication_info_list
+        this.pageCount = res.num_of_pages
+      }
+      this.dataLoading = false
+    },
+    /**
+     * 当前页码切换时触发
+     * */
+    currentPageChange() {
+      this.loadData()
+    }
+  }
 }
 </script>
 
@@ -141,6 +185,12 @@ export default {
         }
       }
     }
+  }
+  .footer {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    text-align: center;
   }
 }
 </style>

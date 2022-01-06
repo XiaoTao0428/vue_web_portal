@@ -26,6 +26,41 @@ export const GetNewsNewsListApi = (obj) => get('/news/news-list/', obj)
 export const GetNewsNewsDetailApi = (obj) => get('/news/news-detail/', obj)
 
 /**
+ * 获取研究列表
+ */
+export const GetResearchTesearchListApi = (obj) => get('/research/research-list/', obj)
+
+/**
+ * 获取研究详情
+ */
+export const GetResearchResearchDetailApi = (obj) => get('/research/research-detail/', obj)
+
+/**
+ * 获取出版物列表
+ */
+export const GetPublicationPublicationListApi = (obj) => get('/publication/publication-list/', obj)
+
+/**
+ * 获取研究列表（管理员）
+ */
+export const GetResearchManagementResearchListApi = (obj) => get('/research/management-research-list/', obj)
+
+/**
+ * 新增研究列表（管理员）
+ */
+export const GetResearchAddResearchApi = (param) => post('/research/add-research/', param)
+
+/**
+ * 编辑研究详情（管理员）
+ */
+export const GetResearchEditResearchApi = (param) => post('/research/edit-research/', param)
+
+/**
+ * 删除研究（管理员）
+ */
+export const PostResearchDeleteResearchApi = (param) => post('/research/delete-research/', param)
+
+/**
  * 获取新闻列表（管理员）
  */
 export const GetNewsManagementNewsListApi = (obj) => get('/news/management-news-list/', obj)
@@ -44,6 +79,11 @@ export const PostNewsEditNewsApi = (param) => post('/news/edit-news/', param)
  * 删除新闻（管理员）
  */
 export const PostNewsDeleteNewsApi = (param) => post('/news/delete-news/', param)
+
+/**
+ * 获取出版物列表（管理员）
+ */
+export const GetPublicationManagementPublicationListApi = (obj) => get('/publication/management-publication-list/', obj)
 
 /**
  * 获取tab列表（管理员）

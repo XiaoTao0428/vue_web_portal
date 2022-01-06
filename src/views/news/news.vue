@@ -52,7 +52,6 @@ export default {
        * 新闻列表
        * */
       newsList: [],
-      newsList2: [1,2,3,4,5],
       newNewsList: [],
       colNum: 3,
 
@@ -71,9 +70,8 @@ export default {
   },
   created() {
   },
-  async mounted() {
-    await this.loadData()
-    this.initList(this.colNum)
+  mounted() {
+    this.loadData()
   },
   methods: {
     /**
@@ -90,6 +88,9 @@ export default {
         this.newsList = res.news_info_list
         this.pageCount = res.num_of_pages
       }
+
+      this.initList(this.colNum)
+
       this.dataLoading = false
     },
     /**
@@ -118,6 +119,7 @@ export default {
     * */
     currentPageChange() {
       console.log('currentPage', this.currentPage)
+      this.loadData()
     }
   }
 }
