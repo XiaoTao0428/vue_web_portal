@@ -41,6 +41,17 @@ export const GetResearchResearchDetailApi = (obj) => get('/research/research-det
 export const GetPublicationPublicationListApi = (obj) => get('/publication/publication-list/', obj)
 
 /**
+ * 获取人员列表
+ */
+export const GetMemberMemberListApi = (obj) => get('/member/member-list/', obj)
+
+/**
+ * 获取人员详情
+ */
+export const GetMemberMemberDetailApi = (obj) => get('/member/member-detail/', obj)
+
+
+/**
  * 获取研究列表（管理员）
  */
 export const GetResearchManagementResearchListApi = (obj) => get('/research/management-research-list/', obj)
@@ -89,6 +100,21 @@ export const GetPublicationManagementPublicationListApi = (obj) => get('/publica
  * 新增成果物（管理员）
  */
 export const PostPublicationAddPublicationApi = (param) => post('/publication/add-publication/', param)
+
+/**
+ * 删除成果物（管理员）
+ */
+export const PostPublicationDeletePublicationApi = (param) => post('/publication/delete-publication/', param)
+
+/**
+ * 获取成员列表（管理员）
+ */
+export const GetMemberManagementMemberListApi = (obj) => get('/member/management-member-list/', obj)
+
+/**
+ * 新增成员（管理员）
+ */
+export const PostMemberAddMemberApi = (param) => post('/member/add-member/', param)
 
 /**
  * 获取tab列表（管理员）

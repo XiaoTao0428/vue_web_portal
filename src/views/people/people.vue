@@ -26,6 +26,7 @@
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import PeopleCard from "@/components/peopleCard/peopleCard";
+import {GetMemberMemberListApi} from "@/request/api";
 export default {
   name: "people",
   components: {PeopleCard, PageHeaderBlock},
@@ -43,7 +44,7 @@ export default {
       /**
       * 人们列表
       * */
-      peopleList: [
+      peopleList2: [
         {
           groupTitle: '老师',
           data: [
@@ -87,90 +88,17 @@ export default {
           ]
         }
       ],
+      peopleList: [],
       newPeopleList: [],
       colNum: 3,
-
-      menuList: [
-        {
-          key: '1',
-          title_cn: '首页',
-          title_en: 'Home',
-          router: '/home',
-        },
-        {
-          key: '2',
-          title_cn: '研究方向',
-          title_en: 'Research',
-          router: '/research',
-        },
-        {
-          key: '3',
-          title_cn: '新闻',
-          title_en: 'News',
-          router: '/news',
-        },
-        {
-          key: '4',
-          title_cn: '出版物',
-          title_en: 'Publications',
-          router: '/publications',
-        },
-        {
-          key: '5',
-          title_cn: '成员',
-          title_en: 'People',
-          router: '/people',
-          children: [
-            {
-              key: '5-1',
-              title_cn: '教师',
-              title_en: 'Teacher',
-              router: '/people?search=Teacher',
-            },
-            {
-              key: '5-2',
-              title_cn: '博士后',
-              title_en: 'Postdoc',
-              router: '/people?search=Postdoc',
-            },
-            {
-              key: '5-3',
-              title_cn: '博士',
-              title_en: 'Doctor',
-              router: '/people?search=Doctor',
-            },
-            {
-              key: '5-4',
-              title_cn: '硕士',
-              title_en: 'Master',
-              router: '/people?search=Master',
-            },
-            {
-              key: '5-5',
-              title_cn: '校友',
-              title_en: 'Alumni',
-              router: '/people?search=Alumni',
-            }
-          ]
-        },
-        {
-          key: '6',
-          router: '/customPage?pageName=test',
-          title_cn: '测试',
-          title_en: 'Test',
-        },
-        {
-          key: '7',
-          router: '/customPage?pageName=test2',
-          title_cn: '测试2',
-          title_en: 'Test2',
-        }
-      ],
     }
   },
   computed: {
     pageHeaderBlockTitle() {
       return this.breadcrumbList[this.breadcrumbList.length - 1].title
+    },
+    menuList() {
+      return this.$store.state.menuList
     }
   },
   created() {
@@ -193,13 +121,32 @@ export default {
         }
       })
     }
-    this.initPeopleList(this.colNum)
+    this.loadData()
   },
   methods: {
     /**
+     * 获取数据
+     * */
+    async loadData() {
+      this.dataLoading = true
+      const res = await GetMemberMemberListApi({
+        page_num: this.currentPage,
+        page_size: this.pageSize,
+      })
+      console.log(res)
+      if (res) {
+        this.peopleList = res.member_info_list
+        this.pageCount = res.num_of_pages
+      }
+
+      this.initList(this.colNum)
+
+      this.dataLoading = false
+    },
+    /**
      * 初始化层级列表
      * */
-    initPeopleList(num) {
+    initList(num) {
       let peopleList = JSON.parse(JSON.stringify(this.peopleList))
       peopleList.forEach((item, index) => {
         let arr = []

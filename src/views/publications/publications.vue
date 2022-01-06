@@ -7,19 +7,19 @@
       ></page-header-block>
     </div>
     <div class="content">
-      <div class="group" v-for="(item, index) in paperList" :key="'group' + index">
+      <div class="group" v-for="(item, index) in newPublicationList" :key="'group' + index">
         <div class="group-title">
           {{item.groupTitle}}
         </div>
         <div class="group-content">
           <div class="content-item" v-for="(item2, index2) in item.data" :key="'group-item' + index2">
             <div class="participant">
-              <i>{{item2.participant}}</i>
+              <i>{{item2['authors_' + currLang]}}</i>
             </div>
             <div class="content-item-title">
-              <b>"{{item2.title}}"</b>
+              <b>"{{item2['title_' + currLang]}}"</b>
             </div>
-            <div class="link">{{item2.linkText}}</div>
+            <div class="link">{{item2.issn}}</div>
           </div>
         </div>
       </div>
@@ -60,6 +60,7 @@ export default {
       pageCount: 0,
 
       publicationList: [],
+      newPublicationList: [],
 
       /**
       * 论文列表
@@ -105,7 +106,10 @@ export default {
   computed: {
     pageHeaderBlockTitle() {
       return this.breadcrumbList[this.breadcrumbList.length - 1].title
-    }
+    },
+    currLang() {
+      return this.$store.state.currLang
+    },
   },
   mounted() {
     this.loadData()
@@ -125,7 +129,29 @@ export default {
         this.publicationList = res.publication_info_list
         this.pageCount = res.num_of_pages
       }
+      this.initList()
       this.dataLoading = false
+    },
+    initList() {
+      let arr = [...this.publicationList]
+      let newArr = []
+      let year = ''
+      arr.forEach((item, index) => {
+        let newYear = item.publish_date.split('-')[0]
+        if (newYear === year) {
+          newArr[newArr.length - 1].data.push(item)
+        }else {
+          year = newYear
+          let obj = {
+            groupTitle: newYear + ' Publications',
+            data: []
+          }
+          obj.data.push(item)
+          newArr.push(obj)
+        }
+      })
+      this.newPublicationList = [...newArr]
+      console.log('newPublicationList', this.newPublicationList)
     },
     /**
      * 当前页码切换时触发

@@ -105,7 +105,7 @@
                 width="220">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑详情</el-button>
+                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑内容</el-button>
                   <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delResearch(scope.row)">删 除</el-button>
                 </div>
               </template>
@@ -239,11 +239,10 @@
             <el-table-column
                 prop="name"
                 label="操作"
-                width="250">
+                width="120">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑详情</el-button>
-                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="editDetails(scope.row)">删 除</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delPublication(scope.row)">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -262,10 +261,10 @@
 
       <!--   成员页配置   -->
       <el-tab-pane class="tab-pane" label="成员" name="5">
-        <div class="tab-pane-content">
-          <el-button class="add-btn" type="primary" @click="">新 增</el-button>
+        <div class="tab-pane-content" v-loading="peopleListLoading">
+          <el-button class="add-btn" type="primary" @click="addPeople">新 增</el-button>
           <el-table
-              :data="tableData"
+              :data="peopleTableData"
               style="width: 100%">
             <el-table-column
                 prop="date"
@@ -283,7 +282,10 @@
                 width="300">
               <template slot-scope="scope">
                 <div class="table-column-img">
-                  <img src="">
+                  <el-image
+                      style="max-width: 100px; max-height: 100px"
+                      :src="scope.row.cover_image"
+                      fit="contain"></el-image>
                 </div>
               </template>
             </el-table-column>
@@ -293,12 +295,21 @@
                 width="250">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button type="primary" @click="editDetails">编辑详情</el-button>
-                  <el-button type="danger" @click="editDetails">删 除</el-button>
+                  <el-button type="primary" @click="editDetails(scope.row)">编辑详情</el-button>
+                  <el-button type="danger" @click="delPeople(scope.row)">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
           </el-table>
+          <div class="footer" v-if="peopleTableData && peopleTableData.length > 0">
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :current-page.sync="currentPeoplePage"
+                @current-change="currentPeoplePageChange"
+                :total="pageNewsCount">
+            </el-pagination>
+          </div>
         </div>
       </el-tab-pane>
 
@@ -516,6 +527,62 @@
       </span>
     </el-dialog>
 
+    <!--  新增人员  -->
+    <el-dialog
+        title="新增新闻"
+        :visible.sync="addPeopleDialogVisible"
+        width="800px"
+        custom-class="add_people_dialog_warp"
+        :before-close="addPeopleDialogCancel">
+      <div class="dialog-content">
+        <el-form :model="addPeopleForm" :rules="rules" ref="addPeopleFormRef" label-width="140px">
+          <el-form-item label="新闻标题（中文）" prop="title_cn">
+            <el-input v-model="addPeopleForm.title_cn" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="新闻标题（英文）" prop="title_en">
+            <el-input v-model="addPeopleForm.title_en" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="新闻前言（中文）" prop="preface_cn">
+            <el-input type="textarea" v-model="addPeopleForm.preface_cn" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="新闻前言（英文）" prop="preface_en">
+            <el-input type="textarea" v-model="addPeopleForm.preface_en" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="日期" prop="date">
+            <el-date-picker
+                v-model="addPeopleForm.date"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="图片描述" prop="imageUrl">
+            <el-upload
+                ref="addPeopleFormUploadRef"
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :multiple="false"
+                name="file"
+                :limit="1"
+                list-type="picture-card"
+                :on-exceed="handleImageUploadExceed"
+                :on-preview="handleImageUploadPreview"
+                :before-upload="beforeImageUpload"
+                :on-remove="handleAddPeopleImageUploadRemove"
+                :on-success="handleAddPeopleImageUploadSuccess"
+            >
+              <i class="el-icon-plus avatar-uploader-icon"></i>
+              <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addPeopleDialogCancel">取 消</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="addPeopleDialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -535,7 +602,10 @@ import {
   PostResearchDeleteResearchApi,
   GetResearchEditResearchApi,
   GetPublicationManagementPublicationListApi,
-  PostPublicationAddPublicationApi
+  PostPublicationAddPublicationApi,
+  PostPublicationDeletePublicationApi,
+  GetMemberManagementMemberListApi,
+  PostMemberAddMemberApi
 } from "@/request/api";
 import {mapMutations} from "vuex";
 export default {
@@ -671,6 +741,25 @@ export default {
         issn: '',
       },
 
+      /**
+       * 新增人员
+       * */
+      peopleListLoading: false,
+      currentPeoplePage: 1,
+      pagePeopleCount: 0,
+      peopleTableData: [],
+      addPeopleDialogVisible: false,
+      addPeopleForm: {
+        type: '',
+        photo: '',
+        name_cn: '',
+        name_en: '',
+        contact_cn: '',
+        contact_en: '',
+        detail_cn: '',
+        detail_en: '',
+      },
+
       tableData: [
         {
           date: '2016-05-02',
@@ -731,6 +820,9 @@ export default {
       }
       if (this.activeName === '4') {
         this.loadPublicationData()
+      }
+      if (this.activeName === '5') {
+        this.loadPeopleData()
       }
     }
   },
@@ -794,6 +886,9 @@ export default {
         }
         if (this.activeName === '4') {
           this.loadPublicationData()
+        }
+        if (this.activeName === '5') {
+          this.loadPeopleData()
         }
       }
     },
@@ -908,6 +1003,7 @@ export default {
       if (this.activeName === '3') {
         this.loadNewsData()
       }
+
       this.editDetailsDialogCancel()
     },
     /**
@@ -1171,6 +1267,123 @@ export default {
     addPublicationDialogCancel() {
       this.$refs.addPublicationFormRef.resetFields()
       this.addPublicationDialogVisible = false
+    },
+    /**
+     * 删除发布的成果
+     * */
+    async delPublication(data) {
+      console.log(data)
+      this.publicationTableData.forEach((item, index) => {
+        if (item.id === data.id) {
+          this.$set(item, 'isLoading', true)
+        }
+      })
+      const res = await PostPublicationDeletePublicationApi({
+        publication_id: data.id
+      })
+      console.log(res)
+      if (res) {
+        this.$message.success('删除成功')
+      }
+      this.loadPublicationData()
+    },
+
+    /**
+     * 获取人员列表
+     * */
+    async loadPeopleData() {
+      this.peopleListLoading = true
+      const res = await GetMemberManagementMemberListApi({
+        page_num: this.currentPeoplePage,
+        page_size: this.pageSize,
+      })
+      console.log(res)
+      if (res) {
+        this.peopleTableData = res.member_info_list
+        this.pagePeopleCount = res.num_of_pages
+      }
+      this.peopleListLoading = false
+    },
+    /**
+     * 人员页面页码切换时触发
+     * */
+    currentPeoplePageChange() {
+      this.loadPeopleData()
+    },
+    /**
+     * 新增人员
+     * */
+    addPeople() {
+      this.addPeopleDialogVisible = true
+    },
+    /**
+     * 新增人员弹窗提交时触发
+     * */
+    addPeopleDialogConfirm() {
+      this.$refs.addPeopleFormRef.validate(async (valid) => {
+        if (valid) {
+          this.btnLoading = true
+          const res = await PostMemberAddMemberApi({
+            type: this.addPeopleForm.type,
+            photo: this.addPeopleForm.photo,
+            name_cn: this.addPeopleForm.name_cn,
+            name_en: this.addPeopleForm.name_en,
+            contact_cn: this.addPeopleForm.contact_cn,
+            contact_en: this.addPeopleForm.contact_en,
+            detail_cn: '',
+            detail_en: '',
+          })
+          console.log(res)
+          if (res) {
+            this.$message.success('新增成功')
+          }
+          this.addPeopleDialogCancel()
+          this.btnLoading = false
+          this.loadPeopleData()
+        }
+      })
+    },
+    /**
+     * 新增人员弹窗关闭时触发
+     * */
+    addPeopleDialogCancel() {
+      this.$refs.addPeopleFormUploadRef.clearFiles()
+      this.$refs.addPeopleFormRef.resetFields()
+      this.addPeopleDialogVisible = false
+    },
+    /**
+     * 新增人员弹窗中，图片删除时触发
+     * */
+    handleAddPeopleImageUploadRemove(file, fileList) {
+      this.addPeopleForm.imageUrl = ''
+    },
+    /**
+     * 新增人员弹窗中，图片上传成功时触发
+     * */
+    handleAddPeopleImageUploadSuccess(res, file) {
+      console.log(res, file)
+      if (res.code === 200) {
+        this.addPeopleForm.imageUrl = res.data.path
+      }
+    },
+    /**
+     * 删除人员
+     * */
+    async delPeople(data) {
+      console.log(data)
+      this.peopleTableData.forEach((item, index) => {
+        if (item.id === data.id) {
+          this.$set(item, 'isLoading', true)
+        }
+      })
+      const res = await PostPeopleDeleteNewsApi({
+        news_id: data.id
+      })
+      console.log(res)
+      if (res) {
+        this.$message.success('删除成功')
+      }
+      this.loadPeopleData()
     },
 
     /**
