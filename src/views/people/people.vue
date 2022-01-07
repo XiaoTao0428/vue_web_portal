@@ -9,14 +9,23 @@
     <div class="content">
       <div class="group" v-for="(item, index) in newPeopleList" :key="'group' + index">
         <div class="group-title">
-          {{item.groupTitle}}
+          {{getPeopleTypeOptionLabel(item.groupTitle)['label_' + currLang]}}
         </div>
         <div class="group-content">
-          <el-row class="row" :gutter="20" v-for="(item2, index2) in item.data" :key="'row' + index2">
-            <el-col :span="24/colNum" v-for="(item3, index3) in item2" :key="'col' + index3">
-              <people-card></people-card>
-            </el-col>
-          </el-row>
+<!--          <el-row class="row" :gutter="20" v-for="(item2, index2) in item.data" :key="'row' + index2">-->
+<!--            <el-col :span="24/colNum" v-for="(item3, index3) in item2" :key="'col' + index3">-->
+<!--              <people-card></people-card>-->
+<!--            </el-col>-->
+<!--          </el-row>-->
+
+          <div class="card" :style="item.groupTitle === 'teacher'?'cursor: pointer;':''" v-for="(item2, index2) in item.data" :key="'card' + index2" @click="toDetails(item2)">
+            <people-card
+                :image-url="item2.photo"
+                :introduction="item2['name_' + currLang]"
+                :contact="item2['contact_' + currLang]"
+            ></people-card>
+          </div>
+
         </div>
       </div>
     </div>
@@ -41,56 +50,11 @@ export default {
           title: '成员',
         }
       ],
-      /**
-      * 人们列表
-      * */
-      peopleList2: [
-        {
-          groupTitle: '老师',
-          data: [
-            {
-              imageUrl: '',
-              introduction: '',
-            },
-            {
-              imageUrl: '',
-              introduction: '',
-            },
-            {
-              imageUrl: '',
-              introduction: '',
-            },
-            {
-              imageUrl: '',
-              introduction: '',
-            },
-          ]
-        },
-        {
-          groupTitle: '学生',
-          data: [
-            {
-              imageUrl: '',
-              introduction: '',
-            },
-            {
-              imageUrl: '',
-              introduction: '',
-            },
-            {
-              imageUrl: '',
-              introduction: '',
-            },
-            {
-              imageUrl: '',
-              introduction: '',
-            },
-          ]
-        }
-      ],
       peopleList: [],
       newPeopleList: [],
       colNum: 3,
+      search: '',
+      peopleTypeOption: [],
     }
   },
   computed: {
@@ -99,19 +63,22 @@ export default {
     },
     menuList() {
       return this.$store.state.menuList
-    }
+    },
+    currLang() {
+      return this.$store.state.currLang
+    },
   },
   created() {
 
   },
-  mounted() {
+  async mounted() {
     console.log(this.$route.query)
     if (this.$route.query && this.$route.query.search) {
-      let search = this.$route.query.search
+      this.search = this.$route.query.search
       this.menuList.forEach((item, index) => {
         if (item.router === '/people') {
           item.children.forEach((item2, index2) => {
-            if (item2.router.indexOf(search) !== -1) {
+            if (item2.router.indexOf(this.search) !== -1) {
               this.breadcrumbList[1].to = '/people'
               this.breadcrumbList.push({
                 title: item2.title_cn
@@ -121,7 +88,8 @@ export default {
         }
       })
     }
-    this.loadData()
+    this.initPeopleTypeOption()
+    await this.loadData()
   },
   methods: {
     /**
@@ -130,13 +98,11 @@ export default {
     async loadData() {
       this.dataLoading = true
       const res = await GetMemberMemberListApi({
-        page_num: this.currentPage,
-        page_size: this.pageSize,
+        type: this.search
       })
       console.log(res)
       if (res) {
         this.peopleList = res.member_info_list
-        this.pageCount = res.num_of_pages
       }
 
       this.initList(this.colNum)
@@ -147,23 +113,90 @@ export default {
      * 初始化层级列表
      * */
     initList(num) {
-      let peopleList = JSON.parse(JSON.stringify(this.peopleList))
+      let peopleList = [...this.peopleList]
+      let newPeopleList = []
       peopleList.forEach((item, index) => {
-        let arr = []
-        item.data.forEach((item2, index2) => {
-          let i = parseInt(index2/num)
-          if (arr[i] && arr[i].length) {
-            arr[i].push(item2)
-          }else {
-            arr[i] = []
-            arr[i].push(item2)
+        let state = false
+        newPeopleList.forEach((item2, index2) => {
+          if (item2.groupTitle === item.type) {
+            item2.data.push(item)
+            state = true
           }
         })
-        peopleList[index].data = arr
+        if (state === false) {
+          let obj = {
+            groupTitle: item.type,
+            data: []
+          }
+          obj.data.push(item)
+          newPeopleList.push(obj)
+        }
       })
-      this.newPeopleList = peopleList
+      this.newPeopleList = [...newPeopleList]
       console.log('newPeopleList', this.newPeopleList)
     },
+    /**
+    * 初始化
+    * */
+    initPeopleTypeOption() {
+      this.menuList.forEach((item, index) => {
+        if (item.key === '5') {
+          if (item.children && item.children.length > 0) {
+            item.children.forEach((item2, index2) => {
+              let obj2 = {
+                ...item2,
+                label_cn: item2.title_cn,
+                label_en: item2.title_en,
+                value: this.getUrlParam(item2.router, 'search'),
+              }
+              this.peopleTypeOption.push(obj2)
+            })
+          }
+        }
+      })
+    },
+    /**
+     * 获取url链接中的指定参数
+     * */
+    getUrlParam(url, name){
+      let param = ''
+
+      if (url.indexOf('?') !== -1) {
+        let allParamsStr = url.split('?')[1]
+        let allParams = allParamsStr.split('&')
+        allParams.forEach((item, index) => {
+          let paramArr = item.split('=')
+          if (paramArr[0] === name) {
+            param = paramArr[1]
+          }
+        })
+      }
+
+      return param
+    },
+    /**
+     * 获取人员可选项列表中对应的label值
+     * */
+    getPeopleTypeOptionLabel(value) {
+      let obj = {
+        label_cn: '',
+        label_en: '',
+      }
+      this.peopleTypeOption.forEach((item, index) => {
+        if (item.value === value) {
+          obj.label_cn = item.label_cn
+          obj.label_en = item.label_en
+        }
+      })
+      return obj
+    },
+
+    /**
+    * 去详情页
+    * */
+    toDetails(data) {
+      console.log(data)
+    }
   }
 }
 </script>
@@ -199,13 +232,22 @@ export default {
       }
       .group-content {
         width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-start;
 
-        .row {
-          width: 100%;
-          margin-bottom: 40px;
+        .card {
+          width: 400px;
+          margin: 0 40px 40px 0;
         }
-        .group-item {
-        }
+
+        //.row {
+        //  width: 100%;
+        //  margin-bottom: 40px;
+        //}
+        //.group-item {
+        //}
       }
     }
   }

@@ -3,7 +3,7 @@
     <el-tabs class="tabs" v-model="activeName" @tab-click="handleTabClick">
       <!--   首页配置   -->
       <el-tab-pane class="tab-pane" label="首页" name="1">
-        <div class="tab-pane-content">
+        <div class="tab-pane-content" v-loading="homeLoading">
 
           <div class="card home-image">
             <div class="card-title">
@@ -18,8 +18,9 @@
                   <el-upload
                       :action="uploadAction"
                       :headers="uploadHeaders"
+                      :file-list="homeImageFileList"
                       :multiple="false"
-                      name="image"
+                      name="file"
                       :limit="1"
                       list-type="picture-card"
                       :on-exceed="handleImageUploadExceed"
@@ -34,10 +35,6 @@
                 </el-form-item>
               </el-form>
 
-              <div class="btn-warp">
-                <el-button type="primary" @click="homeImageFormSubmit">提 交</el-button>
-              </div>
-
             </div>
           </div>
 
@@ -51,7 +48,7 @@
             ></mavon-editor>
 
             <div class="btn-warp">
-              <el-button type="primary">提 交</el-button>
+              <el-button type="primary" :loading="btnLoading" @click="homeImageFormSubmit">提 交</el-button>
             </div>
 
           </div>
@@ -60,7 +57,7 @@
       </el-tab-pane>
 
       <!--   研究页配置   -->
-      <el-tab-pane class="tab-pane" label="研究" name="2">
+      <el-tab-pane class="tab-pane" label="研究方向" name="2">
         <div class="tab-pane-content" v-loading="researchListLoading">
           <el-button class="add-btn" type="primary" @click="addResearch">新 增</el-button>
           <el-table
@@ -212,27 +209,27 @@
             </el-table-column>
             <el-table-column
                 prop="authors_cn"
-                label="标题（中文）"
+                label="作者（中文）"
             >
             </el-table-column>
             <el-table-column
                 prop="authors_en"
-                label="标题（英文）"
+                label="作者（英文）"
             >
             </el-table-column>
             <el-table-column
                 prop="issn"
-                label="链接地址"
+                label="期刊名称"
             >
             </el-table-column>
             <el-table-column
                 prop="publish_link"
-                label="链接地址"
+                label="期刊链接地址"
             >
             </el-table-column>
             <el-table-column
                 prop="publish_date"
-                label="链接地址"
+                label="期刊发布日期"
             >
             </el-table-column>
 
@@ -267,24 +264,42 @@
               :data="peopleTableData"
               style="width: 100%">
             <el-table-column
-                prop="date"
-                label="姓名"
+                prop="name_cn"
+                label="姓名（中文）"
             >
             </el-table-column>
             <el-table-column
-                prop="name"
-                label="职位"
-                width="180">
+                prop="name_en"
+                label="姓名（英文）"
+            >
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="contact_cn"
+                label="联系方式（中文）"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="contact_en"
+                label="联系方式（英文）"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="type"
+                label="类型"
+            >
+              <template slot-scope="scope">
+                {{getPeopleTypeOptionLabel(scope.row.type)['label_' + currLang]}}
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="photo"
                 label="图片"
-                width="300">
+            >
               <template slot-scope="scope">
                 <div class="table-column-img">
                   <el-image
                       style="max-width: 100px; max-height: 100px"
-                      :src="scope.row.cover_image"
+                      :src="scope.row.photo"
                       fit="contain"></el-image>
                 </div>
               </template>
@@ -292,24 +307,24 @@
             <el-table-column
                 prop="name"
                 label="操作"
-                width="250">
+                width="220">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button type="primary" @click="editDetails(scope.row)">编辑详情</el-button>
-                  <el-button type="danger" @click="delPeople(scope.row)">删 除</el-button>
+                  <el-button size="mini" type="primary" v-if="scope.row.type === 'teacher'" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑详情</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delPeople(scope.row)">删 除</el-button>
                 </div>
               </template>
             </el-table-column>
           </el-table>
-          <div class="footer" v-if="peopleTableData && peopleTableData.length > 0">
-            <el-pagination
-                background
-                layout="prev, pager, next"
-                :current-page.sync="currentPeoplePage"
-                @current-change="currentPeoplePageChange"
-                :total="pageNewsCount">
-            </el-pagination>
-          </div>
+<!--          <div class="footer" v-if="peopleTableData && peopleTableData.length > 0">-->
+<!--            <el-pagination-->
+<!--                background-->
+<!--                layout="prev, pager, next"-->
+<!--                :current-page.sync="currentPeoplePage"-->
+<!--                @current-change="currentPeoplePageChange"-->
+<!--                :total="pageNewsCount">-->
+<!--            </el-pagination>-->
+<!--          </div>-->
         </div>
       </el-tab-pane>
 
@@ -536,25 +551,27 @@
         :before-close="addPeopleDialogCancel">
       <div class="dialog-content">
         <el-form :model="addPeopleForm" :rules="rules" ref="addPeopleFormRef" label-width="140px">
-          <el-form-item label="新闻标题（中文）" prop="title_cn">
-            <el-input v-model="addPeopleForm.title_cn" placeholder="请输入"></el-input>
+          <el-form-item label="姓名（中文）" prop="name_cn">
+            <el-input v-model="addPeopleForm.name_cn" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="新闻标题（英文）" prop="title_en">
-            <el-input v-model="addPeopleForm.title_en" placeholder="请输入"></el-input>
+          <el-form-item label="姓名（英文）" prop="name_en">
+            <el-input v-model="addPeopleForm.name_en" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="新闻前言（中文）" prop="preface_cn">
-            <el-input type="textarea" v-model="addPeopleForm.preface_cn" placeholder="请输入"></el-input>
+          <el-form-item label="联系方式（中文）" prop="contact_cn">
+            <el-input v-model="addPeopleForm.contact_cn" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="新闻前言（英文）" prop="preface_en">
-            <el-input type="textarea" v-model="addPeopleForm.preface_en" placeholder="请输入"></el-input>
+          <el-form-item label="联系方式（英文）" prop="contact_en">
+            <el-input v-model="addPeopleForm.contact_en" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="日期" prop="date">
-            <el-date-picker
-                v-model="addPeopleForm.date"
-                type="date"
-                value-format="yyyy-MM-dd"
-                placeholder="选择日期">
-            </el-date-picker>
+          <el-form-item label="类型" prop="type">
+            <el-select v-model="addPeopleForm.type" placeholder="请选择">
+              <el-option
+                  v-for="(item, index) in peopleTypeOption"
+                  :key="'peopleType' + index"
+                  :label="item['label_' + currLang]"
+                  :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="图片描述" prop="imageUrl">
             <el-upload
@@ -605,7 +622,7 @@ import {
   PostPublicationAddPublicationApi,
   PostPublicationDeletePublicationApi,
   GetMemberManagementMemberListApi,
-  PostMemberAddMemberApi
+  PostMemberAddMemberApi, PostMemberDeleteMemberApi, PostMemberEditMemberApi, GetIndexIndexInfoApi, GetIndexEditIndexApi
 } from "@/request/api";
 import {mapMutations} from "vuex";
 export default {
@@ -663,22 +680,44 @@ export default {
         publish_date: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
+        type: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        name_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        name_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        contact_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        contact_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
       },
       uploadHeaders: {
         Authorization: '',
       },
       activeName: '1',
-      homeImageForm: {
-        describe: '',
-        imageUrl: '',
-      },
-      previewDialogVisible: false,
-      previewImageUrl: '',
-      homePaperValue: '**二万人微软为*微软 微软++ 微软++***',
 
       customPageLoading: false,
       btnLoading: false,
       pageSize: 10,
+
+      previewDialogVisible: false,
+      previewImageUrl: '',
+
+      /**
+      * 首页
+      * */
+      homeLoading: false,
+      homeImageForm: {
+        describe: '',
+        imageUrl: '',
+      },
+      homeImageFileList: [],
+      homePaperValue: '',
 
       /**
       * 编辑详情
@@ -744,6 +783,7 @@ export default {
       /**
        * 新增人员
        * */
+      peopleTypeOption: [],
       peopleListLoading: false,
       currentPeoplePage: 1,
       pagePeopleCount: 0,
@@ -751,34 +791,13 @@ export default {
       addPeopleDialogVisible: false,
       addPeopleForm: {
         type: '',
-        photo: '',
+        imageUrl: '',
         name_cn: '',
         name_en: '',
         contact_cn: '',
         contact_en: '',
-        detail_cn: '',
-        detail_en: '',
       },
 
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
     }
   },
   computed: {
@@ -812,6 +831,9 @@ export default {
     if (parseInt(this.activeName) > 5) {
       this.loadCustomPageData()
     }else {
+      if (this.activeName === '1') {
+        this.loadHomeData()
+      }
       if (this.activeName === '2') {
         this.loadResearchData()
       }
@@ -842,7 +864,56 @@ export default {
           }
           this.newMenuListPageData.push(obj)
         }
+
+        if (item.key === '5') {
+          if (item.children && item.children.length > 0) {
+            item.children.forEach((item2, index2) => {
+              let obj2 = {
+                ...item2,
+                label_cn: item2.title_cn,
+                label_en: item2.title_en,
+                value: this.getUrlParam(item2.router, 'search'),
+              }
+              this.peopleTypeOption.push(obj2)
+            })
+          }
+        }
       })
+    },
+    /**
+     * 获取url链接中的指定参数
+     * */
+    getUrlParam(url, name){
+      let param = ''
+
+      if (url.indexOf('?') !== -1) {
+        let allParamsStr = url.split('?')[1]
+        let allParams = allParamsStr.split('&')
+        allParams.forEach((item, index) => {
+          let paramArr = item.split('=')
+          if (paramArr[0] === name) {
+            param = paramArr[1]
+          }
+        })
+      }
+
+      return param
+    },
+    /**
+     * 获取人员可选项列表中对应的label值
+     * */
+    getPeopleTypeOptionLabel(value) {
+      let obj = {
+        label_cn: '',
+        label_en: '',
+      }
+      this.peopleTypeOption.forEach((item, index) => {
+        if (item.value === value) {
+          obj.label_cn = item.label_cn
+          obj.label_en = item.label_en
+        }
+      })
+      return obj
     },
     /**
     * 获取自定义页的数据
@@ -878,6 +949,9 @@ export default {
       if (parseInt(this.activeName) > 5) {
         this.loadCustomPageData()
       }else {
+        if (this.activeName === '1') {
+          this.loadHomeData()
+        }
         if (this.activeName === '2') {
           this.loadResearchData()
         }
@@ -892,6 +966,31 @@ export default {
         }
       }
     },
+
+    /**
+    * 获取首页数据
+    * */
+    async loadHomeData() {
+      this.homeLoading = true
+      const res = await GetIndexIndexInfoApi()
+      console.log(res)
+      if (res) {
+        this.homePaperValue = res.index_info.home_article
+        this.homeImageForm.imageUrl = res.index_info.home_image
+        this.homeImageForm.describe = res.index_info.home_image_description
+
+        if (this.homeImageForm.imageUrl !== '') {
+          let arr = []
+          arr.push({
+            name: 'image',
+            url: this.fileBeforeUrl + this.homeImageForm.imageUrl
+          })
+          this.homeImageFileList = arr
+        }
+      }
+      this.homeLoading = false
+    },
+
     /**
     * 上传首页图片时，在上传前触发
     * */
@@ -939,6 +1038,9 @@ export default {
      * */
     handleImageUploadSuccess(res, file) {
       console.log('handleImageUploadSuccess', res)
+      if (res.code === 200) {
+        this.homeImageForm.imageUrl = res.data.path
+      }
     },
     /**
     * 首页图片表单提交时触发
@@ -946,7 +1048,21 @@ export default {
     homeImageFormSubmit() {
       this.$refs.homeImageForm.validate(async (valid) => {
         if (valid) {
-
+          this.btnLoading = true
+          let param = {
+            home_image: this.homeImageForm.imageUrl,
+            home_image_description: this.homeImageForm.describe,
+            home_article: this.homePaperValue,
+          }
+          const res = await GetIndexEditIndexApi({
+            index_info: JSON.stringify(param)
+          })
+          console.log(res)
+          if (res) {
+            this.$message.success('操作成功')
+          }
+          this.btnLoading = false
+          this.loadHomeData()
         }
       })
     },
@@ -956,8 +1072,14 @@ export default {
     editDetails(data) {
       console.log(data)
       this.currEditId = data.id
-      this.pageDetails.data_cn = data.content_cn
-      this.pageDetails.data_en = data.content_en
+      if (this.activeName === '5') {
+        this.pageDetails.data_cn = data.detail_cn
+        this.pageDetails.data_en = data.detail_en
+      }else {
+        this.pageDetails.data_cn = data.content_cn
+        this.pageDetails.data_en = data.content_en
+      }
+
       this.editDetailsDialogVisible = true
     },
     /**
@@ -990,6 +1112,13 @@ export default {
           content_en: this.pageDetails.data_en,
         })
       }
+      if (this.activeName === '5') {
+        res = await PostMemberEditMemberApi({
+          member_id: this.currEditId,
+          detail_cn: this.pageDetails.data_cn,
+          detail_en: this.pageDetails.data_en,
+        })
+      }
 
       console.log(res)
       if (res) {
@@ -1002,6 +1131,9 @@ export default {
       }
       if (this.activeName === '3') {
         this.loadNewsData()
+      }
+      if (this.activeName === '5') {
+        this.loadPeopleData()
       }
 
       this.editDetailsDialogCancel()
@@ -1294,13 +1426,13 @@ export default {
     async loadPeopleData() {
       this.peopleListLoading = true
       const res = await GetMemberManagementMemberListApi({
-        page_num: this.currentPeoplePage,
-        page_size: this.pageSize,
+        // page_num: this.currentPeoplePage,
+        // page_size: this.pageSize,
       })
       console.log(res)
       if (res) {
         this.peopleTableData = res.member_info_list
-        this.pagePeopleCount = res.num_of_pages
+        // this.pagePeopleCount = res.num_of_pages
       }
       this.peopleListLoading = false
     },
@@ -1325,7 +1457,7 @@ export default {
           this.btnLoading = true
           const res = await PostMemberAddMemberApi({
             type: this.addPeopleForm.type,
-            photo: this.addPeopleForm.photo,
+            photo: this.addPeopleForm.imageUrl,
             name_cn: this.addPeopleForm.name_cn,
             name_en: this.addPeopleForm.name_en,
             contact_cn: this.addPeopleForm.contact_cn,
@@ -1376,8 +1508,8 @@ export default {
           this.$set(item, 'isLoading', true)
         }
       })
-      const res = await PostPeopleDeleteNewsApi({
-        news_id: data.id
+      const res = await PostMemberDeleteMemberApi({
+        member_id: data.id
       })
       console.log(res)
       if (res) {

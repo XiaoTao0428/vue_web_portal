@@ -1,10 +1,10 @@
 <template>
-  <div class="home_warp">
+  <div class="home_warp" v-loading="dataLoading">
 
     <div :class="contentClassName">
 
       <div class="home-left">
-        <mavon-editor class="markdown-warp" v-model="mavonEditorValue"
+        <mavon-editor class="markdown-warp" v-model="homePaperValue"
                       :language="'zh-CN'"
                       :editable="false"
                       :toolbars-flag="false"
@@ -17,10 +17,10 @@
         <div class="picture-introduction">
           <el-image
               class="image"
-              src="https://caltechsites-prod.s3.amazonaws.com/vahala/images/Disk_Cover_v5_h.width-1600.jpg"
+              :src="homeImageUrl"
           ></el-image>
           <div class="image-msg">
-            Photomicrograph of whispering gallery optical resonators on a silicon wafer. These resonators have Q factors of nearly 1 billion, the current record for chip-based devices.
+            {{homeImageForm.describe}}
           </div>
         </div>
 
@@ -30,52 +30,38 @@
             <div class="news-header-title">
               {{$t('index.News')}}
             </div>
-            <el-link class="link" :underline="false">{{$t('home.AllNews')}} <i class="el-icon-arrow-right"></i></el-link>
+            <span class="link" @click="toNews" :underline="false">{{$t('home.AllNews')}} <i class="el-icon-arrow-right"></i></span>
           </div>
 
           <div class="news-content">
-            <div class="new-item">
-              <div class="image-description">
-                <el-image
-                    class="image"
-                    src="https://caltechsites-prod.s3.amazonaws.com/root/images/Lasers.2e16d0ba.fill-710x400-c100.jpg"
-                ></el-image>
-                <div class="line"></div>
-              </div>
-              <div class="date" v-if="currLang === 'en'">
-                <i class="el-icon-menu"></i> June 18, 2020
-              </div>
-              <div class="date" v-if="currLang === 'cn'">
-                <i class="el-icon-menu"></i> 2020 年 6 月 18 日
-              </div>
-              <div class="description" v-if="currLang === 'en'">
-                Optical Microcomb Device May Result in Improved Telecommunications, Sensors, Clocks
-              </div>
-              <div class="description" v-if="currLang === 'cn'">
-                光学微梳装置可能会改善电信、传感器、时钟
-              </div>
-            </div>
-            <div class="new-item">
-              <div class="image-description">
-                <el-image
-                    class="image"
-                    src="https://caltechsites-prod.s3.amazonaws.com/root/images/Kerry_Vahala-LaserGryroscope-.2e16d0ba.fill-710x400-c100.jpg"
-                ></el-image>
-<!--                <img class="image" src="https://caltechsites-prod.s3.amazonaws.com/root/images/Kerry_Vahala-LaserGryroscope-.2e16d0ba.fill-710x400-c100.jpg">-->
-                <div class="line"></div>
-              </div>
-              <div class="date" v-if="currLang === 'en'">
-                <i class="el-icon-menu"></i> March 4, 2020
-              </div>
-              <div class="date" v-if="currLang === 'cn'">
-                <i class="el-icon-menu"></i> 2020 年 3 月 4 日
-              </div>
-              <div class="description" v-if="currLang === 'en'">
-                New Chip-Based Laser Gyroscope Measures Earth's Rotation
-              </div>
-              <div class="description" v-if="currLang === 'cn'">
-                新型基于芯片的激光陀螺仪测量地球自转
-              </div>
+            <div class="new-item" v-for="(item, index) in newsList" :key="'new' + index">
+
+              <image-text-card
+                  :image-url="item.cover_image"
+                  :date="item.news_date"
+                  :description="item['title_' + currLang]"
+                  :have-details="true"
+                  @handleClick="toDetails(item)"
+              ></image-text-card>
+
+
+<!--              <div class="image-description">-->
+<!--                <el-image-->
+<!--                    class="image"-->
+<!--                    :src="item.cover_image"-->
+<!--                ></el-image>-->
+<!--                <div class="line"></div>-->
+<!--              </div>-->
+<!--              <div class="date">-->
+<!--                <i class="el-icon-menu"></i> 2020 年 6 月 18 日-->
+<!--              </div>-->
+<!--              <div class="description" v-if="currLang === 'en'">-->
+<!--                Optical Microcomb Device May Result in Improved Telecommunications, Sensors, Clocks-->
+<!--              </div>-->
+<!--              <div class="description" v-if="currLang === 'cn'">-->
+<!--                光学微梳装置可能会改善电信、传感器、时钟-->
+<!--              </div>-->
+
             </div>
           </div>
 
@@ -89,41 +75,97 @@
 
 <script>
 import mixins from "@/mixins/mixins";
+import {GetIndexIndexInfoApi, GetNewsNewsListApi} from "@/request/api";
+import {file_before_url} from "@/config/baseURL";
+import ImageTextCard from "@/components/imageTextCard/imageTextCard";
 
 export default {
   name: "home",
+  components: {ImageTextCard},
   mixins: [mixins],
   data () {
     return {
-      mavonEditorValue: '# Confining light on a chip:\n' +
-          '\n' +
-          '# the science of optical microresonators\n' +
-          '\n' +
-          'Like a tuning fork for light, optical resonators have a characteristic set of frequencies at which it is possible to confine light waves. At these frequencies, optical energy can be efficiently stored for lengths of time characterized by the resonator Q factor, roughly the storage time in cycles of oscillation.\n' +
-          '\n' +
-          'In the last ten years there has been remarkable progress in boosting this storage time in micro and millimeter-scale optical resonators. Chip-based devices have attained Q factors of nearly 1 billion and micro-machined crystalline devices have achieved Qs exceeding 100 billion. \n' +
-          '\n' +
-          'The long, energy-storage time and small form factor of these *ultra-high-Q (UHQ)* resonators enable access to an amazingly wide range of nonlinear phenomena and creation of laser devices with remarkable properties. Also, new science results from radiation-pressure coupling of optical and mechanical degrees-of-freedom in the resonators themselves.\n' +
-          '\n' +
-          'We have created the highest Q-factor chip-based resonators and also launched many of the subjects of study in this field. \n' +
-          '\n' +
-          '*Our mission is to explore UHQ physics, investigate applications and create integrated UHQ systems.*\n' +
-          '\n' +
-          '\n' +
-          '\n' +
-          '\n' +
-          '\n' +
-          '![Sponsor logos](https://caltechsites-prod.s3.amazonaws.com/vahala/images/Screen_Shot_2020-07-08_at_5.08.22_PM.original.png)',
+      dataLoading: false,
+      fileBeforeUrl: file_before_url,
+      homePaperValue: '',
+      homeImageForm: {
+        describe: '',
+        imageUrl: '',
+      },
+      newsList: [],
     }
   },
   computed: {
     currLang() {
       return this.$store.state.currLang
     },
+    homeImageUrl() {
+      if (this.homeImageForm.imageUrl) {
+        return this.fileBeforeUrl + '' + this.homeImageForm.imageUrl
+      }else {
+        return ''
+      }
+    }
   },
   created() {
   },
+  mounted() {
+    this.loadHomeData()
+  },
   methods: {
+    /**
+     * 获取首页数据
+     * */
+    async loadHomeData() {
+      this.dataLoading = true
+      const res = await GetIndexIndexInfoApi()
+      console.log(res)
+      if (res) {
+        this.homePaperValue = res.index_info.home_article
+        this.homeImageForm.imageUrl = res.index_info.home_image
+        this.homeImageForm.describe = res.index_info.home_image_description
+      }
+      await this.loadNewsData()
+      this.dataLoading = false
+    },
+
+    /**
+    * 获取新闻列表
+    * */
+    async loadNewsData() {
+      const res = await GetNewsNewsListApi({
+        page_num: 1,
+        page_size: 2
+      })
+      console.log(res)
+      if (res) {
+        this.newsList = res.news_info_list
+      }
+    },
+
+    toNews() {
+      this.$router.push('/news')
+    },
+    /**
+     * 去详情页
+     * */
+    toDetails(data) {
+      console.log(data)
+      let params = {
+        id: data.id,
+        parent: [
+          {
+            title_cn: '首页',
+            title_en: 'Home',
+            to: '/home',
+          }
+        ]
+      }
+      console.log(data)
+      this.$router.push({
+        path: 'newDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
+      })
+    }
   }
 }
 </script>
@@ -194,6 +236,7 @@ export default {
           color: #003b4c;
           font-size: 14px;
           height: 32px;
+          cursor: pointer;
           &:hover {
             color: #D14900;
           }
@@ -219,38 +262,6 @@ export default {
             margin-left: 10px;
           }
 
-          .image-description {
-            width: 100%;
-            margin-bottom: 20px;
-            .image {
-              max-width: 100%;
-              margin-bottom: -4px;
-            }
-            .line {
-              width: 100%;
-              height: 4px;
-              background-image: linear-gradient(90deg, #f9be01 0%, #c75000 100%);
-            }
-          }
-
-          .date {
-            font-size: 12px;
-            color: #D14900;
-            font-weight: bold;
-            margin-bottom: 10px;
-
-            .el-icon-menu {
-              font-size: 16px;
-              color: #AAA99F;
-              margin-right: 5px;
-            }
-          }
-
-          .description {
-            font-size: 22px;
-            color: #000000;
-            font-weight: bold;
-          }
         }
 
       }
@@ -309,6 +320,7 @@ export default {
           color: #003b4c;
           font-size: 14px;
           height: 32px;
+          cursor: pointer;
           &:hover {
             color: #D14900;
           }
@@ -334,38 +346,6 @@ export default {
             margin-left: 10px;
           }
 
-          .image-description {
-            width: 100%;
-            margin-bottom: 20px;
-            .image {
-              max-width: 100%;
-              margin-bottom: -4px;
-            }
-            .line {
-              width: 100%;
-              height: 4px;
-              background-image: linear-gradient(90deg, #f9be01 0%, #c75000 100%);
-            }
-          }
-
-          .date {
-            font-size: 12px;
-            color: #D14900;
-            font-weight: bold;
-            margin-bottom: 10px;
-
-            .el-icon-menu {
-              font-size: 16px;
-              color: #AAA99F;
-              margin-right: 5px;
-            }
-          }
-
-          .description {
-            font-size: 22px;
-            color: #000000;
-            font-weight: bold;
-          }
         }
 
       }

@@ -1,5 +1,5 @@
 <template>
-  <div class="imageTextCard_warp" @click="handleClick">
+  <div class="imageTextCard_warp" :style="haveDetails?'cursor: pointer;':''" @click="handleClick">
     <div class="image-description">
       <el-image
           class="image"
@@ -42,6 +42,13 @@ export default {
     description: {
       type: String,
       default: '光学微梳装置可能会改善电信、传感器、时钟',
+    },
+    /**
+     * 是否有详情页
+     * */
+    haveDetails: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -65,6 +72,7 @@ export default {
     margin-bottom: 20px;
     .image {
       width: 100%;
+      max-height: 300px;
       margin-bottom: -4px;
     }
     .line {

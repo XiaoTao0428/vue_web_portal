@@ -73,7 +73,7 @@ const routes = [
             path: '/pageHeaderMenuManage',
             name: 'pageHeaderMenuManage',
             meta: {
-              requireAuth: false,
+              requireAuth: true,
             },
             component: () => import(/* webpackChunkName: "pageHeaderMenuManage" */ '@/views/pageHeaderMenuManage/pageHeaderMenuManage.vue'),
           },
@@ -81,7 +81,7 @@ const routes = [
             path: '/pageContentManage',
             name: 'pageContentManage',
             meta: {
-              requireAuth: false,
+              requireAuth: true,
             },
             component: () => import(/* webpackChunkName: "pageContentManage" */ '@/views/pageContentManage/pageContentManage.vue'),
           }
@@ -101,7 +101,23 @@ const routes = [
         meta: {
           requireAuth: false,
         },
-        component: () => import(/* webpackChunkName: "detailsPage" */ '@/views/customPage/customPage.vue')
+        component: () => import(/* webpackChunkName: "customPage" */ '@/views/customPage/customPage.vue')
+      },
+      {
+        path: '/newDetailsPage',
+        name: 'newDetailsPage',
+        meta: {
+          requireAuth: false,
+        },
+        component: () => import(/* webpackChunkName: "newDetailsPage" */ '@/views/newDetailsPage/newDetailsPage.vue')
+      },
+      {
+        path: '/researchDetailsPage',
+        name: 'researchDetailsPage',
+        meta: {
+          requireAuth: false,
+        },
+        component: () => import(/* webpackChunkName: "researchDetailsPage" */ '@/views/researchDetailsPage/researchDetailsPage.vue')
       },
     ]
   },

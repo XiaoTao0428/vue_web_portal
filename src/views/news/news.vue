@@ -13,6 +13,8 @@
               :image-url="item2.cover_image"
               :date="item2.news_date"
               :description="item2['title_' + currLang]"
+              :have-details="true"
+              @handleClick="toDetails(item2)"
           ></image-text-card>
         </el-col>
       </el-row>
@@ -120,6 +122,30 @@ export default {
     currentPageChange() {
       console.log('currentPage', this.currentPage)
       this.loadData()
+    },
+    /**
+     * 去详情页
+     * */
+    toDetails(data) {
+      let params = {
+        id: data.id,
+        parent: [
+          {
+            title_cn: '首页',
+            title_en: 'Home',
+            to: '/home',
+          },
+          {
+            title_cn: '新闻',
+            title_en: 'News',
+            to: '/news',
+          }
+        ]
+      }
+      console.log(data)
+      this.$router.push({
+        path: 'newDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
+      })
     }
   }
 }

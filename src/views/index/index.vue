@@ -188,70 +188,6 @@ export default {
           label: 'English'
         }
       ],
-      menuList2: [
-        {
-          key: '1',
-          title_cn: '首页',
-          title_en: 'Home',
-          router: '/home',
-        },
-        {
-          key: '2',
-          title_cn: '研究方向',
-          title_en: 'Research',
-          router: '/research',
-        },
-        {
-          key: '3',
-          title_cn: '新闻',
-          title_en: 'News',
-          router: '/news',
-        },
-        {
-          key: '4',
-          title_cn: '出版物',
-          title_en: 'Publications',
-          router: '/publications',
-        },
-        {
-          key: '5',
-          title_cn: '成员',
-          title_en: 'People',
-          router: '/people',
-          children: [
-            {
-              key: '5-1',
-              title_cn: '教师',
-              title_en: 'Teacher',
-              router: '/people?search=Teacher',
-            },
-            {
-              key: '5-2',
-              title_cn: '博士后',
-              title_en: 'Postdoc',
-              router: '/people?search=Postdoc',
-            },
-            {
-              key: '5-3',
-              title_cn: '博士',
-              title_en: 'Doctor',
-              router: '/people?search=Doctor',
-            },
-            {
-              key: '5-4',
-              title_cn: '硕士',
-              title_en: 'Master',
-              router: '/people?search=Master',
-            },
-            {
-              key: '5-5',
-              title_cn: '校友',
-              title_en: 'Alumni',
-              router: '/people?search=Alumni',
-            }
-          ]
-        },
-      ],
       menuOverflow: false,  // 菜单栏是否溢出
       menuListPopupVisible: false,  // 菜单栏弹窗
       menuActiveIndex: '1',  // 激活的菜单栏
@@ -538,7 +474,7 @@ export default {
             padding: 20px 25px;
             box-sizing: border-box;
             cursor: default;
-            z-index: 999;
+            z-index: 9999;
 
             .submit-item {
               width: 100%;
@@ -596,7 +532,7 @@ export default {
             position: absolute;
             top: 40px;
             left: 0;
-            z-index: 99;
+            z-index: 9999;
             cursor: default;
             overflow: hidden;
 
@@ -619,7 +555,7 @@ export default {
                 border-bottom: 2px solid #323232;
                 margin-bottom: 15px;
                 cursor: pointer;
-                z-index: 99;
+                z-index: 9999;
 
                 .el-icon-close {
                 }

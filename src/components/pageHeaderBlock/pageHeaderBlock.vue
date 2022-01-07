@@ -36,12 +36,14 @@ export default {
   computed: {
     currRoutePath() {
       return this.$store.state.currRoutePath
-    }
+    },
+    currLang() {
+      return this.$store.state.currLang
+    },
   },
   methods: {
     ...mapMutations(['setCurrRoutePath']),
     handleMenuListSelect(obj) {
-
       let path = obj.to.split('?')[0]
       if (this.currRoutePath === path) {
         this.$router.push(obj.to)

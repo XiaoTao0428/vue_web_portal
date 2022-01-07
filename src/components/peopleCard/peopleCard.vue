@@ -10,6 +10,9 @@
     <div class="introduction">
       {{introduction}}
     </div>
+    <div class="contact">
+      {{contact}}
+    </div>
   </div>
 </template>
 
@@ -22,14 +25,21 @@ export default {
      * */
     imageUrl: {
       type: String,
-      default: 'https://caltechsites-prod.s3.amazonaws.com/vahala/People/images/Boqiang.original.jpg',
+      default: '',
     },
     /**
      * 描述
      * */
     introduction: {
       type: String,
-      default: '光学微梳装置可能会改善电信、传感器、时钟',
+      default: '',
+    },
+    /**
+     * 联系方式
+     * */
+    contact: {
+      type: String,
+      default: '',
     }
   },
   data() {
@@ -45,6 +55,7 @@ export default {
   .image-description {
     width: 100%;
     .image {
+      max-height: 400px;
       width: 100%;
     }
   }
@@ -53,6 +64,13 @@ export default {
     font-size: 22px;
     color: #000000;
     font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .contact {
+    font-size: 22px;
+    color: #000000;
+    margin-top: 10px;
   }
 }
 </style>

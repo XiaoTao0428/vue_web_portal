@@ -12,6 +12,7 @@
           <image-text-card
               :image-url="item2.cover_image"
               :description="item2['title_' + currLang]"
+              @handleClick="toDetails(item2)"
           ></image-text-card>
         </el-col>
       </el-row>
@@ -120,6 +121,27 @@ export default {
     currentPageChange() {
       console.log('currentPage', this.currentPage)
       this.loadData()
+    },
+    toDetails(data) {
+      let params = {
+        id: data.id,
+        parent: [
+          {
+            title_cn: '首页',
+            title_en: 'Home',
+            to: '/home',
+          },
+          {
+            title_cn: '研究方向',
+            title_en: 'Research',
+            to: '/research',
+          }
+        ]
+      }
+      console.log(data)
+      this.$router.push({
+        path: 'researchDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
+      })
     }
   }
 }
