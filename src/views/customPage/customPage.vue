@@ -2,7 +2,7 @@
   <div class="customPage_warp">
     <div class="header">
       <page-header-block
-          :title="pageHeaderBlockTitle"
+          :title="pageHeaderBlockTitle['title_' + currLang]"
           :breadcrumb-list="breadcrumbList"
       ></page-header-block>
     </div>
@@ -31,11 +31,13 @@ export default {
       currPageName: '',
       breadcrumbList: [
         {
-          title: '首页',
+          title_cn: '首页',
+          title_en: 'Home',
           to: '/home',
         },
         {
-          title: '',
+          title_cn: '',
+          title_en: '',
         }
       ],
 
@@ -50,7 +52,7 @@ export default {
       return this.$store.state.currLang
     },
     pageHeaderBlockTitle() {
-      return this.breadcrumbList[this.breadcrumbList.length - 1].title
+      return this.breadcrumbList[this.breadcrumbList.length - 1]
     },
     menuList() {
       return this.$store.state.menuList
@@ -71,7 +73,8 @@ export default {
       this.menuList.forEach((item, index) => {
         let newPageName = this.getUrlParam(item.router, 'pageName')
         if (newPageName === this.currPageName) {
-          this.breadcrumbList[1].title = item.title_cn
+          this.breadcrumbList[1].title_cn = item.title_cn
+          this.breadcrumbList[1].title_en = item.title_en
           id = item.id
         }
       })
@@ -124,9 +127,8 @@ export default {
   }
   .content {
     width: 100%;
-    max-width: 1440px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 0 50px;
     box-sizing: border-box;
     .markdown-warp {
       box-shadow: none !important;

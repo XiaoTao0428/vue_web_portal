@@ -1,11 +1,11 @@
 <template>
-  <div class="researchDetailsPage_warp" v-loading="dataLoading">
+  <div class="peopleDetailsPage_warp" v-loading="dataLoading">
     <page-header-block
-        :title="researchData['title_' + currLang]"
+        :title="peopleData['name_' + currLang]"
         :breadcrumb-list="breadcrumbList"
     ></page-header-block>
     <div class="content">
-      <mavon-editor v-model="researchData['content_' + currLang]"
+      <mavon-editor v-model="peopleData['detail_' + currLang]"
                     class="markdown-warp"
                     :language="'zh-CN'"
                     :editable="false"
@@ -19,16 +19,16 @@
 
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
-import {GetResearchResearchDetailApi} from "@/request/api";
+import {GetMemberMemberDetailApi} from "@/request/api";
 export default {
-  name: "researchDetailsPage",
+  name: "peopleDetailsPage",
   components: {PageHeaderBlock},
   data() {
     return {
       dataLoading: false,
       id: '',
       breadcrumbList: [],
-      researchData: {},
+      peopleData: {},
     }
   },
   computed: {
@@ -54,12 +54,12 @@ export default {
   methods: {
     async loadData() {
       this.dataLoading = true
-      const res = await GetResearchResearchDetailApi({
-        research_id: this.id
+      const res = await GetMemberMemberDetailApi({
+        member_id: this.id
       })
       console.log(res)
       if (res) {
-        this.researchData = res.research_info
+        this.peopleData = res.member_info
       }
       this.dataLoading = false
     },
@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.researchDetailsPage_warp {
+.peopleDetailsPage_warp {
   width: 100%;
   .content {
     width: 100%;

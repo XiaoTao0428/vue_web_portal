@@ -4,7 +4,7 @@
     <div :class="contentClassName">
 
       <div class="home-left">
-        <mavon-editor class="markdown-warp" v-model="homePaperValue"
+        <mavon-editor class="markdown-warp" v-model="homePaperValue['value_' + currLang]"
                       :language="'zh-CN'"
                       :editable="false"
                       :toolbars-flag="false"
@@ -20,7 +20,7 @@
               :src="homeImageUrl"
           ></el-image>
           <div class="image-msg">
-            {{homeImageForm.describe}}
+            {{homeImageForm['describe_' + currLang]}}
           </div>
         </div>
 
@@ -78,6 +78,7 @@ import mixins from "@/mixins/mixins";
 import {GetIndexIndexInfoApi, GetNewsNewsListApi} from "@/request/api";
 import {file_before_url} from "@/config/baseURL";
 import ImageTextCard from "@/components/imageTextCard/imageTextCard";
+import {mapMutations} from "vuex";
 
 export default {
   name: "home",
@@ -87,10 +88,18 @@ export default {
     return {
       dataLoading: false,
       fileBeforeUrl: file_before_url,
-      homePaperValue: '',
+      homePaperValue: {
+        value_cn: '',
+        value_en: '',
+      },
       homeImageForm: {
-        describe: '',
+        describe_cn: '',
+        describe_en: '',
         imageUrl: '',
+        groupName_cn: '',
+        groupName_en: '',
+        contactAddress_cn: '',
+        contactAddress_en: '',
       },
       newsList: [],
     }
@@ -113,6 +122,7 @@ export default {
     this.loadHomeData()
   },
   methods: {
+    ...mapMutations(['setGroupInfo']),
     /**
      * 获取首页数据
      * */
@@ -121,9 +131,25 @@ export default {
       const res = await GetIndexIndexInfoApi()
       console.log(res)
       if (res) {
-        this.homePaperValue = res.index_info.home_article
+        this.homeImageForm.groupName_cn = res.index_info.group_name_cn
+        this.homeImageForm.groupName_en = res.index_info.group_name_en
+        this.homeImageForm.contactAddress_cn = res.index_info.contact_address_cn
+        this.homeImageForm.contactAddress_en = res.index_info.contact_address_en
+
+        this.homePaperValue.value_cn = res.index_info.home_article_cn
+        this.homePaperValue.value_en = res.index_info.home_article_en
         this.homeImageForm.imageUrl = res.index_info.home_image
-        this.homeImageForm.describe = res.index_info.home_image_description
+        this.homeImageForm.describe_cn = res.index_info.home_image_description_cn
+        this.homeImageForm.describe_en = res.index_info.home_image_description_en
+
+        this.setGroupInfo({
+          groupInfo: {
+            name_cn: this.homeImageForm.groupName_cn,
+            name_en: this.homeImageForm.groupName_en,
+            contactAddress_cn: this.homeImageForm.contactAddress_cn,
+            contactAddress_en: this.homeImageForm.contactAddress_en,
+          }
+        })
       }
       await this.loadNewsData()
       this.dataLoading = false
@@ -210,6 +236,7 @@ export default {
           max-width: 100%;
         }
         .image-msg {
+          width: 100%;
           position: absolute;
           bottom: 4px;
           left: 0;
@@ -294,6 +321,7 @@ export default {
           max-width: 100%;
         }
         .image-msg {
+          width: 100%;
           position: absolute;
           bottom: 4px;
           left: 0;
@@ -350,6 +378,12 @@ export default {
 
       }
 
+    }
+  }
+
+  .content-xs {
+    .image-msg {
+      font-size: 12px;
     }
   }
 }

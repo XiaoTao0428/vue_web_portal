@@ -1,8 +1,8 @@
 <template>
-  <div class="research_warp" v-loading="dataLoading">
+  <div :class="'research_warp ' + researchClassName" v-loading="dataLoading">
     <div class="header">
       <page-header-block
-          :title="pageHeaderBlockTitle"
+          :title="pageHeaderBlockTitle['title_' + currLang]"
           :breadcrumb-list="breadcrumbList"
       ></page-header-block>
     </div>
@@ -12,6 +12,7 @@
           <image-text-card
               :image-url="item2.cover_image"
               :description="item2['title_' + currLang]"
+              :have-details="true"
               @handleClick="toDetails(item2)"
           ></image-text-card>
         </el-col>
@@ -43,11 +44,13 @@ export default {
       dataLoading: false,
       breadcrumbList: [
         {
-          title: '首页',
+          title_cn: '首页',
+          title_en: 'Home',
           to: '/home',
         },
         {
-          title: '研究方向',
+          title_cn: '研究方向',
+          title_en: 'Research',
         }
       ],
       /**
@@ -65,13 +68,32 @@ export default {
   },
   computed: {
     pageHeaderBlockTitle() {
-      return this.breadcrumbList[this.breadcrumbList.length - 1].title
+      return this.breadcrumbList[this.breadcrumbList.length - 1]
     },
     currLang() {
       return this.$store.state.currLang
     },
   },
+  watch: {
+    currScreenSize() {
+      if (this.currScreenSize === 'lg' || this.currScreenSize === 'md') {
+        this.colNum = 3
+      }else if (this.currScreenSize === 'sm') {
+        this.colNum = 2
+      }else {
+        this.colNum = 1
+      }
+      this.initList(this.colNum)
+    }
+  },
   mounted() {
+    if (this.currScreenSize === 'lg' || this.currScreenSize === 'md') {
+      this.colNum = 3
+    }else if (this.currScreenSize === 'sm') {
+      this.colNum = 2
+    }else {
+      this.colNum = 1
+    }
     this.loadData()
   },
   methods: {
@@ -98,20 +120,17 @@ export default {
      * 初始化层级列表
      * */
     initList(num) {
-      let arr = [...this.newResearchDirectionList]
-      if (num > 1) {
-        this.researchDirectionList.forEach((item, index) => {
-          let i = parseInt(index/num)
-          if (arr[i] && arr[i].length) {
-            arr[i].push(item)
-          }else {
-            arr[i] = []
-            arr[i].push(item)
-          }
-        })
-      }else {
-        arr = [...this.researchDirectionList]
-      }
+      console.log('colNum', this.colNum)
+      let arr = []
+      this.researchDirectionList.forEach((item, index) => {
+        let i = parseInt(index/num)
+        if (arr[i] && arr[i].length) {
+          arr[i].push(item)
+        }else {
+          arr[i] = []
+          arr[i].push(item)
+        }
+      })
       this.newResearchDirectionList = [...arr]
       console.log('newResearchDirectionList', this.newResearchDirectionList)
     },
@@ -172,6 +191,11 @@ export default {
     max-width: 1440px;
     margin: 0 auto;
     text-align: center;
+  }
+}
+.research_warp-xs {
+  .content {
+    padding: 0 20px;
   }
 }
 </style>

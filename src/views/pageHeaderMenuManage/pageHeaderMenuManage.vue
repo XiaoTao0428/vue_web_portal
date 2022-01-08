@@ -15,12 +15,12 @@
         <span>{{ data['title_' + currLang] }}</span>
         <span v-if="data.appendBtnShow && data.appendBtnShow === true">
           <el-button type="text" size="mini" @click.stop="appendTreeNode(data)">
-            添加
+            {{$t('manage.Append')}}
           </el-button>
         </span>
         <span v-if="data.delBtnShow && data.delBtnShow === true">
           <el-button type="text" size="mini" @click.stop="delTreeNode(data)">
-            删除
+            {{$t('manage.Delete')}}
           </el-button>
         </span>
       </span>
@@ -28,41 +28,41 @@
     </div>
 
     <el-dialog
-        title="添加节点"
+        :title="$t('manage.AppendNode')"
         :visible.sync="appendDialogVisible"
         :before-close="appendDialogCancel"
         width="700px"
     >
       <div class="dialog-content">
-        <el-form ref="appendNodeFormRef" :rules="rules" :model="appendNodeForm" label-width="160px">
-          <el-form-item label="节点名（中文）" prop="name_cn">
+        <el-form ref="appendNodeFormRef" :rules="rules" :model="appendNodeForm" label-width="180px">
+          <el-form-item :label="$t('manage.NodeName_cn')" prop="name_cn">
             <el-input v-model="appendNodeForm.name_cn" placeholder="例如：首页"></el-input>
           </el-form-item>
-          <el-form-item label="节点名（英文）" prop="name_en">
+          <el-form-item :label="$t('manage.NodeName_en')" prop="name_en">
             <el-input v-model="appendNodeForm.name_en" placeholder="例如：Home"></el-input>
           </el-form-item>
-          <el-form-item label="路由名" prop="router">
-            <el-input placeholder="例如：首页的路由是 /home ，不能包含 /、?、=、& 等特殊字符 " v-model="appendNodeForm.router">
+          <el-form-item :label="$t('manage.RouteName')" prop="router">
+            <el-input placeholder="例如：首页的路由是 /home ，不能包含 /、?、=、& 等特殊字符" v-model="appendNodeForm.router">
               <template slot="prepend">/</template>
             </el-input>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="appendDialogCancel">取 消</el-button>
-        <el-button type="primary" :loading="submitBtnLoading" @click="appendDialogConfirm">确 定</el-button>
+        <el-button @click="appendDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="submitBtnLoading" @click="appendDialogConfirm">{{$t('manage.Confirm')}}</el-button>
       </span>
     </el-dialog>
 
     <el-dialog
-        title="删除节点"
+        :title="$t('manage.DeleteNode')"
         :visible.sync="delDialogVisible"
         width="500px"
     >
-      <span>确定要删除此节点吗？</span>
+      <span>{{$t('manage.DeleteNodeHint')}}</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="delDialogVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="submitBtnLoading" @click="delDialogConfirm">确 定</el-button>
+        <el-button @click="delDialogVisible = false">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="submitBtnLoading" @click="delDialogConfirm">{{$t('manage.Confirm')}}</el-button>
       </span>
     </el-dialog>
 

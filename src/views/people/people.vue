@@ -1,8 +1,8 @@
 <template>
-  <div class="people_warp">
+  <div :class="'people_warp ' + peopleClassName">
     <div class="header">
       <page-header-block
-          :title="pageHeaderBlockTitle"
+          :title="pageHeaderBlockTitle['title_' + currLang]"
           :breadcrumb-list="breadcrumbList"
       ></page-header-block>
     </div>
@@ -36,18 +36,22 @@
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import PeopleCard from "@/components/peopleCard/peopleCard";
 import {GetMemberMemberListApi} from "@/request/api";
+import mixins from "@/mixins/mixins";
 export default {
   name: "people",
+  mixins: [mixins],
   components: {PeopleCard, PageHeaderBlock},
   data() {
     return {
       breadcrumbList: [
         {
-          title: '首页',
+          title_cn: '首页',
+          title_en: 'Home',
           to: '/home',
         },
         {
-          title: '成员',
+          title_cn: '成员',
+          title_en: 'People',
         }
       ],
       peopleList: [],
@@ -59,7 +63,7 @@ export default {
   },
   computed: {
     pageHeaderBlockTitle() {
-      return this.breadcrumbList[this.breadcrumbList.length - 1].title
+      return this.breadcrumbList[this.breadcrumbList.length - 1]
     },
     menuList() {
       return this.$store.state.menuList
@@ -67,9 +71,6 @@ export default {
     currLang() {
       return this.$store.state.currLang
     },
-  },
-  created() {
-
   },
   async mounted() {
     console.log(this.$route.query)
@@ -81,7 +82,8 @@ export default {
             if (item2.router.indexOf(this.search) !== -1) {
               this.breadcrumbList[1].to = '/people'
               this.breadcrumbList.push({
-                title: item2.title_cn
+                title_cn: item2.title_cn,
+                title_en: item2.title_en
               })
             }
           })
@@ -89,6 +91,7 @@ export default {
       })
     }
     this.initPeopleTypeOption()
+
     await this.loadData()
   },
   methods: {
@@ -196,6 +199,26 @@ export default {
     * */
     toDetails(data) {
       console.log(data)
+      if (data.type === 'teacher') {
+        let params = {
+          id: data.id,
+          parent: [
+            {
+              title_cn: '首页',
+              title_en: 'Home',
+              to: '/home',
+            },
+            {
+              title_cn: '成员',
+              title_en: 'People',
+              to: '/people',
+            }
+          ]
+        }
+        this.$router.push({
+          path: 'peopleDetailsPage?data=' +encodeURIComponent(JSON.stringify(params))
+        })
+      }
     }
   }
 }
@@ -248,6 +271,16 @@ export default {
         //}
         //.group-item {
         //}
+      }
+    }
+  }
+}
+.people_warp-xs {
+  .content {
+    .group {
+      padding: 0 20px;
+      .group-title {
+        font-size: 22px;
       }
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="manage_warp">
     <div class="header">
-      <page-header-block :title="pageHeaderBlockTitle" :breadcrumb-list="breadcrumbList"></page-header-block>
+      <page-header-block :title="pageHeaderBlockTitle['title_' + currLang]" :breadcrumb-list="breadcrumbList"></page-header-block>
     </div>
     <div class="content">
 
@@ -44,11 +44,13 @@ export default {
 
       breadcrumbList: [
         {
-          title: '首页',
-          to: '/Home',
+          title_cn: '首页',
+          title_en: 'Home',
+          to: '/home',
         },
         {
-          title: '管理',
+          title_cn: '管理',
+          title_en: 'Manage',
         }
       ],
 
@@ -56,8 +58,11 @@ export default {
   },
   computed: {
     pageHeaderBlockTitle() {
-      return this.breadcrumbList[this.breadcrumbList.length - 1].title
-    }
+      return this.breadcrumbList[this.breadcrumbList.length - 1]
+    },
+    currLang() {
+      return this.$store.state.currLang
+    },
   },
   created() {
     let url = this.$route.path

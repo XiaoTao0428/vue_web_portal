@@ -10,7 +10,7 @@
           ></el-image>
           <el-divider class="divider" direction="vertical"></el-divider>
           <div class="title">
-            {{$t('index.VahalaResearchGroup')}}
+            {{groupInfo['name_' + currLang]}}
           </div>
         </div>
         <div class="actions">
@@ -25,7 +25,7 @@
         </div>
       </div>
 
-      <div class="menu-warp">
+      <div :class="'menu-warp ' + menuWarpClassName">
 
         <!--    大屏幕时的效果    -->
         <div class="menu-list-lg" :style="isInit?'':'overflow-x: auto;'" id="headerMenuId" v-if="!menuOverflow && currScreenSize === 'lg'">
@@ -39,7 +39,7 @@
           </div>
 
           <div class="menu-item" v-if="token">
-            <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">管理</span>
+            <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">{{$t('index.Manage')}}</span>
           </div>
         </div>
 
@@ -67,7 +67,7 @@
 
                 <div class="menu-item" v-if="token">
                   <div class="menu-item-title-warp">
-                    <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">管理</span>
+                    <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">{{$t('index.Manage')}}</span>
                     <span class="icon"></span>
                   </div>
                 </div>
@@ -104,22 +104,20 @@
               <el-image
                   class="icon"
                   fit="contain"
-                  src="https://vahala.caltech.edu/static/core/img/caltech-new-logo.png"
+                  :src="TSINGHUA_UNIVERSITY_log4"
               ></el-image>
               <div class="title">
-                {{$t('index.CaliforniaInstituteOfTechnology')}}
+                {{groupInfo['name_' + currLang]}}
               </div>
             </div>
             <div class="footer-content-top-right">
               <div class="text">
-                1200 East California Boulevard
-                <br>
-                Pasadena, California 91125
+                {{groupInfo['contactAddress_' + currLang]}}
               </div>
               <el-image
                   class="icon"
                   fit="contain"
-                  src="https://vahala.caltech.edu/static/theme-v7.0/img/icon-footerpin.png"
+                  :src="icon_footerpin"
               ></el-image>
             </div>
           </div>
@@ -128,10 +126,10 @@
             <el-divider direction="vertical"></el-divider>
             <span class="link">{{$t('index.PrivacyNotice')}}</span>
             <el-divider direction="vertical"></el-divider>
-            <span>{{$t('index.SiteContentCopyright')}} © 2021</span>
+            <span>{{$t('index.SiteContentCopyright')}} © 2022</span>
             <el-divider direction="vertical"></el-divider>
             <span v-if="!token" class="link" @click="handleMenuListSelect({router: '/login'})">{{$t('index.LogIn')}}</span>
-            <span v-if="token" class="link" @click="userLogout">退出</span>
+            <span v-if="token" class="link" @click="userLogout">{{$t('index.LogOut')}}</span>
           </div>
         </div>
       </div>
@@ -141,10 +139,10 @@
             <el-image
                 class="icon"
                 fit="contain"
-                src="https://vahala.caltech.edu/static/core/img/caltech-new-logo.png"
+                :src="TSINGHUA_UNIVERSITY_log4"
             ></el-image>
             <div class="title">
-              {{$t('index.CaliforniaInstituteOfTechnology')}}
+              {{groupInfo['name_' + currLang]}}
             </div>
           </div>
           <div class="footer-content-bottom">
@@ -154,10 +152,10 @@
             <el-divider direction="vertical"></el-divider>
           </div>
           <div class="footer-content-bottom">
-            <span>{{$t('index.SiteContentCopyright')}} © 2021</span>
+            <span>{{$t('index.SiteContentCopyright')}} © 2022</span>
             <el-divider direction="vertical"></el-divider>
             <span v-if="!token" class="link" @click="handleMenuListSelect({router: '/login'})">{{$t('index.LogIn')}}</span>
-            <span v-if="token" class="link" @click="userLogout">退出</span>
+            <span v-if="token" class="link" @click="userLogout">{{$t('index.LogOut')}}</span>
           </div>
         </div>
       </div>
@@ -168,6 +166,8 @@
 <script>
 import { mapMutations } from 'vuex'
 import TSINGHUA_UNIVERSITY_logo from '../../assets/icon/TSINGHUA_UNIVERSITY_logo2.png'
+import TSINGHUA_UNIVERSITY_log4 from '../../assets/icon/TSINGHUA_UNIVERSITY_logo4.png'
+import icon_footerpin from '../../assets/icon/icon-footerpin.png'
 import mixins from '@/mixins/mixins'
 import {GetTabTabListApi} from '@/request/api'
 export default {
@@ -176,6 +176,8 @@ export default {
   data() {
     return {
       TSINGHUA_UNIVERSITY_logo: TSINGHUA_UNIVERSITY_logo,  // logo 图标
+      TSINGHUA_UNIVERSITY_log4: TSINGHUA_UNIVERSITY_log4,  // logo 图标
+      icon_footerpin: icon_footerpin,
       isInit: false,
       currLang:'',  // 当前的语言
       dataLoading: false,
@@ -196,6 +198,9 @@ export default {
     }
   },
   computed: {
+    groupInfo() {
+      return  this.$store.state.groupInfo
+    },
     token() {
       return this.$store.state.token
     },
@@ -369,10 +374,14 @@ export default {
         }
       }
     }
+    .header-sm {
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
     .header-xs {
       width: 100%;
       margin: 0 auto;
-      padding: 20px 50px 0 50px;
+      padding: 20px 20px 0 20px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -693,6 +702,10 @@ export default {
           }
         }
       }
+    }
+
+    .menu-warp-xs, .menu-warp-sm {
+      padding: 0 20px;
     }
 
     .main {

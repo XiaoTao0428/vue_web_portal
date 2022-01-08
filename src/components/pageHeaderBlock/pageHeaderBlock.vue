@@ -1,9 +1,9 @@
 <template>
-  <div class="pageHeaderBlock_warp">
+  <div :class="'pageHeaderBlock_warp ' + pageHeaderBlockClassName">
     <el-breadcrumb class="breadcrumb" separator="/">
       <el-breadcrumb-item class="breadcrumb-item" v-for="(item, index) in breadcrumbList" :key="'breadcrumbList' + index">
-        <span class="breadcrumb-item-a" v-if="item.to" @click="handleMenuListSelect(item)">{{item.title}}</span>
-        <span class="breadcrumb-item-span" v-else>{{item.title}}</span>
+        <span class="breadcrumb-item-a" v-if="item.to" @click="handleMenuListSelect(item)">{{item['title_' + currLang]}}</span>
+        <span class="breadcrumb-item-span" v-else>{{item['title_' + currLang]}}</span>
       </el-breadcrumb-item>
     </el-breadcrumb>
     <div class="title">
@@ -14,9 +14,11 @@
 
 <script>
 import {mapMutations} from "vuex";
+import mixins from "@/mixins/mixins";
 
 export default {
   name: "pageHeaderBlock",
+  mixins: [mixins],
   props: {
     /**
     * 标题
@@ -64,8 +66,6 @@ export default {
   width: 100%;
   height: 160px;
   background-image: linear-gradient(-226deg, #003b4c 0%, #005851 100%);
-  //padding-left: 50px;
-  //padding-right: 50px;
   padding: 30px 130px;
   box-sizing: border-box;
   margin-bottom: 50px;
@@ -89,6 +89,13 @@ export default {
   .title {
     color: #ffffff;
     font-size: 50px;
+  }
+}
+.pageHeaderBlock_warp-sm, .pageHeaderBlock_warp-xs {
+  height: 130px;
+  padding: 30px 50px;
+  .title {
+    font-size: 30px;
   }
 }
 </style>

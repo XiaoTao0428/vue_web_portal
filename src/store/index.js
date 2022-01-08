@@ -16,6 +16,13 @@ export default new Vuex.Store({
       contact_cn: '',  // 联系方式中文
       contact_en: '',  // 联系方式英文
     },
+
+    groupInfo: {
+      name_cn: '',  // 中文名
+      name_en: '',  // 英文名
+      contactAddress_cn: '',  // 联系地址
+      contactAddress_en: '',  // 联系地址
+    }
   },
   mutations: {
     /**
@@ -35,6 +42,15 @@ export default new Vuex.Store({
      * */
     setCurrRoutePath(state, param) {
       state.currRoutePath = param.currRoutePath
+    },
+    /**
+     * 设置当前的 小组信息
+     * */
+    setGroupInfo(state, param) {
+      state.groupInfo.name_cn = param.groupInfo.name_cn
+      state.groupInfo.name_en = param.groupInfo.name_en
+      state.groupInfo.contactAddress_cn = param.groupInfo.contactAddress_cn
+      state.groupInfo.contactAddress_en = param.groupInfo.contactAddress_en
     },
     /**
      * 登录

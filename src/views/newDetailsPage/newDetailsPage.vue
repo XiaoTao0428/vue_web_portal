@@ -1,5 +1,5 @@
 <template>
-  <div class="newDetailsPage_warp" v-loading="dataLoading">
+  <div :class="'newDetailsPage_warp ' + newDetailsPageClassName" v-loading="dataLoading">
 <!--    <page-header-block-->
 <!--        :title="pageHeaderBlockTitle"-->
 <!--        :breadcrumb-list="breadcrumbList"-->
@@ -22,14 +22,16 @@
         ></el-image>
 
         <div class="depiction">
-          <div class="title">
-            {{newData['title_' + currLang]}}
-          </div>
-          <div class="date">
-            {{newData.news_date}}
-          </div>
-          <div class="preface">
-            {{newData['preface_' + currLang]}}
+          <div class="depiction-content">
+            <div class="title">
+              {{newData['title_' + currLang]}}
+            </div>
+            <div class="date">
+              {{newData.news_date}}
+            </div>
+            <div class="preface">
+              {{newData['preface_' + currLang]}}
+            </div>
           </div>
         </div>
       </div>
@@ -53,8 +55,10 @@
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import {GetNewsNewsDetailApi} from "@/request/api";
 import {mapMutations} from "vuex";
+import mixins from "@/mixins/mixins";
 export default {
   name: "newDetailsPage",
+  mixins: [mixins],
   components: {PageHeaderBlock},
   data() {
     return {
@@ -88,7 +92,7 @@ export default {
     await this.loadData()
     this.breadcrumbList.push({
       title_cn: this.newData.title_cn,
-      title_en: this.newData.title_cn,
+      title_en: this.newData.title_en,
     })
     console.log('breadcrumbList', this.breadcrumbList)
     // this.menuList.forEach((item, index) => {
@@ -136,9 +140,9 @@ export default {
   width: 100%;
   .header {
     width: 100%;
-    max-width: 1440px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 150px;
+    padding: 0 20px;
     box-sizing: border-box;
 
     & /deep/ .breadcrumb {
@@ -149,15 +153,12 @@ export default {
         .breadcrumb-item-a {
           color: #D14900;
           cursor: pointer;
+          margin-bottom: 10px;
         }
         .breadcrumb-item-span {
           color: #aaa99f;
         }
       }
-    }
-    .title {
-      color: #ffffff;
-      font-size: 50px;
     }
   }
   .content {
@@ -170,41 +171,53 @@ export default {
       margin-bottom: 40px;
       position: relative;
 
+      .image {
+        width: 100%;
+      }
+
       .depiction {
         width: 100%;
         background-color: unset;
         position: absolute;
         bottom: 0;
-        padding-left: 240px;
-        padding-right: 240px;
         box-sizing: border-box;
 
-        .title {
-          font-size: 50px;
-          font-weight: bold;
-          color: #ffffff;
-          margin-bottom: 20px;
+        .depiction-content {
+          width: 100%;
+          max-width: 1200px;
+          padding: 0 50px;
+          box-sizing: border-box;
+          margin: 0 auto;
+
+          .title {
+            font-size: 50px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 20px;
+          }
+
+          .date {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #ffffff;
+          }
+
+          .preface {
+            font-size: 22px;
+            color: #ffffff;
+            margin-bottom: 30px;
+          }
         }
 
-        .date {
-          font-size: 14px;
-          font-weight: bold;
-          margin-bottom: 30px;
-          color: #ffffff;
-        }
-
-        .preface {
-          font-size: 22px;
-          color: #ffffff;
-          margin-bottom: 30px;
-        }
       }
     }
 
     .article {
       width: 100%;
-      max-width: 1000px;
+      max-width: 1040px;
       margin: 0 auto;
+      padding: 0 20px;
       box-sizing: border-box;
       .markdown-warp {
         box-shadow: none !important;
@@ -214,6 +227,45 @@ export default {
           padding: 0;
           background-color: #ffffff !important;
         }
+      }
+    }
+  }
+}
+
+.newDetailsPage_warp-xs {
+  .content {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    box-sizing: border-box;
+
+    .image-wrapper {
+      margin-bottom: 40px;
+      position: relative;
+
+      .image {
+        width: 100%;
+      }
+
+      .depiction {
+        .depiction-content {
+          padding: 0 20px;
+          box-sizing: border-box;
+          .title {
+            font-size: 20px;
+            margin-bottom: 10px;
+          }
+          .date {
+            font-size: 10px;
+            margin-bottom: 10px;
+          }
+
+          .preface {
+            font-size: 16px;
+            margin-bottom: 10px;
+          }
+        }
+
       }
     }
   }

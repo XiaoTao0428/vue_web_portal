@@ -1,8 +1,8 @@
 <template>
-  <div class="publications_warp" v-loading="dataLoading">
+  <div :class="'publications_warp ' + publicationsClassName" v-loading="dataLoading">
     <div class="header">
       <page-header-block
-          :title="pageHeaderBlockTitle"
+          :title="pageHeaderBlockTitle['title_' + currLang]"
           :breadcrumb-list="breadcrumbList"
       ></page-header-block>
     </div>
@@ -19,7 +19,7 @@
             <div class="content-item-title">
               <b>"{{item2['title_' + currLang]}}"</b>
             </div>
-            <div class="link">{{item2.issn}}</div>
+            <div class="link" @click="toDetails(item2)">{{item2.issn}}</div>
           </div>
         </div>
       </div>
@@ -39,18 +39,22 @@
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import {GetPublicationPublicationListApi} from "@/request/api";
+import mixins from "@/mixins/mixins";
 export default {
   name: "publications",
+  mixins: [mixins],
   components: {PageHeaderBlock},
   data() {
     return {
       breadcrumbList: [
         {
-          title: '首页',
+          title_cn: '首页',
+          title_en: 'Home',
           to: '/home',
         },
         {
-          title: '成果',
+          title_cn: '成果',
+          title_en: 'Publications',
         }
       ],
       dataLoading: false,
@@ -61,51 +65,11 @@ export default {
 
       publicationList: [],
       newPublicationList: [],
-
-      /**
-      * 论文列表
-      * */
-      paperList: [
-        {
-          groupTitle: '2021 Publications',
-          data: [
-            {
-              participant: 'Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park',
-              title: 'Extending the spectrum of fully integrated photonics',
-              linkText: 'arXiv:2112.02923',
-              to: '',
-            },
-            {
-              participant: 'Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park',
-              title: 'Extending the spectrum of fully integrated photonics',
-              linkText: 'arXiv:2112.02923',
-              to: '',
-            }
-          ]
-        },
-        {
-          groupTitle: '2021 Publications',
-          data: [
-            {
-              participant: 'Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park',
-              title: 'Extending the spectrum of fully integrated photonics',
-              linkText: 'arXiv:2112.02923',
-              to: '',
-            },
-            {
-              participant: 'Minh Tran*, Chong Zhang*, Theodore Morin*, Lin Chang, Sabyasachi Barik, Zhiquan Yuan, Woonghee Lee, Glenn Kim, Aditya Malik, Zeyu Zhang, Joel Guo, Heming Wang, Boqiang Shen, Lue Wu, Kerry Vahala, John Bowers, Tin Komljenovic, Hyundai Park',
-              title: 'Extending the spectrum of fully integrated photonics',
-              linkText: 'arXiv:2112.02923',
-              to: '',
-            }
-          ]
-        }
-      ],
     }
   },
   computed: {
     pageHeaderBlockTitle() {
-      return this.breadcrumbList[this.breadcrumbList.length - 1].title
+      return this.breadcrumbList[this.breadcrumbList.length - 1]
     },
     currLang() {
       return this.$store.state.currLang
@@ -158,6 +122,10 @@ export default {
      * */
     currentPageChange() {
       this.loadData()
+    },
+    toDetails(data) {
+      console.log(data)
+      window.location.href = 'https://' + data.publish_link
     }
   }
 }
@@ -217,6 +185,51 @@ export default {
     max-width: 1440px;
     margin: 0 auto;
     text-align: center;
+  }
+}
+
+.publications_warp-xs {
+  .content {
+    padding: 0 20px;
+    .group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      margin-bottom: 40px;
+
+      .group-title {
+        width: 100%;
+        font-size: 22px;
+        color: #333333;
+        margin-bottom: 20px;
+      }
+
+      .group-content {
+        width: 100%;
+        padding-left: 0px;
+        .content-item {
+          width: 100%;
+          margin: 0 0 20px 0;
+          color: #333333;
+          font-size: 18px;
+          line-height: 28px;
+
+          .participant {
+          }
+
+          .content-item-title {
+          }
+
+          .link {
+            cursor: pointer;
+            color: #D14900;
+          }
+        }
+      }
+
+    }
   }
 }
 </style>

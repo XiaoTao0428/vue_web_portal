@@ -1,5 +1,5 @@
 <template>
-  <div class="peopleCard_warp">
+  <div :class="'peopleCard_warp ' + peopleCardClassName">
     <div class="image-description">
       <el-image
           class="image"
@@ -17,8 +17,11 @@
 </template>
 
 <script>
+import mixins from "@/mixins/mixins";
+
 export default {
   name: "peopleCard",
+  mixins: [mixins],
   props: {
     /**
      * 图片地址
@@ -55,7 +58,7 @@ export default {
   .image-description {
     width: 100%;
     .image {
-      max-height: 400px;
+      //max-height: 400px;
       width: 100%;
     }
   }
@@ -71,6 +74,15 @@ export default {
     font-size: 22px;
     color: #000000;
     margin-top: 10px;
+  }
+}
+
+.peopleCard_warp-xs {
+  .introduction {
+    font-size: 18px;
+  }
+  .contact {
+    font-size: 18px;
   }
 }
 </style>

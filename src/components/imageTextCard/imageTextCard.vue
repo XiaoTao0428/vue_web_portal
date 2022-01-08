@@ -1,5 +1,5 @@
 <template>
-  <div class="imageTextCard_warp" :style="haveDetails?'cursor: pointer;':''" @click="handleClick">
+  <div :class="'imageTextCard_warp ' + imageTextCardClassName" :style="haveDetails?'cursor: pointer;':''" @click="handleClick">
     <div class="image-description">
       <el-image
           class="image"
@@ -19,15 +19,18 @@
 </template>
 
 <script>
+import mixins from "@/mixins/mixins";
+
 export default {
   name: "imageTextCard",
+  mixins: [mixins],
   props: {
     /**
      * 图片地址
      * */
     imageUrl: {
       type: String,
-      default: 'https://caltechsites-prod.s3.amazonaws.com/root/images/Lasers.2e16d0ba.fill-710x400-c100.jpg',
+      default: '',
     },
     /**
      * 日期
@@ -41,7 +44,7 @@ export default {
      * */
     description: {
       type: String,
-      default: '光学微梳装置可能会改善电信、传感器、时钟',
+      default: '',
     },
     /**
      * 是否有详情页
@@ -72,7 +75,7 @@ export default {
     margin-bottom: 20px;
     .image {
       width: 100%;
-      max-height: 300px;
+      //max-height: 300px;
       margin-bottom: -4px;
     }
     .line {
@@ -99,6 +102,12 @@ export default {
     font-size: 22px;
     color: #000000;
     font-weight: bold;
+  }
+}
+
+.imageTextCard_warp-xs {
+  .description {
+    font-size: 18px;
   }
 }
 </style>

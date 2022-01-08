@@ -2,19 +2,45 @@
   <div class="pageContentManage_warp">
     <el-tabs class="tabs" v-model="activeName" @tab-click="handleTabClick">
       <!--   首页配置   -->
-      <el-tab-pane class="tab-pane" label="首页" name="1">
+      <el-tab-pane class="tab-pane" :label="$t('manage.Home')" name="1">
         <div class="tab-pane-content" v-loading="homeLoading">
 
           <div class="card home-image">
             <div class="card-title">
-              1、首页右侧主图
+              {{$t('manage.GroupInformation')}}
             </div>
             <div class="card-content">
-              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="80px">
-                <el-form-item label="图片描述" prop="describe">
-                  <el-input type="textarea" v-model="homeImageForm.describe" :rows="3"></el-input>
+              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="140px">
+                <el-form-item :label="$t('manage.GroupName_cn')" prop="groupName_cn">
+                  <el-input v-model="homeImageForm.groupName_cn" :rows="3"></el-input>
                 </el-form-item>
-                <el-form-item label="图片上传" prop="imageUrl">
+                <el-form-item :label="$t('manage.GroupName_en')" prop="groupName_en">
+                  <el-input v-model="homeImageForm.groupName_en" :rows="3"></el-input>
+                </el-form-item>
+                <el-form-item :label="$t('manage.ContactAddress_cn')" prop="contactAddress_cn">
+                  <el-input type="textarea" v-model="homeImageForm.contactAddress_cn" :rows="3"></el-input>
+                </el-form-item>
+                <el-form-item :label="$t('manage.ContactAddress_en')" prop="contactAddress_en">
+                  <el-input type="textarea" v-model="homeImageForm.contactAddress_en" :rows="3"></el-input>
+                </el-form-item>
+              </el-form>
+
+            </div>
+          </div>
+
+          <div class="card home-image">
+            <div class="card-title">
+              {{$t('manage.HomeMainImage')}}
+            </div>
+            <div class="card-content">
+              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="140px">
+                <el-form-item :label="$t('manage.ImageDescription_cn')" prop="describe_cn">
+                  <el-input type="textarea" v-model="homeImageForm.describe_cn" :rows="3"></el-input>
+                </el-form-item>
+                <el-form-item :label="$t('manage.ImageDescription_en')" prop="describe_en">
+                  <el-input type="textarea" v-model="homeImageForm.describe_en" :rows="3"></el-input>
+                </el-form-item>
+                <el-form-item :label="$t('manage.UploadPicture')" prop="imageUrl">
                   <el-upload
                       :action="uploadAction"
                       :headers="uploadHeaders"
@@ -30,7 +56,7 @@
                       :on-success="handleImageUploadSuccess"
                   >
                     <i class="el-icon-plus avatar-uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
+                    <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
                   </el-upload>
                 </el-form-item>
               </el-form>
@@ -40,15 +66,24 @@
 
           <div class="card home-paper">
             <div class="card-title">
-              2、首页左侧文章
+              {{$t('manage.HomeArticles')}}
             </div>
-
-            <mavon-editor class="mavon-editor-warp" v-model="homePaperValue"
+            <div class="card-title">
+              {{$t('manage.Chinese')}}
+            </div>
+            <mavon-editor class="mavon-editor-warp" v-model="homePaperValue_cn"
+                          :language="mavonEditorLang"
+            ></mavon-editor>
+            <br>
+            <div class="card-title">
+              {{$t('manage.English')}}
+            </div>
+            <mavon-editor class="mavon-editor-warp" v-model="homePaperValue_en"
                           :language="mavonEditorLang"
             ></mavon-editor>
 
             <div class="btn-warp">
-              <el-button type="primary" :loading="btnLoading" @click="homeImageFormSubmit">提 交</el-button>
+              <el-button type="primary" :loading="btnLoading" @click="homeImageFormSubmit">{{$t('manage.Confirm')}}</el-button>
             </div>
 
           </div>
@@ -57,35 +92,35 @@
       </el-tab-pane>
 
       <!--   研究页配置   -->
-      <el-tab-pane class="tab-pane" label="研究方向" name="2">
+      <el-tab-pane class="tab-pane" :label="$t('manage.Research')" name="2">
         <div class="tab-pane-content" v-loading="researchListLoading">
-          <el-button class="add-btn" type="primary" @click="addResearch">新 增</el-button>
+          <el-button class="add-btn" type="primary" @click="addResearch">{{$t('manage.Add')}}</el-button>
           <el-table
               :data="researchTableData"
               style="width: 100%">
             <el-table-column
                 prop="title_cn"
-                label="标题（中文）"
+                :label="$t('manage.Title_cn')"
             >
             </el-table-column>
             <el-table-column
                 prop="title_en"
-                label="标题（英文）"
+                :label="$t('manage.Title_en')"
             >
             </el-table-column>
             <el-table-column
                 prop="preface_cn"
-                label="前言（中文）"
+                :label="$t('manage.Preface_cn')"
             >
             </el-table-column>
             <el-table-column
                 prop="preface_en"
-                label="前言（英文）"
+                :label="$t('manage.Preface_en')"
             >
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="图片"
+                :label="$t('manage.Image')"
                 width="100">
               <template slot-scope="scope">
                 <div class="table-column-img">
@@ -98,12 +133,12 @@
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="操作"
-                width="220">
+                :label="$t('manage.Action')"
+                width="240">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑内容</el-button>
-                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delResearch(scope.row)">删 除</el-button>
+                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">{{$t('manage.EditContent')}}</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delResearch(scope.row)">{{$t('manage.Delete')}}</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -121,40 +156,40 @@
       </el-tab-pane>
 
       <!--   新闻页配置   -->
-      <el-tab-pane class="tab-pane" label="新闻" name="3">
+      <el-tab-pane class="tab-pane" :label="$t('manage.News')" name="3">
         <div class="tab-pane-content" v-loading="newsListLoading">
-          <el-button class="add-btn" type="primary" @click="addNew">新 增</el-button>
+          <el-button class="add-btn" type="primary" @click="addNew">{{$t('manage.Add')}}</el-button>
           <el-table
               :data="newsTableData"
               style="width: 100%">
             <el-table-column
                 prop="title_cn"
-                label="标题（中文）"
+                :label="$t('manage.Title_cn')"
             >
             </el-table-column>
             <el-table-column
                 prop="title_en"
-                label="标题（英文）"
+                :label="$t('manage.Title_en')"
             >
             </el-table-column>
             <el-table-column
                 prop="preface_cn"
-                label="前言（中文）"
+                :label="$t('manage.Preface_cn')"
             >
             </el-table-column>
             <el-table-column
                 prop="preface_en"
-                label="前言（英文）"
+                :label="$t('manage.Preface_en')"
             >
             </el-table-column>
             <el-table-column
                 prop="news_date"
-                label="日期"
+                :label="$t('manage.Date')"
             >
             </el-table-column>
             <el-table-column
                 prop="cover_image"
-                label="图片"
+                :label="$t('manage.Image')"
                 width="100">
               <template slot-scope="scope">
                 <div class="table-column-img">
@@ -167,13 +202,12 @@
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="操作"
-                width="300">
+                :label="$t('manage.Action')"
+                width="240">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button size="mini" :loading="scope.row.isLoading" @click="">置 顶</el-button>
-                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑内容</el-button>
-                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delNew(scope.row)">删 除</el-button>
+                  <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">{{$t('manage.EditContent')}}</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delNew(scope.row)">{{$t('manage.Delete')}}</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -191,55 +225,55 @@
       </el-tab-pane>
 
       <!--   出版物页配置   -->
-      <el-tab-pane class="tab-pane" label="出版物" name="4">
+      <el-tab-pane class="tab-pane" :label="$t('manage.Publications')" name="4">
         <div class="tab-pane-content" v-loading="publicationListLoading">
-          <el-button class="add-btn" type="primary" @click="addPublication">新 增</el-button>
+          <el-button class="add-btn" type="primary" @click="addPublication">{{$t('manage.Add')}}</el-button>
           <el-table
               :data="publicationTableData"
               style="width: 100%">
             <el-table-column
                 prop="title_cn"
-                label="标题（中文）"
+                :label="$t('manage.Title_cn')"
             >
             </el-table-column>
             <el-table-column
                 prop="title_en"
-                label="标题（英文）"
+                :label="$t('manage.Title_en')"
             >
             </el-table-column>
             <el-table-column
                 prop="authors_cn"
-                label="作者（中文）"
+                :label="$t('manage.Author_cn')"
             >
             </el-table-column>
             <el-table-column
                 prop="authors_en"
-                label="作者（英文）"
+                :label="$t('manage.Author_en')"
             >
             </el-table-column>
             <el-table-column
                 prop="issn"
-                label="期刊名称"
+                :label="$t('manage.JournalTitle')"
             >
             </el-table-column>
             <el-table-column
                 prop="publish_link"
-                label="期刊链接地址"
+                :label="$t('manage.JournalLink')"
             >
             </el-table-column>
             <el-table-column
                 prop="publish_date"
-                label="期刊发布日期"
+                :label="$t('manage.PeriodicalPublicationDate')"
             >
             </el-table-column>
 
             <el-table-column
                 prop="name"
-                label="操作"
+                :label="$t('manage.Action')"
                 width="120">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delPublication(scope.row)">删 除</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delPublication(scope.row)">{{$t('manage.Delete')}}</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -257,35 +291,35 @@
       </el-tab-pane>
 
       <!--   成员页配置   -->
-      <el-tab-pane class="tab-pane" label="成员" name="5">
+      <el-tab-pane class="tab-pane" :label="$t('manage.People')" name="5">
         <div class="tab-pane-content" v-loading="peopleListLoading">
-          <el-button class="add-btn" type="primary" @click="addPeople">新 增</el-button>
+          <el-button class="add-btn" type="primary" @click="addPeople">{{$t('manage.Add')}}</el-button>
           <el-table
               :data="peopleTableData"
               style="width: 100%">
             <el-table-column
                 prop="name_cn"
-                label="姓名（中文）"
+                :label="$t('manage.Name_cn')"
             >
             </el-table-column>
             <el-table-column
                 prop="name_en"
-                label="姓名（英文）"
+                :label="$t('manage.Name_en')"
             >
             </el-table-column>
             <el-table-column
                 prop="contact_cn"
-                label="联系方式（中文）"
+                :label="$t('manage.ContactContact_cn')"
             >
             </el-table-column>
             <el-table-column
                 prop="contact_en"
-                label="联系方式（英文）"
+                :label="$t('manage.ContactContact_en')"
             >
             </el-table-column>
             <el-table-column
                 prop="type"
-                label="类型"
+                :label="$t('manage.Type')"
             >
               <template slot-scope="scope">
                 {{getPeopleTypeOptionLabel(scope.row.type)['label_' + currLang]}}
@@ -293,7 +327,7 @@
             </el-table-column>
             <el-table-column
                 prop="photo"
-                label="图片"
+                :label="$t('manage.Image')"
             >
               <template slot-scope="scope">
                 <div class="table-column-img">
@@ -306,12 +340,12 @@
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="操作"
-                width="220">
+                :label="$t('manage.Action')"
+                width="240">
               <template slot-scope="scope">
                 <div class="table-column-action">
-                  <el-button size="mini" type="primary" v-if="scope.row.type === 'teacher'" :loading="scope.row.isLoading" @click="editDetails(scope.row)">编辑详情</el-button>
-                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delPeople(scope.row)">删 除</el-button>
+                  <el-button size="mini" type="primary" v-if="scope.row.type === 'teacher'" :loading="scope.row.isLoading" @click="editDetails(scope.row)">{{$t('manage.EditContent')}}</el-button>
+                  <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delPeople(scope.row)">{{$t('manage.Delete')}}</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -333,7 +367,7 @@
         <div class="tab-pane-content" v-loading="customPageLoading">
           <div class="content-cn">
             <div class="content-title">
-              1、中文版
+              {{$t('manage.ChineseVersion')}}
             </div>
             <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].value_cn"
                           :language="mavonEditorLang"
@@ -341,7 +375,7 @@
           </div>
           <div class="content-en">
             <div class="content-title">
-              2、英文版
+              {{$t('manage.EnglishVersion')}}
             </div>
             <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].value_en"
                           :language="mavonEditorLang"
@@ -349,7 +383,7 @@
           </div>
 
           <div class="submit-btn">
-            <el-button type="primary" :loading="btnLoading" @click="customPageSubmit(item)">提 交</el-button>
+            <el-button type="primary" :loading="btnLoading" @click="customPageSubmit(item)">{{$t('manage.Confirm')}}</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -365,7 +399,7 @@
 
     <!--  编辑详情弹窗  -->
     <el-dialog
-        title="编辑详情"
+        :title="$t('manage.EditDetails')"
         :visible.sync="editDetailsDialogVisible"
         width="80%"
         custom-class="edit_details_dialog_warp"
@@ -373,7 +407,7 @@
       <div class="dialog-content">
         <div class="content-cn">
           <div class="content-title">
-            1、中文版
+            {{$t('manage.ChineseVersion')}}
           </div>
           <mavon-editor class="mavon-editor-warp" v-model="pageDetails.data_cn"
                         :language="mavonEditorLang"
@@ -381,7 +415,7 @@
         </div>
         <div class="content-cn">
           <div class="content-title">
-            2、英文版
+            {{$t('manage.EnglishVersion')}}
           </div>
           <mavon-editor class="mavon-editor-warp" v-model="pageDetails.data_en"
                         :language="mavonEditorLang"
@@ -389,33 +423,33 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDetailsDialogCancel">取 消</el-button>
-        <el-button type="primary" :loading="btnLoading" @click="editDetailsDialogConfirm">确 定</el-button>
+        <el-button @click="editDetailsDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="editDetailsDialogConfirm">{{$t('manage.Confirm')}}</el-button>
       </span>
     </el-dialog>
 
     <!--  新增研究方向  -->
     <el-dialog
-        title="新增研究方向"
+        :title="$t('manage.Add')"
         :visible.sync="addResearchDialogVisible"
         width="800px"
         custom-class="add_research_dialog_warp"
         :before-close="addResearchDialogCancel">
       <div class="dialog-content">
         <el-form :model="addResearchForm" :rules="rules" ref="addResearchFormRef" label-width="140px">
-          <el-form-item label="研究标题（中文）" prop="title_cn">
-            <el-input v-model="addResearchForm.title_cn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Title_cn')" prop="title_cn">
+            <el-input v-model="addResearchForm.title_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="研究标题（英文）" prop="title_en">
-            <el-input v-model="addResearchForm.title_en" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Title_en')" prop="title_en">
+            <el-input v-model="addResearchForm.title_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="研究前言（中文）" prop="preface_cn">
-            <el-input type="textarea" v-model="addResearchForm.preface_cn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Preface_cn')" prop="preface_cn">
+            <el-input type="textarea" v-model="addResearchForm.preface_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="研究前言（英文）" prop="preface_en">
-            <el-input type="textarea" v-model="addResearchForm.preface_en" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Preface_en')" prop="preface_en">
+            <el-input type="textarea" v-model="addResearchForm.preface_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="图片描述" prop="imageUrl">
+          <el-form-item :label="$t('manage.Image')" prop="imageUrl">
             <el-upload
                 ref="addResearchFormUploadRef"
                 :action="uploadAction"
@@ -431,47 +465,47 @@
                 :on-success="handleAddResearchImageUploadSuccess"
             >
               <i class="el-icon-plus avatar-uploader-icon"></i>
-              <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
+              <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
             </el-upload>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addResearchDialogCancel">取 消</el-button>
-        <el-button type="primary" :loading="btnLoading" @click="addResearchDialogConfirm">确 定</el-button>
+        <el-button @click="addResearchDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="addResearchDialogConfirm">{{$t('manage.Confirm')}}</el-button>
       </span>
     </el-dialog>
 
     <!--  新增新闻  -->
     <el-dialog
-        title="新增新闻"
+        :title="$t('manage.Add')"
         :visible.sync="addNewDialogVisible"
         width="800px"
         custom-class="add_new_dialog_warp"
         :before-close="addNewDialogCancel">
       <div class="dialog-content">
         <el-form :model="addNewForm" :rules="rules" ref="addNewFormRef" label-width="140px">
-          <el-form-item label="新闻标题（中文）" prop="title_cn">
-            <el-input v-model="addNewForm.title_cn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Title_cn')" prop="title_cn">
+            <el-input v-model="addNewForm.title_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="新闻标题（英文）" prop="title_en">
-            <el-input v-model="addNewForm.title_en" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Title_en')" prop="title_en">
+            <el-input v-model="addNewForm.title_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="新闻前言（中文）" prop="preface_cn">
-            <el-input type="textarea" v-model="addNewForm.preface_cn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Preface_cn')" prop="preface_cn">
+            <el-input type="textarea" v-model="addNewForm.preface_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="新闻前言（英文）" prop="preface_en">
-            <el-input type="textarea" v-model="addNewForm.preface_en" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Preface_en')" prop="preface_en">
+            <el-input type="textarea" v-model="addNewForm.preface_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="日期" prop="date">
+          <el-form-item :label="$t('manage.Date')" prop="date">
             <el-date-picker
                 v-model="addNewForm.date"
                 type="date"
                 value-format="yyyy-MM-dd"
-                placeholder="选择日期">
+                :placeholder="$t('manage.SelectDate')">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="图片描述" prop="imageUrl">
+          <el-form-item :label="$t('manage.Image')" prop="imageUrl">
             <el-upload
                 ref="addNewFormUploadRef"
                 :action="uploadAction"
@@ -487,84 +521,86 @@
                 :on-success="handleAddNewImageUploadSuccess"
             >
               <i class="el-icon-plus avatar-uploader-icon"></i>
-              <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
+              <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
             </el-upload>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addNewDialogCancel">取 消</el-button>
-        <el-button type="primary" :loading="btnLoading" @click="addNewDialogConfirm">确 定</el-button>
+        <el-button @click="addNewDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="addNewDialogConfirm">{{$t('manage.Confirm')}}</el-button>
       </span>
     </el-dialog>
 
     <!--  新增发布的成果  -->
     <el-dialog
-        title="新增发布的成果"
+        :title="$t('manage.Add')"
         :visible.sync="addPublicationDialogVisible"
         width="800px"
         custom-class="add_publication_dialog_warp"
         :before-close="addPublicationDialogCancel">
       <div class="dialog-content">
         <el-form :model="addPublicationForm" :rules="rules" ref="addPublicationFormRef" label-width="140px">
-          <el-form-item label="标题（中文）" prop="title_cn">
-            <el-input v-model="addPublicationForm.title_cn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Title_cn')" prop="title_cn">
+            <el-input v-model="addPublicationForm.title_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="标题（英文）" prop="title_en">
-            <el-input v-model="addPublicationForm.title_en" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Title_en')" prop="title_en">
+            <el-input v-model="addPublicationForm.title_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="作者（中文）" prop="authors_cn">
-            <el-input type="textarea" v-model="addPublicationForm.authors_cn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Author_cn')" prop="authors_cn">
+            <el-input type="textarea" v-model="addPublicationForm.authors_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="作者（英文）" prop="authors_en">
-            <el-input type="textarea" v-model="addPublicationForm.authors_en" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Author_en')" prop="authors_en">
+            <el-input type="textarea" v-model="addPublicationForm.authors_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="期刊名称" prop="issn">
-            <el-input v-model="addPublicationForm.issn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.JournalTitle')" prop="issn">
+            <el-input v-model="addPublicationForm.issn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="期刊发布日期" prop="publish_date">
+          <el-form-item :label="$t('manage.PeriodicalPublicationDate')" prop="publish_date">
             <el-date-picker
                 v-model="addPublicationForm.publish_date"
                 type="date"
                 format="yyyy-MM-dd"
                 value-format="yyyy-MM-dd"
-                placeholder="选择日期">
+                :placeholder="$t('manage.SelectDate')">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="期刊链接地址" prop="publish_link">
-            <el-input v-model="addPublicationForm.publish_link" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.JournalLink')" prop="publish_link">
+            <el-input v-model="addPublicationForm.publish_link" :placeholder="$t('manage.PleaseEnter')">
+              <template slot="prepend">https://</template>
+            </el-input>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addPublicationDialogCancel">取 消</el-button>
-        <el-button type="primary" :loading="btnLoading" @click="addPublicationDialogConfirm">确 定</el-button>
+        <el-button @click="addPublicationDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="addPublicationDialogConfirm">{{$t('manage.Confirm')}}</el-button>
       </span>
     </el-dialog>
 
     <!--  新增人员  -->
     <el-dialog
-        title="新增新闻"
+        :title="$t('manage.Add')"
         :visible.sync="addPeopleDialogVisible"
         width="800px"
         custom-class="add_people_dialog_warp"
         :before-close="addPeopleDialogCancel">
       <div class="dialog-content">
         <el-form :model="addPeopleForm" :rules="rules" ref="addPeopleFormRef" label-width="140px">
-          <el-form-item label="姓名（中文）" prop="name_cn">
-            <el-input v-model="addPeopleForm.name_cn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Name_cn')" prop="name_cn">
+            <el-input v-model="addPeopleForm.name_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="姓名（英文）" prop="name_en">
-            <el-input v-model="addPeopleForm.name_en" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.Name_en')" prop="name_en">
+            <el-input v-model="addPeopleForm.name_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="联系方式（中文）" prop="contact_cn">
-            <el-input v-model="addPeopleForm.contact_cn" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.ContactContact_cn')" prop="contact_cn">
+            <el-input v-model="addPeopleForm.contact_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="联系方式（英文）" prop="contact_en">
-            <el-input v-model="addPeopleForm.contact_en" placeholder="请输入"></el-input>
+          <el-form-item :label="$t('manage.ContactContact_en')" prop="contact_en">
+            <el-input v-model="addPeopleForm.contact_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
-          <el-form-item label="类型" prop="type">
-            <el-select v-model="addPeopleForm.type" placeholder="请选择">
+          <el-form-item :label="$t('manage.Type')" prop="type">
+            <el-select v-model="addPeopleForm.type" :placeholder="$t('manage.PleaseChoose')">
               <el-option
                   v-for="(item, index) in peopleTypeOption"
                   :key="'peopleType' + index"
@@ -573,7 +609,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="图片描述" prop="imageUrl">
+          <el-form-item :label="$t('manage.Image')" prop="imageUrl">
             <el-upload
                 ref="addPeopleFormUploadRef"
                 :action="uploadAction"
@@ -589,14 +625,14 @@
                 :on-success="handleAddPeopleImageUploadSuccess"
             >
               <i class="el-icon-plus avatar-uploader-icon"></i>
-              <div class="el-upload__tip" slot="tip">最大允许上传个数为1，只能上传jpg/png文件，且不超过2MB</div>
+              <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
             </el-upload>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addPeopleDialogCancel">取 消</el-button>
-        <el-button type="primary" :loading="btnLoading" @click="addPeopleDialogConfirm">确 定</el-button>
+        <el-button @click="addPeopleDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="addPeopleDialogConfirm">{{$t('manage.Confirm')}}</el-button>
       </span>
     </el-dialog>
 
@@ -636,6 +672,12 @@ export default {
       uploadAction: upload_file_URL,
       rules: {
         describe: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        describe_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        describe_en: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
         imageUrl: [
@@ -695,6 +737,19 @@ export default {
         contact_en: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
+        groupName_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        groupName_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        contactAddress_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        contactAddress_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+
       },
       uploadHeaders: {
         Authorization: '',
@@ -713,11 +768,17 @@ export default {
       * */
       homeLoading: false,
       homeImageForm: {
-        describe: '',
+        describe_cn: '',
+        describe_en: '',
         imageUrl: '',
+        groupName_cn: '',
+        groupName_en: '',
+        contactAddress_cn: '',
+        contactAddress_en: '',
       },
       homeImageFileList: [],
-      homePaperValue: '',
+      homePaperValue_cn: '',
+      homePaperValue_en: '',
 
       /**
       * 编辑详情
@@ -849,7 +910,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setMenuList']),
+    ...mapMutations(['setMenuList', 'setGroupInfo']),
     /**
      * 获取数据
      * */
@@ -975,9 +1036,24 @@ export default {
       const res = await GetIndexIndexInfoApi()
       console.log(res)
       if (res) {
-        this.homePaperValue = res.index_info.home_article
+        this.homeImageForm.groupName_cn = res.index_info.group_name_cn
+        this.homeImageForm.groupName_en = res.index_info.group_name_en
+        this.homeImageForm.contactAddress_cn = res.index_info.contact_address_cn
+        this.homeImageForm.contactAddress_en = res.index_info.contact_address_en
+        this.homePaperValue_cn = res.index_info.home_article_cn
+        this.homePaperValue_en = res.index_info.home_article_en
         this.homeImageForm.imageUrl = res.index_info.home_image
-        this.homeImageForm.describe = res.index_info.home_image_description
+        this.homeImageForm.describe_cn = res.index_info.home_image_description_cn
+        this.homeImageForm.describe_en = res.index_info.home_image_description_en
+
+        this.setGroupInfo({
+          groupInfo: {
+            name_cn: this.homeImageForm.groupName_cn,
+            name_en: this.homeImageForm.groupName_en,
+            contactAddress_cn: this.homeImageForm.contactAddress_cn,
+            contactAddress_en: this.homeImageForm.contactAddress_en,
+          }
+        })
 
         if (this.homeImageForm.imageUrl !== '') {
           let arr = []
@@ -1051,8 +1127,14 @@ export default {
           this.btnLoading = true
           let param = {
             home_image: this.homeImageForm.imageUrl,
-            home_image_description: this.homeImageForm.describe,
-            home_article: this.homePaperValue,
+            home_image_description_cn: this.homeImageForm.describe_cn,
+            home_image_description_en: this.homeImageForm.describe_en,
+            home_article_cn: this.homePaperValue_cn,
+            home_article_en: this.homePaperValue_en,
+            group_name_cn: this.homeImageForm.groupName_cn,
+            group_name_en: this.homeImageForm.groupName_en,
+            contact_address_cn: this.homeImageForm.contactAddress_cn,
+            contact_address_en: this.homeImageForm.contactAddress_en,
           }
           const res = await GetIndexEditIndexApi({
             index_info: JSON.stringify(param)

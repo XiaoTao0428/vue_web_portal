@@ -119,6 +119,14 @@ const routes = [
         },
         component: () => import(/* webpackChunkName: "researchDetailsPage" */ '@/views/researchDetailsPage/researchDetailsPage.vue')
       },
+      {
+        path: '/peopleDetailsPage',
+        name: 'peopleDetailsPage',
+        meta: {
+          requireAuth: false,
+        },
+        component: () => import(/* webpackChunkName: "peopleDetailsPage" */ '@/views/peopleDetailsPage/peopleDetailsPage.vue')
+      },
     ]
   },
   {

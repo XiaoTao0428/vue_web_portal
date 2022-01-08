@@ -1,8 +1,8 @@
 <template>
-  <div class="news_warp" v-loading="dataLoading">
+  <div :class="'news_warp ' + newsClassName" v-loading="dataLoading">
     <div class="header">
       <page-header-block
-          :title="pageHeaderBlockTitle"
+          :title="pageHeaderBlockTitle['title_' + currLang]"
           :breadcrumb-list="breadcrumbList"
       ></page-header-block>
     </div>
@@ -35,18 +35,22 @@
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import ImageTextCard from "@/components/imageTextCard/imageTextCard";
 import {GetNewsNewsListApi} from '@/request/api'
+import mixins from "@/mixins/mixins";
 export default {
   name: "news",
+  mixins: [mixins],
   components: {ImageTextCard, PageHeaderBlock},
   data() {
     return {
       breadcrumbList: [
         {
-          title: '首页',
+          title_cn: '首页',
+          title_en: 'Home',
           to: '/home',
         },
         {
-          title: '新闻',
+          title_cn: '新闻',
+          title_en: 'News',
         }
       ],
       dataLoading: false,
@@ -64,15 +68,32 @@ export default {
   },
   computed: {
     pageHeaderBlockTitle() {
-      return this.breadcrumbList[this.breadcrumbList.length - 1].title
+      return this.breadcrumbList[this.breadcrumbList.length - 1]
     },
     currLang() {
       return this.$store.state.currLang
     },
   },
-  created() {
+  watch: {
+    currScreenSize() {
+      if (this.currScreenSize === 'lg' || this.currScreenSize === 'md') {
+        this.colNum = 3
+      }else if (this.currScreenSize === 'sm') {
+        this.colNum = 2
+      }else {
+        this.colNum = 1
+      }
+      this.initList(this.colNum)
+    }
   },
   mounted() {
+    if (this.currScreenSize === 'lg' || this.currScreenSize === 'md') {
+      this.colNum = 3
+    }else if (this.currScreenSize === 'sm') {
+      this.colNum = 2
+    }else {
+      this.colNum = 1
+    }
     this.loadData()
   },
   methods: {
@@ -99,22 +120,19 @@ export default {
     * 初始化层级列表
     * */
     initList(num) {
-      let arr = [...this.newNewsList]
-      if (num > 1) {
-        this.newsList.forEach((item, index) => {
-          let i = parseInt(index/num)
-          if (arr[i] && arr[i].length) {
-            arr[i].push(item)
-          }else {
-            arr[i] = []
-            arr[i].push(item)
-          }
-        })
-      }else {
-        arr = [...this.newsList]
-      }
+      console.log('colNum', this.colNum)
+      let arr = []
+      this.newsList.forEach((item, index) => {
+        let i = parseInt(index/num)
+        if (arr[i] && arr[i].length) {
+          arr[i].push(item)
+        }else {
+          arr[i] = []
+          arr[i].push(item)
+        }
+      })
       this.newNewsList = [...arr]
-      console.log('newNewsList', this.newNewsList)
+      console.log('newResearchDirectionList', this.newResearchDirectionList)
     },
     /**
     * 当前页码切换时触发
@@ -176,6 +194,11 @@ export default {
     max-width: 1440px;
     margin: 0 auto;
     text-align: center;
+  }
+}
+.news_warp-xs {
+  .content {
+    padding: 0 20px;
   }
 }
 </style>
