@@ -3,11 +3,12 @@
     <div class="content" v-loading="dataLoading">
       <div :class="headerClassName">
         <div class="header-icon">
-          <el-image
-              class="icon"
-              fit="contain"
-              :src="TSINGHUA_UNIVERSITY_logo"
-          ></el-image>
+<!--          <el-image-->
+<!--              class="icon"-->
+<!--              fit="contain"-->
+<!--              :src="TSINGHUA_UNIVERSITY_logo"-->
+<!--          ></el-image>-->
+          <img class="icon" :src="TSINGHUA_UNIVERSITY_logo">
           <el-divider class="divider" direction="vertical"></el-divider>
           <div class="title">
             {{groupInfo['name_' + currLang]}}
@@ -54,7 +55,7 @@
               <div class="menu-list-popup-content" :style="menuListPopupContentVisible?'left: -230px;':'left: 0px;'">
                 <div class="close-popup" @click="menuListPopupHide">
                   <i class="el-icon-close"></i>
-                  <span class="close-btn-title">关闭</span>
+                  <span class="close-btn-title">{{$t('index.Close')}}</span>
                 </div>
                 <div class="menu-item" v-for="(item, index) in menuList" :key="'menuList' + index">
                   <div class="menu-item-title-warp">
@@ -75,11 +76,11 @@
                 <div class="submenu-popup" v-if="menuListPopupContentVisible">
                   <div class="submenu-popup-header">
                     <div class="submenu-popup-header-title">
-                      标题
+                      {{$t('index.Title')}}
                     </div>
                     <div class="action" @click.stop="menuListPopupContentHide">
                       <i class="el-icon-arrow-left"></i>
-                      <span class="back-text">返回</span>
+                      <span class="back-text">{{$t('index.Back')}}</span>
                     </div>
                   </div>
                   <div class="submit-item" v-for="(item2, index2) in submitList" :key="'submenu' + index2" @click="handleMenuListSelect(item2)">
@@ -101,11 +102,12 @@
         <div class="footer-content">
           <div class="footer-content-top">
             <div class="footer-content-top-left">
-              <el-image
-                  class="icon"
-                  fit="contain"
-                  :src="TSINGHUA_UNIVERSITY_log4"
-              ></el-image>
+<!--              <el-image-->
+<!--                  class="icon"-->
+<!--                  fit="contain"-->
+<!--                  :src="TSINGHUA_UNIVERSITY_log4"-->
+<!--              ></el-image>-->
+              <img class="icon" :src="TSINGHUA_UNIVERSITY_log4">
               <div class="title">
                 {{groupInfo['name_' + currLang]}}
               </div>
@@ -262,11 +264,14 @@ export default {
      * 切换菜单
      * */
     handleMenuListSelect(obj) {
+      console.log('---------------', obj)
       let path = obj.router.split('?')[0]
       this.menuListPopupHide()
       if (this.currRoutePath === path) {
+
         this.$router.push(obj.router)
-        this.$router.go(0)
+        // this.$router.go(0)
+        location.reload()
       }else {
         this.setCurrRoutePath({
           currRoutePath: path
@@ -306,6 +311,7 @@ export default {
     * 菜单栏内容弹出层关闭
     * */
     menuListPopupContentHide() {
+      console.log('menuListPopupContentHide')
       this.menuListPopupContentVisible = false
     },
     /**
@@ -321,6 +327,7 @@ export default {
     userLogout() {
       this.logout({})
       this.$router.push('/home')
+      this.$message.success('退出成功')
     },
   }
 }
@@ -352,6 +359,7 @@ export default {
         justify-content: flex-start;
         .icon {
           height: 100%;
+          max-height: 100%;
           cursor: pointer;
         }
         .divider {

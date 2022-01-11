@@ -282,6 +282,12 @@ export default {
       .group-title {
         font-size: 22px;
       }
+      .group-content {
+
+        .card {
+          margin: 0 0 0 0;
+        }
+      }
     }
   }
 }

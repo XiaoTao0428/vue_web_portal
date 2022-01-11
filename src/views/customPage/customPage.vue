@@ -127,7 +127,8 @@ export default {
   }
   .content {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1040px;
+    padding: 0 20px;
     margin: 0 auto;
     box-sizing: border-box;
     .markdown-warp {

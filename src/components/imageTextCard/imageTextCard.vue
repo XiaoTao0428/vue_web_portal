@@ -76,7 +76,7 @@ export default {
     .image {
       width: 100%;
       //max-height: 300px;
-      margin-bottom: -4px;
+      margin-bottom: -6px;
     }
     .line {
       width: 100%;

@@ -123,7 +123,8 @@ export default {
       let path = obj.to.split('?')[0]
       if (this.currRoutePath === path) {
         this.$router.push(obj.to)
-        this.$router.go(0)
+        // this.$router.go(0)
+        location.reload()
       }else {
         this.setCurrRoutePath({
           currRoutePath: path

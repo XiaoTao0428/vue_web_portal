@@ -1,32 +1,34 @@
 <template>
   <div class="login_warp">
     <div class="content">
-      <div class="title">
-        登录
-      </div>
-      <el-form ref="loginFormRef" :rules="rules" :model="loginForm" label-width="0px">
-        <el-form-item label="" prop="username">
-          <el-input size="" v-model="loginForm.username"
-                    placeholder="请输入用户名"
-          >
-            <div class="icon" slot="prefix">
-              <img src="../../assets/icon/username.png">
-            </div>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="" prop="password">
-          <el-input v-model="loginForm.password"
-                    placeholder="请输入密码"
-                    type="password"
-          >
-            <div class="icon" slot="prefix">
-              <img src="../../assets/icon/password.png">
-            </div>
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <div class="btn">
-        <el-button type="primary" :loading="btnLoading" @click="submitForm">登 录</el-button>
+      <div class="card">
+        <div class="title">
+          登录
+        </div>
+        <el-form ref="loginFormRef" :rules="rules" :model="loginForm" label-width="0px">
+          <el-form-item label="" prop="username">
+            <el-input size="" v-model="loginForm.username"
+                      placeholder="请输入用户名"
+            >
+              <div class="icon" slot="prefix">
+                <img src="../../assets/icon/username.png">
+              </div>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="" prop="password">
+            <el-input v-model="loginForm.password"
+                      placeholder="请输入密码"
+                      type="password"
+            >
+              <div class="icon" slot="prefix">
+                <img src="../../assets/icon/password.png">
+              </div>
+            </el-input>
+          </el-form-item>
+        </el-form>
+        <div class="btn">
+          <el-button type="primary" :loading="btnLoading" @click="submitForm">登 录</el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -100,35 +102,43 @@ export default {
   justify-content: center;
 
   .content {
-    min-width: 400px;
-    padding: 30px 40px;
+    width: 100%;
+    padding: 0 40px;
     box-sizing: border-box;
-    background-color: #ffffff;
-    border-radius: 20px;
-
-    .title {
-      color: #333333;
+    .card {
       width: 100%;
-      font-size: 36px;
-      margin-bottom: 36px;
-    }
+      margin: 0 auto;
+      max-width: 400px;
+      padding: 30px 40px;
+      box-sizing: border-box;
+      background-color: #ffffff;
+      border-radius: 20px;
 
-    & /deep/ .el-form {
-      .el-form-item {
-        .el-form-item__label {
-          color: #ffffff;
-        }
+      .title {
+        color: #333333;
+        width: 100%;
+        font-size: 36px;
+        margin-bottom: 36px;
+      }
 
-        .icon {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+      & /deep/ .el-form {
+        width: 100%;
+        .el-form-item {
+          .el-form-item__label {
+            color: #ffffff;
+          }
 
-          img {
-            width: 20px;
-            height: 20px;
+          .icon {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+              width: 20px;
+              height: 20px;
+            }
           }
         }
       }

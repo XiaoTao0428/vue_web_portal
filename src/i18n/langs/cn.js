@@ -9,6 +9,9 @@ const cn = {
         'LogOut': '登出',
         'News': '新闻',
         'Home': '首页',
+        'Close': '关闭',
+        'Title': '标题',
+        'Back': '返回',
     },
     home: {
         'AllNews': '所有新闻',

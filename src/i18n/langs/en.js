@@ -7,7 +7,11 @@ const en = {
         'SiteContentCopyright': 'Site Content Copyright',
         'LogIn': 'Log In',
         'LogOut': 'Log Out',
+        'News': 'News',
         'Home': 'Home',
+        'Close': 'Close',
+        'Title': 'Title',
+        'Back': 'Back',
     },
     home: {
         'AllNews': 'ALL NEWS',

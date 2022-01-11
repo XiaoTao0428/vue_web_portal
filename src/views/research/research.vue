@@ -196,6 +196,10 @@ export default {
 .research_warp-xs {
   .content {
     padding: 0 20px;
+    & /deep/ .el-row {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
   }
 }
 </style>
