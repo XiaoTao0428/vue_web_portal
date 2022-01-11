@@ -1,15 +1,10 @@
 <template>
   <div class="index_warp">
     <div class="content" v-loading="dataLoading">
-      <div :class="headerClassName">
+      <div :class="'header ' + headerClassName">
         <div class="header-icon">
-<!--          <el-image-->
-<!--              class="icon"-->
-<!--              fit="contain"-->
-<!--              :src="TSINGHUA_UNIVERSITY_logo"-->
-<!--          ></el-image>-->
-          <img class="icon" :src="TSINGHUA_UNIVERSITY_logo">
-          <el-divider class="divider" direction="vertical"></el-divider>
+          <img class="icon" :src="Peking_University_logo">
+          <el-divider class="divider" direction="vertical" v-if="currScreenSize !== 'xs'"></el-divider>
           <div class="title">
             {{groupInfo['name_' + currLang]}}
           </div>
@@ -98,86 +93,32 @@
         <router-view></router-view>
       </div>
 
-      <div v-if="currScreenSize !== 'xs'" :class="footerClassName">
-        <div class="footer-content">
-          <div class="footer-content-top">
-            <div class="footer-content-top-left">
-<!--              <el-image-->
-<!--                  class="icon"-->
-<!--                  fit="contain"-->
-<!--                  :src="TSINGHUA_UNIVERSITY_log4"-->
-<!--              ></el-image>-->
-              <img class="icon" :src="TSINGHUA_UNIVERSITY_log4">
-              <div class="title">
-                {{groupInfo['name_' + currLang]}}
-              </div>
-            </div>
-            <div class="footer-content-top-right">
-              <div class="text">
-                {{groupInfo['contactAddress_' + currLang]}}
-              </div>
-              <el-image
-                  class="icon"
-                  fit="contain"
-                  :src="icon_footerpin"
-              ></el-image>
-            </div>
-          </div>
-          <div class="footer-content-bottom">
-            <span class="link" @click="handleMenuListSelect({router: '/home'})">{{$t('index.Home')}}</span>
-            <el-divider direction="vertical"></el-divider>
-            <span class="link">{{$t('index.PrivacyNotice')}}</span>
-            <el-divider direction="vertical"></el-divider>
-            <span>{{$t('index.SiteContentCopyright')}} © 2022</span>
-            <el-divider direction="vertical"></el-divider>
-            <span v-if="!token" class="link" @click="handleMenuListSelect({router: '/login'})">{{$t('index.LogIn')}}</span>
-            <span v-if="token" class="link" @click="userLogout">{{$t('index.LogOut')}}</span>
-          </div>
-        </div>
-      </div>
-      <div v-if="currScreenSize === 'xs'" class="footer-xs">
-        <div class="footer-content">
-          <div class="footer-content-top">
-            <el-image
-                class="icon"
-                fit="contain"
-                :src="TSINGHUA_UNIVERSITY_log4"
-            ></el-image>
-            <div class="title">
-              {{groupInfo['name_' + currLang]}}
-            </div>
-          </div>
-          <div class="footer-content-bottom">
-            <span class="link" @click="handleMenuListSelect({router: '/home'})">{{$t('index.Home')}}</span>
-            <el-divider direction="vertical"></el-divider>
-            <span class="link">{{$t('index.PrivacyNotice')}}</span>
-            <el-divider direction="vertical"></el-divider>
-          </div>
-          <div class="footer-content-bottom">
-            <span>{{$t('index.SiteContentCopyright')}} © 2022</span>
-            <el-divider direction="vertical"></el-divider>
-            <span v-if="!token" class="link" @click="handleMenuListSelect({router: '/login'})">{{$t('index.LogIn')}}</span>
-            <span v-if="token" class="link" @click="userLogout">{{$t('index.LogOut')}}</span>
-          </div>
-        </div>
+      <div class="footer">
+        <my-footer @handlerClickHome="handleMenuListSelect({router: '/home'})"
+                   @handlerClickLogin="handleMenuListSelect({router: '/login'})"
+                   @handlerClickLogout="userLogout"
+        ></my-footer>
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
-import TSINGHUA_UNIVERSITY_logo from '../../assets/icon/TSINGHUA_UNIVERSITY_logo2.png'
+import Peking_University_logo from '../../assets/icon/Peking_University3.png'
 import TSINGHUA_UNIVERSITY_log4 from '../../assets/icon/TSINGHUA_UNIVERSITY_logo4.png'
 import icon_footerpin from '../../assets/icon/icon-footerpin.png'
 import mixins from '@/mixins/mixins'
 import {GetTabTabListApi} from '@/request/api'
+import MyFooter from "@/components/myFooter/myFooter";
 export default {
   name: "index",
+  components: {MyFooter},
   mixins: [mixins],
   data() {
     return {
-      TSINGHUA_UNIVERSITY_logo: TSINGHUA_UNIVERSITY_logo,  // logo 图标
+      Peking_University_logo: Peking_University_logo,  // logo 图标
       TSINGHUA_UNIVERSITY_log4: TSINGHUA_UNIVERSITY_log4,  // logo 图标
       icon_footerpin: icon_footerpin,
       isInit: false,
@@ -340,13 +281,11 @@ export default {
   .content {
     width: 100%;
 
-    .header-lg,.header-md,.header-sm {
+    .header {
       width: 100%;
       max-width: 1440px;
       margin: 0 auto;
-      height: 77px;
-      padding: 0 50px;
-      box-sizing: border-box;
+      padding: 40px 50px 0 50px;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
@@ -373,7 +312,6 @@ export default {
           font-size: 24px;
           letter-spacing: -0.56px;
           color: #666666;
-          cursor: pointer;
         }
       }
       .actions {
@@ -382,15 +320,16 @@ export default {
         }
       }
     }
+
+    .header-lg,.header-md, {
+    }
     .header-sm {
-      padding: 0 20px;
-      box-sizing: border-box;
+      padding: 40px 20px 0 20px;
     }
     .header-xs {
       width: 100%;
       margin: 0 auto;
       padding: 20px 20px 0 20px;
-      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -398,6 +337,7 @@ export default {
 
       .header-icon {
         width: 100%;
+        height: auto;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -406,20 +346,10 @@ export default {
           width: 80%;
           max-width: 120px;
           min-width: 80px;
-          cursor: pointer;
-        }
-        .divider {
-          height: 100%;
-          width: 2px;
-          margin-left: 26px;
-          margin-right: 26px;
-          background-color: #c8c8c8;
         }
         .title {
           font-size: 24px;
-          letter-spacing: -0.56px;
-          color: #666666;
-          cursor: pointer;
+          margin-top: 5px;
         }
       }
       .actions {
@@ -668,45 +598,6 @@ export default {
               }
             }
 
-            //.menu-item-title {
-            //  color: #ffffff;
-            //  font-size: 15px;
-            //  font-weight: bold;
-            //}
-            //
-            //& /deep/ .menu {
-            //  background-color: #1B1B1B;
-            //
-            //  .is-active {
-            //    background-color: #1B1B1B;
-            //  }
-            //
-            //  .el-menu-item {
-            //    &:hover {
-            //      background-color: #666666;
-            //    }
-            //  }
-            //
-            //  .el-submenu {
-            //    .el-submenu__title {
-            //      &:hover {
-            //        background-color: #666666 !important;
-            //      }
-            //    }
-            //
-            //    .el-menu--inline {
-            //      background-color: #383838;
-            //      .el-menu-item {
-            //        .submenu-item-title {
-            //          color: #ffffff;
-            //        }
-            //        &:hover {
-            //          background-color: #666666;
-            //        }
-            //      }
-            //    }
-            //  }
-            //}
           }
         }
       }
@@ -718,182 +609,14 @@ export default {
 
     .main {
       width: 100%;
-      min-height: calc(100vh - 220px - 60px - 174px);
+      min-height: calc(100vh - 208px - 60px - 174px);
       margin-bottom: 60px;
     }
 
-    .footer-lg,.footer-md,.footer-sm {
+    .footer {
       width: 100%;
-      max-width: 1440px;
-      margin: 0 auto;
-      height: 220px;
-
-      .footer-content {
-        width: 100%;
-        height: 100%;
-        background-color: #003B4C;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 0 50px;
-        box-sizing: border-box;
-
-        .footer-content-top {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 10px;
-          .footer-content-top-left {
-            .icon {
-              height: 26px;
-              margin-bottom: 10px;
-            }
-            .title {
-              color: #ffffff;
-              font-size: 15px;
-              font-weight: bold;
-            }
-          }
-          .footer-content-top-right {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            .icon {
-              height: 29px;
-              margin-left: 10px;
-            }
-            .text {
-              color: #ffffff;
-              font-size: 15px;
-              text-align: right;
-              line-height: 22px;
-            }
-          }
-        }
-
-        .footer-content-bottom {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #c8c8c8;
-          font-size: 14px;
-          padding-top: 20px;
-
-          .link {
-            color: #c8c8c8;
-            cursor: pointer;
-            &:hover {
-              color: #c8c8c8;
-            }
-          }
-        }
-      }
-    }
-    .footer-xs {
-      width: 100%;
-
-      .footer-content {
-        width: 100%;
-        height: 100%;
-        background-color: #003B4C;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 30px 50px;
-        box-sizing: border-box;
-        .footer-content-top {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          .icon {
-            height: 26px;
-            margin-bottom: 10px;
-          }
-          .title {
-            color: #ffffff;
-            font-size: 15px;
-            font-weight: bold;
-          }
-        }
-        .footer-content-bottom {
-          width: 100%;
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          justify-content: center;
-          color: #c8c8c8;
-          font-size: 14px;
-          padding-top: 20px;
-
-          &:last-child {
-            padding-top: 10px;
-          }
-
-          .link {
-            color: #c8c8c8;
-            cursor: pointer;
-            &:hover {
-              color: #c8c8c8;
-            }
-          }
-        }
-      }
-
     }
   }
 
-}
-</style>
-<style lang="scss">
-.header-submenu {
-  .el-menu--popup {
-    border-top: 5px solid #D14900;
-    border-radius: 0 !important;
-    background-color: #1B1B1B !important;
-    padding: 10px 0 15px 0;
-    .el-menu-item {
-      background-color: #1B1B1B !important;
-      .text {
-        font-size: 18px;
-        color: #ffffff;
-        padding: 0 20px 0 20px;
-      }
-      .el-submenu {
-        .el-submenu__title {
-          background-color: #1B1B1B !important;
-          padding: 0 20px 0 0;
-        }
-        .header-submenu {
-          .el-menu--popup {
-            border-top: 5px solid #D14900;
-            border-radius: 0 !important;
-            background-color: #1B1B1B !important;
-            padding: 10px 0 15px 0;
-            .el-menu-item {
-              background-color: #1B1B1B !important;
-              .text {
-                font-size: 18px;
-                color: #ffffff;
-                padding: 0 20px 0 20px;
-              }
-              .el-submenu {
-                .el-submenu__title {
-                  background-color: #1B1B1B !important;
-                  padding: 0 20px 0 0;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
 }
 </style>
