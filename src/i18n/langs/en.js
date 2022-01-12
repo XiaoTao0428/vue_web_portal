@@ -12,6 +12,7 @@ const en = {
         'Close': 'Close',
         'Title': 'Title',
         'Back': 'Back',
+        'People': 'People',
     },
     home: {
         'AllNews': 'ALL NEWS',
@@ -29,11 +30,11 @@ const en = {
         'DeleteNode': 'Delete Node',
         'DeleteNodeHint': 'Are you sure you want to delete this node?',
 
-        'GroupInformation': '1. Group Information',
+        'GroupInformation': '1. Research Group Information',
         'HomeMainImage': '2. Home Main Image',
         'HomeArticles': '3. Home Articles',
-        'GroupName_cn': 'Group Name (Chinese)',
-        'GroupName_en': 'Group Name (English)',
+        'GroupName_cn': 'Research Group Name (Chinese)',
+        'GroupName_en': 'Research Group Name (English)',
         'ContactAddress_cn': 'Contact Address (Chinese)',
         'ContactAddress_en': 'Contact Address (English)',
         'ImageDescription_cn': 'Image Description (Chinese)',

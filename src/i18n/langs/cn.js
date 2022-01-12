@@ -12,6 +12,7 @@ const cn = {
         'Close': '关闭',
         'Title': '标题',
         'Back': '返回',
+        'People': '成员',
     },
     home: {
         'AllNews': '所有新闻',
@@ -29,11 +30,11 @@ const cn = {
         'DeleteNode': '删除节点',
         'DeleteNodeHint': '确定要删除此节点吗？',
 
-        'GroupInformation': '1、小组信息',
+        'GroupInformation': '1、课题组信息',
         'HomeMainImage': '2、首页主图',
         'HomeArticles': '3、首页文章',
-        'GroupName_cn': '小组名称（中文）',
-        'GroupName_en': '小组名称（英文）',
+        'GroupName_cn': '课题组名称（中文）',
+        'GroupName_en': '课题组名称（英文）',
         'ContactAddress_cn': '联系地址（中文）',
         'ContactAddress_en': '联系地址（英文）',
         'ImageDescription_cn': '图片描述（中文）',

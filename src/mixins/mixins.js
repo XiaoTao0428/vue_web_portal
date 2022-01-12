@@ -204,11 +204,11 @@ let mixins = {
         screenWidth: {
             immediate: true,
             handler(newValue) {
-                if (newValue >= 1440) {
+                if (newValue >= 1200) {
                     this.currScreenSize = 'lg'
-                }else if (newValue >= 970 && newValue < 1440) {
+                }else if (newValue >= 992 && newValue < 1200) {
                     this.currScreenSize = 'md'
-                }else if (newValue >= 768 && newValue < 1440) {
+                }else if (newValue >= 768 && newValue < 992) {
                     this.currScreenSize = 'sm'
                 }else {
                     this.currScreenSize = 'xs'

@@ -9,7 +9,7 @@
     <div class="content">
       <div class="group" v-for="(item, index) in newPublicationList" :key="'group' + index">
         <div class="group-title">
-          {{item.groupTitle}}
+          {{item['groupTitle_' + currLang]}}
         </div>
         <div class="group-content">
           <div class="content-item" v-for="(item2, index2) in item.data" :key="'group-item' + index2">
@@ -53,7 +53,7 @@ export default {
           to: '/home',
         },
         {
-          title_cn: '成果',
+          title_cn: '出版物',
           title_en: 'Publications',
         }
       ],
@@ -107,7 +107,8 @@ export default {
         }else {
           year = newYear
           let obj = {
-            groupTitle: newYear + ' Publications',
+            groupTitle_cn: newYear + ' 年出版物',
+            groupTitle_en: newYear + ' Publications',
             data: []
           }
           obj.data.push(item)
@@ -135,8 +136,6 @@ export default {
 .publications_warp {
   width: 100%;
   .header {
-    max-width: 1600px;
-    margin: 0 auto;
   }
   .content {
     width: 100%;
@@ -185,6 +184,12 @@ export default {
     max-width: 1440px;
     margin: 0 auto;
     text-align: center;
+  }
+}
+
+.publications_warp-sm {
+  .content {
+    padding: 0 20px;
   }
 }
 

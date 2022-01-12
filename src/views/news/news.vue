@@ -173,8 +173,6 @@ export default {
 .news_warp {
   width: 100%;
   .header {
-    max-width: 1600px;
-    margin: 0 auto;
   }
   .content {
     width: 100%;
@@ -196,6 +194,13 @@ export default {
     text-align: center;
   }
 }
+
+.news_warp-sm {
+  .content {
+    padding: 0 20px;
+  }
+}
+
 .news_warp-xs {
   .content {
     padding: 0 20px;

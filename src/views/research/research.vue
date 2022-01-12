@@ -170,8 +170,6 @@ export default {
 .research_warp {
   width: 100%;
   .header {
-    max-width: 1600px;
-    margin: 0 auto;
   }
   .content {
     width: 100%;
@@ -193,6 +191,13 @@ export default {
     text-align: center;
   }
 }
+
+.research_warp-sm {
+  .content {
+    padding: 0 20px;
+  }
+}
+
 .research_warp-xs {
   .content {
     padding: 0 20px;

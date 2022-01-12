@@ -71,7 +71,7 @@
                 <div class="submenu-popup" v-if="menuListPopupContentVisible">
                   <div class="submenu-popup-header">
                     <div class="submenu-popup-header-title">
-                      {{$t('index.Title')}}
+                      {{$t('index.People')}}
                     </div>
                     <div class="action" @click.stop="menuListPopupContentHide">
                       <i class="el-icon-arrow-left"></i>
@@ -94,9 +94,11 @@
       </div>
 
       <div class="footer">
-        <my-footer @handlerClickHome="handleMenuListSelect({router: '/home'})"
-                   @handlerClickLogin="handleMenuListSelect({router: '/login'})"
-                   @handlerClickLogout="userLogout"
+        <my-footer
+            :address="groupInfo['contactAddress_' + currLang]"
+            @handlerClickHome="handleMenuListSelect({router: '/home'})"
+            @handlerClickLogin="handleMenuListSelect({router: '/login'})"
+            @handlerClickLogout="userLogout"
         ></my-footer>
       </div>
     </div>
@@ -152,7 +154,7 @@ export default {
     },
     currRoutePath() {
       return this.$store.state.currRoutePath
-    }
+    },
   },
   created() {
     let url = this.$route.path
@@ -165,6 +167,7 @@ export default {
     this.setCurrLang({
       currLang: this.currLang
     })
+    currLangChange(this.currLang)
   },
   async mounted() {
     this.init()
@@ -229,6 +232,7 @@ export default {
       this.setCurrLang({
         currLang: this.currLang
       })
+      currLangChange(this.currLang)
       this.menuOverflow = false
       this.$nextTick(() => {
         this.init()
@@ -277,9 +281,15 @@ export default {
 <style lang="scss" scoped>
 .index_warp {
   width: 100%;
+  height: 100%;
 
   .content {
     width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
 
     .header {
       width: 100%;
@@ -364,6 +374,7 @@ export default {
       width: 100%;
       max-width: 1440px;
       height: 77px;
+      min-height: 77px;
       padding: 0 50px;
       box-sizing: border-box;
       margin-bottom: 20px;
@@ -609,7 +620,7 @@ export default {
 
     .main {
       width: 100%;
-      min-height: calc(100vh - 208px - 60px - 174px);
+      flex: 1;
       margin-bottom: 60px;
     }
 

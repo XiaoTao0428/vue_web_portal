@@ -12,7 +12,7 @@
       <template v-if="currScreenSize !== 'xs'">|</template>
       <span>版权所有©北京大学</span>
       <template v-if="currScreenSize !== 'xs'">|</template>
-      <span>地址：北京市海淀区颐和园路5号</span>
+      <span>地址：{{address}}</span>
     </div>
   </div>
 </template>
@@ -25,6 +25,12 @@ import mixins from "@/mixins/mixins";
 export default {
   name: "myFooter",
   mixins: [mixins],
+  props: {
+    address: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       Peking_University_logo: Peking_University_logo,  // logo 图标
