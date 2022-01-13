@@ -190,6 +190,13 @@ export default {
 .publications_warp-sm {
   .content {
     padding: 0 20px;
+    .group {
+      .group-content {
+        .content-item {
+          font-size: 16px;
+        }
+      }
+    }
   }
 }
 
@@ -218,7 +225,7 @@ export default {
           width: 100%;
           margin: 0 0 20px 0;
           color: #333333;
-          font-size: 18px;
+          font-size: 16px;
           line-height: 28px;
 
           .participant {

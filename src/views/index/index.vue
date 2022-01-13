@@ -3,7 +3,7 @@
     <div class="content" v-loading="dataLoading">
       <div :class="'header ' + headerClassName">
         <div class="header-icon">
-          <img class="icon" :src="Peking_University_logo">
+          <img class="icon" :src="Peking_University_logo" @click="toPekingUniversityHome">
           <el-divider class="divider" direction="vertical" v-if="currScreenSize !== 'xs'"></el-divider>
           <div class="title">
             {{groupInfo['name_' + currLang]}}
@@ -109,7 +109,6 @@
 <script>
 import { mapMutations } from 'vuex'
 import Peking_University_logo from '../../assets/icon/Peking_University3.png'
-import TSINGHUA_UNIVERSITY_log4 from '../../assets/icon/TSINGHUA_UNIVERSITY_logo4.png'
 import icon_footerpin from '../../assets/icon/icon-footerpin.png'
 import mixins from '@/mixins/mixins'
 import {GetTabTabListApi} from '@/request/api'
@@ -121,7 +120,6 @@ export default {
   data() {
     return {
       Peking_University_logo: Peking_University_logo,  // logo 图标
-      TSINGHUA_UNIVERSITY_log4: TSINGHUA_UNIVERSITY_log4,  // logo 图标
       icon_footerpin: icon_footerpin,
       isInit: false,
       currLang:'',  // 当前的语言
@@ -175,6 +173,12 @@ export default {
   },
   methods: {
     ...mapMutations(['setCurrLang', 'setCurrRoutePath', 'logout', 'setMenuList']),
+    /**
+    * 去北京大学首页
+    * */
+    toPekingUniversityHome() {
+      window.location.href = 'https://www.pku.edu.cn/'
+    },
     /**
     * 初始化页面宽度
     * */

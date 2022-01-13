@@ -38,19 +38,19 @@ let mixins = {
             }
             return name
         },
-        contentClassName() {
+        homeClassName() {
             let name = ''
             if (this.currScreenSize === 'lg') {
-                name = 'content-lg'
+                name = 'home_warp-lg'
             }
             if (this.currScreenSize === 'md') {
-                name = 'content-md'
+                name = 'home_warp-md'
             }
             if (this.currScreenSize === 'sm') {
-                name = 'content-sm'
+                name = 'home_warp-sm'
             }
             if (this.currScreenSize === 'xs') {
-                name = 'content-xs'
+                name = 'home_warp-xs'
             }
             return name
         },
@@ -198,6 +198,23 @@ let mixins = {
             }
             return name
         },
+        customPageClassName() {
+            let name = ''
+            if (this.currScreenSize === 'lg') {
+                name = 'customPage_warp-lg'
+            }
+            if (this.currScreenSize === 'md') {
+                name = 'customPage_warp-md'
+            }
+            if (this.currScreenSize === 'sm') {
+                name = 'customPage_warp-sm'
+            }
+            if (this.currScreenSize === 'xs') {
+                name = 'customPage_warp-xs'
+            }
+            return name
+        },
+
 
     },
     watch: {

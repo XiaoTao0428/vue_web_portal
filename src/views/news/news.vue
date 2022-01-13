@@ -8,7 +8,7 @@
     </div>
     <div class="content">
       <el-row class="row" :gutter="20" v-for="(item, index) in newNewsList" :key="'row' + index">
-        <el-col :span="24/colNum" v-for="(item2, index2) in item" :key="'col' + index2">
+        <el-col class="col" :span="24/colNum" v-for="(item2, index2) in item" :key="'col' + index2">
           <image-text-card
               :image-url="item2.cover_image"
               :date="item2.news_date"
@@ -178,11 +178,15 @@ export default {
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
-    padding: 0 50px;
+    padding: 0 40px;
     box-sizing: border-box;
     .row {
       width: 100%;
       margin-bottom: 60px;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      .col {
+      }
     }
     .content-item {
     }
@@ -197,17 +201,13 @@ export default {
 
 .news_warp-sm {
   .content {
-    padding: 0 20px;
+    padding: 0 10px;
   }
 }
 
 .news_warp-xs {
   .content {
-    padding: 0 20px;
-    & /deep/ .el-row {
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-    }
+    padding: 0 10px;
   }
 }
 </style>

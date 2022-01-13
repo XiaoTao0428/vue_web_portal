@@ -1,5 +1,5 @@
 <template>
-  <div class="customPage_warp">
+  <div :class="'customPage_warp ' + customPageClassName">
     <div class="header">
       <page-header-block
           :title="pageHeaderBlockTitle['title_' + currLang]"
@@ -22,8 +22,10 @@
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import {GetTabTabDetailApi} from '@/request/api'
+import mixins from "@/mixins/mixins";
 export default {
   name: "customPage",
+  mixins: [mixins],
   components: {PageHeaderBlock},
   data() {
     return {
@@ -122,8 +124,6 @@ export default {
 <style lang="scss" scoped>
 .customPage_warp {
   .header {
-    max-width: 1600px;
-    margin: 0 auto;
   }
   .content {
     width: 100%;
@@ -134,11 +134,18 @@ export default {
     .markdown-warp {
       box-shadow: none !important;
       z-index: 1;
-      font-size: 20px;
+      font-size: 18px;
       & /deep/ .v-show-content {
         padding: 0;
         background-color: #ffffff !important;
       }
+    }
+  }
+}
+.customPage_warp-sm, .customPage_warp-xs {
+  .content {
+    .markdown-warp {
+      font-size: 16px;
     }
   }
 }

@@ -105,7 +105,7 @@ export default {
   }
 }
 
-.imageTextCard_warp-xs {
+.imageTextCard_warp-sm, .imageTextCard_warp-xs {
   .description {
     font-size: 18px;
   }

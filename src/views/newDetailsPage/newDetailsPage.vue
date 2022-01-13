@@ -144,7 +144,6 @@ export default {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 20px;
-    box-sizing: border-box;
 
     & /deep/ .breadcrumb {
       font-size: 14px;
@@ -164,9 +163,6 @@ export default {
   }
   .content {
     width: 100%;
-    max-width: 1440px;
-    margin: 0 auto;
-    box-sizing: border-box;
 
     .image-wrapper {
       margin-bottom: 40px;
@@ -185,10 +181,7 @@ export default {
 
         .depiction-content {
           width: 100%;
-          max-width: 1200px;
-          padding: 0 50px;
-          box-sizing: border-box;
-          margin: 0 auto;
+          padding: 0 10%;
 
           .title {
             font-size: 50px;
@@ -233,25 +226,79 @@ export default {
   }
 }
 
+.newDetailsPage_warp-lg {
+  .content {
+    .image-wrapper {
+      .depiction {
+        .depiction-content {
+          width: 100%;
+          max-width: 1440px;
+          margin: 0 auto;
+          padding: 0 50px;
+        }
+      }
+    }
+  }
+}
+
+.newDetailsPage_warp-md {
+  .content {
+    .image-wrapper {
+      .depiction {
+        .depiction-content {
+          width: 100%;
+          padding: 0 50px;
+        }
+      }
+    }
+  }
+}
+
+.newDetailsPage_warp-sm {
+  .content {
+    .image-wrapper {
+      .depiction {
+        .depiction-content {
+          width: 100%;
+          padding: 0 20px;
+
+          .title {
+            font-size: 34px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 20px;
+          }
+
+          .date {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #ffffff;
+          }
+
+          .preface {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 30px;
+          }
+
+        }
+      }
+    }
+    .article {
+      .markdown-warp {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
 .newDetailsPage_warp-xs {
   .content {
-    width: 100%;
-    max-width: 1440px;
-    margin: 0 auto;
-    box-sizing: border-box;
-
     .image-wrapper {
-      margin-bottom: 40px;
-      position: relative;
-
-      .image {
-        width: 100%;
-      }
-
       .depiction {
         .depiction-content {
           padding: 0 20px;
-          box-sizing: border-box;
           .title {
             font-size: 20px;
             margin-bottom: 10px;
@@ -267,6 +314,11 @@ export default {
           }
         }
 
+      }
+    }
+    .article {
+      .markdown-warp {
+        font-size: 16px;
       }
     }
   }

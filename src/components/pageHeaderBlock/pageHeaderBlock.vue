@@ -69,7 +69,7 @@ export default {
 .pageHeaderBlock_warp {
   width: 100%;
   background: url("../../assets/icon/bg17.png") no-repeat right;
-  background-size: cover;
+  background-size: auto 100%;
   margin-bottom: 50px;
 
   .content {

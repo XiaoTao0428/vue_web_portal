@@ -7,10 +7,10 @@
           fit="contain"
       ></el-image>
     </div>
-    <div class="introduction">
+    <div class="introduction" v-if="introduction">
       {{introduction}}
     </div>
-    <div class="contact">
+    <div class="contact" v-if="contact">
       {{contact}}
     </div>
   </div>
@@ -64,16 +64,25 @@ export default {
   }
 
   .introduction {
-    font-size: 22px;
+    font-size: 20px;
     color: #000000;
     font-weight: bold;
     margin-top: 10px;
   }
 
   .contact {
-    font-size: 22px;
+    font-size: 18px;
     color: #000000;
     margin-top: 10px;
+  }
+}
+
+.peopleCard_warp-sm {
+  .introduction {
+    font-size: 18px;
+  }
+  .contact {
+    font-size: 16px;
   }
 }
 
@@ -82,7 +91,7 @@ export default {
     font-size: 18px;
   }
   .contact {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 </style>

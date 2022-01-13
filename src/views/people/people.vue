@@ -8,24 +8,48 @@
     </div>
     <div class="content">
       <div class="group" v-for="(item, index) in newPeopleList" :key="'group' + index">
-        <div class="group-title">
-          {{getPeopleTypeOptionLabel(item.groupTitle)['label_' + currLang]}}
-        </div>
-        <div class="group-content">
-<!--          <el-row class="row" :gutter="20" v-for="(item2, index2) in item.data" :key="'row' + index2">-->
-<!--            <el-col :span="24/colNum" v-for="(item3, index3) in item2" :key="'col' + index3">-->
-<!--              <people-card></people-card>-->
-<!--            </el-col>-->
-<!--          </el-row>-->
-
-          <div class="card" :style="item.groupTitle === 'teacher'?'cursor: pointer;':''" v-for="(item2, index2) in item.data" :key="'card' + index2" @click="toDetails(item2)">
-            <people-card
-                :image-url="item2.photo"
-                :introduction="item2['name_' + currLang]"
-                :contact="item2['contact_' + currLang]"
-            ></people-card>
+        <div class="group-teacher" v-if="item.groupTitle === 'teacher'">
+          <div class="group-title">
+            {{getPeopleTypeOptionLabel(item.groupTitle)['label_' + currLang]}}
           </div>
+          <div class="group-content">
+            <div class="row" style="cursor: pointer;" v-for="(item2, index2) in item.data" :key="'row' + index2" @click="toDetails(item2)">
+              <div class="card">
+                <people-card
+                    :image-url="item2.photo"
+                ></people-card>
+              </div>
+              <div class="introduction">
+                <div class="name">
+                  {{item2['name_' + currLang]}}
+                </div>
+                <div class="contact">
+                  {{item2['contact_' + currLang]}}
+                </div>
+                <p>{{item2['introduction_' + currLang]}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="group-other" v-if="item.groupTitle !== 'teacher'">
+          <div class="group-title">
+            {{getPeopleTypeOptionLabel(item.groupTitle)['label_' + currLang]}}
+          </div>
+          <div class="group-content">
+            <!--          <el-row class="row" :gutter="20" v-for="(item2, index2) in item.data" :key="'row' + index2">-->
+            <!--            <el-col :span="24/colNum" v-for="(item3, index3) in item2" :key="'col' + index3">-->
+            <!--              <people-card></people-card>-->
+            <!--            </el-col>-->
+            <!--          </el-row>-->
 
+            <div class="card" v-for="(item2, index2) in item.data" :key="'card' + index2" @click="toDetails(item2)">
+              <people-card
+                  :image-url="item2.photo"
+                  :introduction="item2['name_' + currLang]"
+                  :contact="item2['contact_' + currLang]"
+              ></people-card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -43,6 +67,10 @@ export default {
   components: {PeopleCard, PageHeaderBlock},
   data() {
     return {
+      test:
+          "Ted and Ginger Jenkins Professor of Information Science and Technology and Professor of Applied Physics\n" +
+          "Executive Officer of the Department of Applied Physics and Materials Science",
+
       breadcrumbList: [
         {
           title_cn: '首页',
@@ -228,8 +256,6 @@ export default {
 .people_warp {
   width: 100%;
   .header {
-    max-width: 1600px;
-    margin: 0 auto;
   }
   .content {
     width: 100%;
@@ -238,7 +264,6 @@ export default {
     .group {
       width: 100%;
       padding: 0 50px;
-      box-sizing: border-box;
       border-bottom: 6px double #f0f0f0;
       margin-bottom: 20px;
 
@@ -246,49 +271,211 @@ export default {
         border-bottom: 0;
       }
 
-      .group-title {
-        width: 100%;
-        font-size: 27px;
-        color: #000000;
-        font-weight: bold;
-        margin-bottom: 20px;
-      }
-      .group-content {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        justify-content: flex-start;
-
-        .card {
-          width: 400px;
-          margin: 0 40px 40px 0;
+      .group-teacher {
+        .group-title {
+          width: 100%;
+          font-size: 27px;
+          color: #000000;
+          font-weight: bold;
+          margin-bottom: 20px;
         }
+        .group-content {
+          width: 100%;
+          .row {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-bottom: 40px;
 
-        //.row {
-        //  width: 100%;
-        //  margin-bottom: 40px;
-        //}
-        //.group-item {
-        //}
+            .card {
+              max-width: 400px;
+              margin: 0 40px 0 0;
+            }
+
+            .introduction {
+              flex: 1;
+              .name {
+                font-size: 20px;
+                margin-bottom: 20px;
+                font-weight: bold;
+                color: #333333;
+              }
+              .contact {
+                font-size: 18px;
+                color: #333333;
+                margin-bottom: 20px;
+              }
+              p {
+                white-space: pre-wrap;
+                font-size: 18px;
+                line-height: 28px;
+                color: #333333;
+              }
+            }
+          }
+
+        }
+      }
+
+      .group-other {
+        .group-title {
+          width: 100%;
+          font-size: 27px;
+          color: #000000;
+          font-weight: bold;
+          margin-bottom: 20px;
+        }
+        .group-content {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          justify-content: flex-start;
+
+          .card {
+            max-width: 400px;
+            margin: 0 40px 40px 0;
+          }
+        }
+      }
+
+    }
+  }
+}
+
+.people_warp-lg, .people_warp-md {
+
+  .content {
+    .group {
+
+      .group-teacher {
+        .group-title {
+        }
+        .group-content {
+          .row {
+            .card {
+            }
+            .introduction {
+              flex: 1;
+              .name {
+                font-size: 20px;
+              }
+              .contact {
+                font-size: 18px;
+              }
+              p {
+                font-size: 18px;
+              }
+            }
+          }
+
+        }
+      }
+
+      .group-other {
+        .group-title {
+        }
+        .group-content {
+          .card {
+          }
+        }
       }
     }
   }
 }
-.people_warp-xs {
+
+.people_warp-sm {
+
   .content {
     .group {
       padding: 0 20px;
-      .group-title {
-        font-size: 22px;
-      }
-      .group-content {
+      .group-teacher {
+        .group-title {
+        }
+        .group-content {
+          .row {
+            .card {
+              width: 40%;
+            }
+            .introduction {
+              flex: 1;
+              .name {
+                font-size: 18px;
+              }
+              .contact {
+                font-size: 16px;;
+              }
+              p {
+                font-size: 16px;;
+              }
+            }
+          }
 
-        .card {
-          margin: 0 0 0 0;
+        }
+      }
+
+      .group-other {
+        .group-title {
+        }
+        .group-content {
+          .card {
+            width: 40%;
+          }
         }
       }
     }
   }
 }
+
+.people_warp-xs {
+
+  .content {
+    .group {
+      padding: 0 20px;
+      .group-teacher {
+        .group-title {
+          font-size: 22px;
+        }
+        .group-content {
+          .row {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            .card {
+              width: 100%;
+              margin: 0 0 10px 0;
+            }
+            .introduction {
+              .name {
+                font-size: 18px;
+                margin-bottom: 10px;
+              }
+              .contact {
+                font-size: 16px;;
+              }
+              p {
+                font-size: 16px;;
+              }
+            }
+          }
+
+        }
+      }
+
+      .group-other {
+        .group-title {
+        }
+        .group-content {
+          .card {
+            width: 100%;
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
 </style>

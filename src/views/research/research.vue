@@ -175,7 +175,7 @@ export default {
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
-    padding: 0 50px;
+    padding: 0 40px;
     box-sizing: border-box;
     .row {
       width: 100%;
@@ -198,13 +198,13 @@ export default {
 
 .research_warp-sm {
   .content {
-    padding: 0 20px;
+    padding: 0 10px;
   }
 }
 
 .research_warp-xs {
   .content {
-    padding: 0 20px;
+    padding: 0 10px;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="peopleDetailsPage_warp" v-loading="dataLoading">
+  <div :class="'peopleDetailsPage_warp ' + customPageClassName" v-loading="dataLoading">
     <page-header-block
         :title="peopleData['name_' + currLang]"
         :breadcrumb-list="breadcrumbList"
@@ -20,8 +20,10 @@
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import {GetMemberMemberDetailApi} from "@/request/api";
+import mixins from "@/mixins/mixins";
 export default {
   name: "peopleDetailsPage",
+  mixins: [mixins],
   components: {PageHeaderBlock},
   data() {
     return {
@@ -80,11 +82,18 @@ export default {
     .markdown-warp {
       box-shadow: none !important;
       z-index: 1;
-      font-size: 20px;
+      font-size: 18px;
       & /deep/ .v-show-content {
         padding: 0;
         background-color: #ffffff !important;
       }
+    }
+  }
+}
+.customPage_warp-sm, .customPage_warp-xs {
+  .content {
+    .markdown-warp {
+      font-size: 16px;
     }
   }
 }

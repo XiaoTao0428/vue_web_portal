@@ -50,7 +50,7 @@ const en = {
         'Preface_en': 'Preface (English)',
         'Image': 'Image',
         'Action': 'Action',
-        'EditContent': 'Edit Content',
+        'EditContent': 'Edit Details',
         'Date': 'Date',
         'Author': 'Author',
         'Author_cn': 'Author (Chinese)',

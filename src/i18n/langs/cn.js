@@ -50,7 +50,7 @@ const cn = {
         'Preface_en': '前言（英文）',
         'Image': '图片',
         'Action': '操作',
-        'EditContent': '编辑内容',
+        'EditContent': '编辑详情',
         'Date': '日期',
         'Author_cn': '作者（中文）',
         'Author_en': '作者（英文）',
