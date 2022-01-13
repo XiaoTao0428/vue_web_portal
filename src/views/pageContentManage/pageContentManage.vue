@@ -10,7 +10,7 @@
               {{$t('manage.GroupInformation')}}
             </div>
             <div class="card-content">
-              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="140px">
+              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="160px">
                 <el-form-item :label="$t('manage.GroupName_cn')" prop="groupName_cn">
                   <el-input v-model="homeImageForm.groupName_cn" :rows="3"></el-input>
                 </el-form-item>
@@ -326,6 +326,16 @@
               </template>
             </el-table-column>
             <el-table-column
+                prop="introduction_cn"
+                :label="$t('manage.Introduction_cn')"
+            >
+            </el-table-column>
+            <el-table-column
+                prop="introduction_en"
+                :label="$t('manage.Introduction_en')"
+            >
+            </el-table-column>
+            <el-table-column
                 prop="photo"
                 :label="$t('manage.Image')"
             >
@@ -609,6 +619,12 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item v-if="addPeopleForm.type === 'teacher'" :label="$t('manage.Introduction_cn')" prop="introduction_cn">
+            <el-input type="textarea" v-model="addPeopleForm.introduction_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item v-if="addPeopleForm.type === 'teacher'" :label="$t('manage.Introduction_en')" prop="introduction_en">
+            <el-input type="textarea" v-model="addPeopleForm.introduction_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
           <el-form-item :label="$t('manage.Image')" prop="imageUrl">
             <el-upload
                 ref="addPeopleFormUploadRef"
@@ -749,7 +765,12 @@ export default {
         contactAddress_en: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
-
+        introduction_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        introduction_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
       },
       uploadHeaders: {
         Authorization: '',
@@ -857,6 +878,8 @@ export default {
         name_en: '',
         contact_cn: '',
         contact_en: '',
+        introduction_cn: '',
+        introduction_en: '',
       },
 
     }
@@ -1544,6 +1567,8 @@ export default {
             name_en: this.addPeopleForm.name_en,
             contact_cn: this.addPeopleForm.contact_cn,
             contact_en: this.addPeopleForm.contact_en,
+            introduction_cn: this.addPeopleForm.introduction_cn,
+            introduction_en: this.addPeopleForm.introduction_en,
             detail_cn: '',
             detail_en: '',
           })

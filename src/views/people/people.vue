@@ -163,6 +163,16 @@ export default {
           newPeopleList.push(obj)
         }
       })
+
+      let obj = null
+      newPeopleList.forEach((item, index) => {
+        if (item.groupTitle === 'teacher') {
+          obj = item
+          newPeopleList.splice(index, 1)
+        }
+      })
+      newPeopleList.unshift(obj)
+
       this.newPeopleList = [...newPeopleList]
       console.log('newPeopleList', this.newPeopleList)
     },

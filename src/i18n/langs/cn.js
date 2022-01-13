@@ -68,6 +68,8 @@ const cn = {
         'PleaseEnter': '请输入',
         'SelectDate': '选择日期',
         'PleaseChoose': '请选择',
+        'Introduction_cn': '简介（中文）',
+        'Introduction_en': '简介（英文）',
 
         'Home': '首页',
         'Research': '研究方向',

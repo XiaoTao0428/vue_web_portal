@@ -69,6 +69,8 @@ const en = {
         'PleaseEnter': 'Please Enter',
         'SelectDate': 'Select Date',
         'PleaseChoose': 'Please Choose',
+        'Introduction_cn': 'Induction (Chinese)',
+        'Introduction_en': 'Induction (English)',
 
         'Home': 'Home',
         'Research': 'Research',
