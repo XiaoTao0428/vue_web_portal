@@ -40,6 +40,7 @@
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import {GetPublicationPublicationListApi} from "@/request/api";
 import mixins from "@/mixins/mixins";
+import {mapMutations} from "vuex";
 export default {
   name: "publications",
   mixins: [mixins],
@@ -75,10 +76,16 @@ export default {
       return this.$store.state.currLang
     },
   },
+  created() {
+    this.setCurrRouteKey({
+      currRouteKey: '4'
+    })
+  },
   mounted() {
     this.loadData()
   },
   methods: {
+    ...mapMutations(['setCurrRouteKey']),
     /**
      * 获取数据
      * */

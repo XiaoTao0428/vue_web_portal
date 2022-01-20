@@ -5,9 +5,10 @@
         <div class="header-icon">
           <img class="icon" :src="Peking_University_logo" @click="toPekingUniversityHome">
           <el-divider class="divider" direction="vertical" v-if="currScreenSize !== 'xs'"></el-divider>
-          <div class="title">
-            {{groupInfo['name_' + currLang]}}
-          </div>
+          <img class="research-group-icon" v-if="researchGroupIcon" :src="researchGroupIcon">
+<!--          <div class="title">-->
+<!--            {{researchGroupIcon}}-->
+<!--          </div>-->
         </div>
         <div class="actions">
           <el-select class="lang-change" size="mini" v-model="currLang" @change="langChange" placeholder="请选择">
@@ -26,16 +27,20 @@
         <!--    大屏幕时的效果    -->
         <div class="menu-list-lg" :style="isInit?'':'overflow-x: auto;'" id="headerMenuId" v-if="!menuOverflow && currScreenSize === 'lg'">
           <div class="menu-item" v-for="(item, index) in menuList" :key="'menuList' + index">
-            <span class="menu-item-title" @click="handleMenuListSelect(item)">{{item['title_' + currLang]}}</span>
+            <span :class="isChecked(item.key)?'menu-item-title menu-item-title-checked':'menu-item-title'" @click="handleMenuListSelect(item)">
+              {{item['title_' + currLang]}}
+            </span>
             <div class="submenu" v-if="item.children && item.children.length > 0">
               <div class="submit-item" v-for="(item2, index2) in item.children" :key="'submenu' + index2">
-                <span class="submit-item-title" @click="handleMenuListSelect(item2)">{{item2['title_' + currLang]}}</span>
+                <span :class="isChecked(item2.key)?'submit-item-title submit-item-title-checked':'submit-item-title'" @click="handleMenuListSelect(item2)">
+                  {{item2['title_' + currLang]}}
+                </span>
               </div>
             </div>
           </div>
 
           <div class="menu-item" v-if="token">
-            <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">{{$t('index.Manage')}}</span>
+            <span :class="isChecked('99999')?'menu-item-title menu-item-title-checked': 'menu-item-title'" @click="handleMenuListSelect({router: '/manage', key: '99999'})">{{$t('index.Manage')}}</span>
           </div>
         </div>
 
@@ -54,7 +59,7 @@
                 </div>
                 <div class="menu-item" v-for="(item, index) in menuList" :key="'menuList' + index">
                   <div class="menu-item-title-warp">
-                    <span class="menu-item-title" @click="handleMenuListSelect(item)">{{item['title_' + currLang]}}</span>
+                    <span :class="isChecked(item.key)?'menu-item-title menu-item-title-checked':'menu-item-title'" @click="handleMenuListSelect(item)">{{item['title_' + currLang]}}</span>
                     <span class="icon">
                     <i v-if="item.children && item.children.length > 0" class="el-icon-arrow-right" @click="menuListPopupContentVisibleChange(item.children)"></i>
                   </span>
@@ -63,7 +68,7 @@
 
                 <div class="menu-item" v-if="token">
                   <div class="menu-item-title-warp">
-                    <span class="menu-item-title" @click="handleMenuListSelect({router: '/manage'})">{{$t('index.Manage')}}</span>
+                    <span :class="isChecked('99999')?'menu-item-title menu-item-title-checked':'menu-item-title'" @click="handleMenuListSelect({router: '/manage', key: '99999'})">{{$t('index.Manage')}}</span>
                     <span class="icon"></span>
                   </div>
                 </div>
@@ -79,7 +84,7 @@
                     </div>
                   </div>
                   <div class="submit-item" v-for="(item2, index2) in submitList" :key="'submenu' + index2" @click="handleMenuListSelect(item2)">
-                    <span class="submit-item-title">{{item2['title_' + currLang]}}</span>
+                    <span :class="isChecked(item2.key)?'submit-item-title submit-item-title-checked':'submit-item-title'">{{item2['title_' + currLang]}}</span>
                   </div>
                 </div>
               </div>
@@ -96,8 +101,8 @@
       <div class="footer">
         <my-footer
             :address="groupInfo['contactAddress_' + currLang]"
-            @handlerClickHome="handleMenuListSelect({router: '/home'})"
-            @handlerClickLogin="handleMenuListSelect({router: '/login'})"
+            @handlerClickHome="handleMenuListSelect({router: '/home', key: '1'})"
+            @handlerClickLogin="handleMenuListSelect({router: '/login', key: ''})"
             @handlerClickLogout="userLogout"
         ></my-footer>
       </div>
@@ -111,14 +116,16 @@ import { mapMutations } from 'vuex'
 import Peking_University_logo from '../../assets/icon/Peking_University3.png'
 import icon_footerpin from '../../assets/icon/icon-footerpin.png'
 import mixins from '@/mixins/mixins'
-import {GetTabTabListApi} from '@/request/api'
+import {GetIndexIndexInfoApi, GetTabTabListApi} from '@/request/api'
 import MyFooter from "@/components/myFooter/myFooter";
+import {file_before_url} from "@/config/baseURL";
 export default {
   name: "index",
   components: {MyFooter},
   mixins: [mixins],
   data() {
     return {
+      fileBeforeUrl: file_before_url,
       Peking_University_logo: Peking_University_logo,  // logo 图标
       icon_footerpin: icon_footerpin,
       isInit: false,
@@ -135,14 +142,27 @@ export default {
       ],
       menuOverflow: false,  // 菜单栏是否溢出
       menuListPopupVisible: false,  // 菜单栏弹窗
-      menuActiveIndex: '1',  // 激活的菜单栏
       submitList: [],  // 子菜单列表
       menuListPopupContentVisible: false,
+      currMenuKey: '1',
+
+      homeImageForm: {
+        imageUrl: '',
+        contactAddress_cn: '',
+        contactAddress_en: '',
+      },
     }
   },
   computed: {
     groupInfo() {
-      return  this.$store.state.groupInfo
+      return this.$store.state.groupInfo
+    },
+    researchGroupIcon() {
+      if (this.groupInfo.icon) {
+        return this.fileBeforeUrl + '' + this.groupInfo.icon
+      }else {
+        return ''
+      }
     },
     token() {
       return this.$store.state.token
@@ -153,10 +173,24 @@ export default {
     currRoutePath() {
       return this.$store.state.currRoutePath
     },
+    currRouteKey() {
+      return this.$store.state.currRouteKey
+    }
+  },
+  watch: {
+    currRouteKey: {
+      handler: function () {
+        if (this.currRouteKey !== '') {
+          this.currMenuKey = this.currRouteKey
+        }else {
+          this.currMenuKey = '1'
+        }
+      },
+      immediate: true
+    }
   },
   created() {
     let url = this.$route.path
-    console.log(url)
     this.setCurrRoutePath({
       currRoutePath: url
     })
@@ -169,10 +203,79 @@ export default {
   },
   async mounted() {
     this.init()
+    await this.loadHomeData()
     await this.loadData()
   },
   methods: {
-    ...mapMutations(['setCurrLang', 'setCurrRoutePath', 'logout', 'setMenuList']),
+    ...mapMutations(['setCurrLang', 'setCurrRoutePath', 'setCurrRouteKey', 'logout', 'setMenuList', 'setGroupInfo']),
+    /**
+     * 初始化路由key
+     * */
+    initCurrRouteKey() {
+      console.log(this.menuList)
+      let url = this.$route.path
+      let query = this.$route.query
+      console.log(url)
+      console.log(query)
+      if (url === '/manage' || url === '/pageContentManage' || url === '/pageHeaderMenuManage') {
+        this.setCurrRouteKey({
+          currRouteKey: '99999'
+        })
+      }else {
+        let key = ''
+        let children = []
+        this.menuList.forEach((item, index) => {
+          if (item.router === url) {
+            key = item.key
+            children = item.children || []
+          }else {
+            let routerArr = item.router.split('?')
+            if (routerArr[0] === url) {
+              key = item.item
+            }
+          }
+        })
+        if (key) {
+
+          if (query && query.search) {
+            let newKey = ''
+            children.forEach((item, index) => {
+              let newRouter = this.getUrlParam(item.router, 'search')
+              if (query.search === newRouter) {
+                newKey = item.key
+              }
+            })
+            this.setCurrRouteKey({
+              currRouteKey: newKey
+            })
+          }else {
+            this.setCurrRouteKey({
+              currRouteKey: key
+            })
+          }
+        }
+      }
+    },
+    /**
+     * 获取首页数据
+     * */
+    async loadHomeData() {
+      this.dataLoading = true
+      const res = await GetIndexIndexInfoApi()
+      if (res) {
+        this.homeImageForm.contactAddress_cn = res.index_info.contact_address_cn
+        this.homeImageForm.contactAddress_en = res.index_info.contact_address_en
+        this.homeImageForm.imageUrl = res.index_info.home_image
+
+        this.setGroupInfo({
+          groupInfo: {
+            icon: this.homeImageForm.imageUrl,
+            contactAddress_cn: this.homeImageForm.contactAddress_cn,
+            contactAddress_en: this.homeImageForm.contactAddress_en,
+          }
+        })
+      }
+    },
     /**
     * 去北京大学首页
     * */
@@ -200,7 +303,6 @@ export default {
     async loadData() {
       this.dataLoading = true
       const res = await GetTabTabListApi()
-      console.log(res)
       if (res) {
         this.setMenuList({
           menuList: res.tab_list
@@ -212,11 +314,9 @@ export default {
      * 切换菜单
      * */
     handleMenuListSelect(obj) {
-      console.log('---------------', obj)
       let path = obj.router.split('?')[0]
       this.menuListPopupHide()
       if (this.currRoutePath === path) {
-
         this.$router.push(obj.router)
         // this.$router.go(0)
         location.reload()
@@ -226,6 +326,48 @@ export default {
         })
         this.$router.push(obj.router)
       }
+    },
+    /**
+     * 是否是选中状态
+     * */
+    isChecked(key) {
+      if (!this.currMenuKey) {
+        return
+      }
+      let state = false
+      if (this.currMenuKey.indexOf('-') === -1) {
+        if (this.currMenuKey === key) {
+          state = true
+        }
+      }else {
+        if (this.currMenuKey === key) {
+          state = true
+        }
+        let currMenuKeyArr = this.currMenuKey.split('-')
+        if (currMenuKeyArr[0] === key) {
+          state = true
+        }
+      }
+      return state
+    },
+    /**
+     * 获取url链接中的指定参数
+     * */
+    getUrlParam(url, name){
+      let param = ''
+
+      if (url.indexOf('?') !== -1) {
+        let allParamsStr = url.split('?')[1]
+        let allParams = allParamsStr.split('&')
+        allParams.forEach((item, index) => {
+          let paramArr = item.split('=')
+          if (paramArr[0] === name) {
+            param = paramArr[1]
+          }
+        })
+      }
+
+      return param
     },
     /**
     * 语言切换
@@ -260,7 +402,6 @@ export default {
     * 菜单栏内容弹出层关闭
     * */
     menuListPopupContentHide() {
-      console.log('menuListPopupContentHide')
       this.menuListPopupContentVisible = false
     },
     /**
@@ -322,6 +463,11 @@ export default {
           margin-right: 26px;
           background-color: #c8c8c8;
         }
+        .research-group-icon {
+          height: 75%;
+          max-height: 75%;
+          max-width: 100%;
+        }
         .title {
           font-size: 24px;
           letter-spacing: -0.56px;
@@ -365,6 +511,13 @@ export default {
           font-size: 24px;
           margin-top: 5px;
         }
+        .research-group-icon {
+          height: 75%;
+          max-height: 75%;
+          max-width: 100%;
+          cursor: pointer;
+          margin-top: 10px;
+        }
       }
       .actions {
         margin-top: 10px;
@@ -377,8 +530,9 @@ export default {
     .menu-warp {
       width: 100%;
       max-width: 1440px;
-      height: 77px;
-      min-height: 77px;
+      height: 47px;
+      min-height: 47px;
+      margin-top: 30px;
       padding: 0 50px;
       box-sizing: border-box;
       margin-bottom: 20px;
@@ -390,7 +544,8 @@ export default {
         height: 100%;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between;
+        border-bottom: 3px solid #3E4F6D;
 
         .menu-item {
           height: 100%;
@@ -408,6 +563,9 @@ export default {
           &:first-child {
             padding-left: 0;
           }
+          &:last-child {
+            padding-right: 0;
+          }
 
           .menu-item-title {
             white-space: nowrap;
@@ -422,12 +580,16 @@ export default {
             }
           }
 
+          .menu-item-title-checked {
+            color: #D14900;
+          }
+
           .submenu {
             width: 300px;
             background-color: #1B1B1B;
             border-top: 5px solid #D14900;
             position: absolute;
-            top: 70px;
+            top: 44px;
             left: 0;
             display: none;
             flex-direction: column;
@@ -451,6 +613,10 @@ export default {
                 &:hover {
                   //color: #D14900;
                 }
+              }
+
+              .submit-item-title-checked {
+                color: #D14900;
               }
 
               &:last-child {
@@ -550,6 +716,9 @@ export default {
                       background-color: #666666;
                     }
                   }
+                  .menu-item-title-checked {
+                    color: #D14900;
+                  }
                   .icon {
                     width: 17px;
                     .el-icon-arrow-right {
@@ -607,6 +776,9 @@ export default {
                     color: #f0f0f0;
                     width: 100%;
                     font-weight: bold;
+                  }
+                  .submit-item-title-checked {
+                    color: #D14900;
                   }
                 }
 

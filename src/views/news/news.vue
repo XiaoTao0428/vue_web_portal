@@ -36,6 +36,7 @@ import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import ImageTextCard from "@/components/imageTextCard/imageTextCard";
 import {GetNewsNewsListApi} from '@/request/api'
 import mixins from "@/mixins/mixins";
+import {mapMutations} from "vuex";
 export default {
   name: "news",
   mixins: [mixins],
@@ -86,6 +87,11 @@ export default {
       this.initList(this.colNum)
     }
   },
+  created() {
+    this.setCurrRouteKey({
+      currRouteKey: '3'
+    })
+  },
   mounted() {
     if (this.currScreenSize === 'lg' || this.currScreenSize === 'md') {
       this.colNum = 3
@@ -97,6 +103,7 @@ export default {
     this.loadData()
   },
   methods: {
+    ...mapMutations(['setCurrRouteKey']),
     /**
     * 获取数据
     * */

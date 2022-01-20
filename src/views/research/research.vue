@@ -35,6 +35,7 @@ import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import ImageTextCard from "@/components/imageTextCard/imageTextCard";
 import mixins from "@/mixins/mixins";
 import {GetResearchTesearchListApi} from '@/request/api'
+import {mapMutations} from "vuex";
 export default {
   name: "research",
   mixins: [mixins],
@@ -86,6 +87,11 @@ export default {
       this.initList(this.colNum)
     }
   },
+  created() {
+    this.setCurrRouteKey({
+      currRouteKey: '2'
+    })
+  },
   mounted() {
     if (this.currScreenSize === 'lg' || this.currScreenSize === 'md') {
       this.colNum = 3
@@ -97,6 +103,7 @@ export default {
     this.loadData()
   },
   methods: {
+    ...mapMutations(['setCurrRouteKey']),
     /**
      * 获取数据
      * */
@@ -106,7 +113,6 @@ export default {
         page_num: this.currentPage,
         page_size: this.pageSize,
       })
-      console.log(res)
       if (res) {
         this.researchDirectionList = res.research_info_list
         this.pageCount = res.num_of_pages
@@ -120,7 +126,6 @@ export default {
      * 初始化层级列表
      * */
     initList(num) {
-      console.log('colNum', this.colNum)
       let arr = []
       this.researchDirectionList.forEach((item, index) => {
         let i = parseInt(index/num)
@@ -132,13 +137,11 @@ export default {
         }
       })
       this.newResearchDirectionList = [...arr]
-      console.log('newResearchDirectionList', this.newResearchDirectionList)
     },
     /**
      * 当前页码切换时触发
      * */
     currentPageChange() {
-      console.log('currentPage', this.currentPage)
       this.loadData()
     },
     toDetails(data) {
@@ -157,7 +160,6 @@ export default {
           }
         ]
       }
-      console.log(data)
       this.$router.push({
         path: 'researchDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
       })

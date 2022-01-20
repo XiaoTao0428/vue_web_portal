@@ -110,12 +110,15 @@ export default {
     // }
   },
   created() {
+    this.setCurrRouteKey({
+      currRouteKey: '1'
+    })
   },
   mounted() {
     this.loadHomeData()
   },
   methods: {
-    ...mapMutations(['setGroupInfo']),
+    ...mapMutations(['setGroupInfo', 'setCurrRouteKey']),
     /**
      * 获取首页数据
      * */

@@ -34,6 +34,7 @@
 
 <script>
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
+import {mapMutations} from "vuex";
 
 export default {
   name: "manage",
@@ -72,8 +73,12 @@ export default {
     if (url === '/pageContentManage') {
       this.menuDefaultActive = '2'
     }
+    this.setCurrRouteKey({
+      currRouteKey: '99999'
+    })
   },
   methods: {
+    ...mapMutations(['setCurrRouteKey']),
     /**
     * 切换侧边菜单栏
     * */

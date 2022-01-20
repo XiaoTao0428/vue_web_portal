@@ -23,6 +23,7 @@
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import {GetTabTabDetailApi} from '@/request/api'
 import mixins from "@/mixins/mixins";
+import {mapMutations} from "vuex";
 export default {
   name: "customPage",
   mixins: [mixins],
@@ -67,19 +68,27 @@ export default {
     this.initPageHeaderBlock()
   },
   methods: {
+    ...mapMutations(['setCurrRouteKey']),
     /**
      * 初始化页面头部卡片
      * */
     async initPageHeaderBlock() {
       let id = ''
+      let key = ''
       this.menuList.forEach((item, index) => {
         let newPageName = this.getUrlParam(item.router, 'pageName')
         if (newPageName === this.currPageName) {
           this.breadcrumbList[1].title_cn = item.title_cn
           this.breadcrumbList[1].title_en = item.title_en
+          key = item.key
           id = item.id
         }
       })
+
+      this.setCurrRouteKey({
+        currRouteKey: key
+      })
+
       await this.loadData(id)
     },
     /**

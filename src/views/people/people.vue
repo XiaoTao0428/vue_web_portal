@@ -61,6 +61,7 @@ import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import PeopleCard from "@/components/peopleCard/peopleCard";
 import {GetMemberMemberListApi} from "@/request/api";
 import mixins from "@/mixins/mixins";
+import {mapMutations} from "vuex";
 export default {
   name: "people",
   mixins: [mixins],
@@ -100,6 +101,8 @@ export default {
   async mounted() {
     if (this.$route.query && this.$route.query.search) {
       this.search = this.$route.query.search
+
+      let key = ''
       this.menuList.forEach((item, index) => {
         if (item.router === '/people') {
           item.children.forEach((item2, index2) => {
@@ -109,9 +112,23 @@ export default {
                 title_cn: item2.title_cn,
                 title_en: item2.title_en
               })
+              key = item2.key
             }
           })
         }
+      })
+      if (key) {
+        this.setCurrRouteKey({
+          currRouteKey: key
+        })
+      }else {
+        this.setCurrRouteKey({
+          currRouteKey: '5'
+        })
+      }
+    }else {
+      this.setCurrRouteKey({
+        currRouteKey: '5'
       })
     }
     this.initPeopleTypeOption()
@@ -119,6 +136,7 @@ export default {
     await this.loadData()
   },
   methods: {
+    ...mapMutations(['setCurrRouteKey']),
     /**
      * 获取数据
      * */

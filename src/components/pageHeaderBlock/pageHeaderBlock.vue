@@ -48,7 +48,6 @@ export default {
   methods: {
     ...mapMutations(['setCurrRoutePath']),
     handleMenuListSelect(obj) {
-      console.log('-------------')
       let path = obj.to.split('?')[0]
       if (this.currRoutePath === path) {
         this.$router.push(obj.to)
@@ -68,15 +67,15 @@ export default {
 <style lang="scss" scoped>
 .pageHeaderBlock_warp {
   width: 100%;
-  background: url("../../assets/icon/bg17.png") no-repeat right;
-  background-size: auto 100%;
+  //background: url("../../assets/icon/bg17.png") no-repeat right;
+  //background-size: auto 100%;
   margin-bottom: 50px;
 
   .content {
     max-width: 1440px;
     height: 100%;
     margin: 0 auto;
-    padding: 30px 50px;
+    padding: 30px 50px 0 50px;
     box-sizing: border-box;
     & /deep/ .breadcrumb {
       font-size: 14px;
@@ -84,20 +83,25 @@ export default {
       box-sizing: border-box;
       .breadcrumb-item {
         .breadcrumb-item-a {
-          color: #ffffff;
+          //color: #ffffff;
+          color: #D14900;
           cursor: pointer;
           &:hover {
             color: #D14900;
           }
         }
         .breadcrumb-item-span {
+          //color: #aaa99f;
           color: #aaa99f;
         }
       }
     }
     .title {
-      color: #ffffff;
+      //color: #ffffff;
+      color: #333333;
       font-size: 50px;
+      border-bottom: 3px solid #3E4F6D;
+      padding-bottom: 20px;
     }
   }
 }

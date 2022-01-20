@@ -85,7 +85,6 @@ export default {
     let param = JSON.parse(decodeURIComponent(data))
     this.id = param.id
     let parentList = param.parent
-    console.log('parentList', parentList)
     parentList.forEach((item, index) => {
       this.breadcrumbList.push(item)
     })
@@ -94,10 +93,8 @@ export default {
       title_cn: this.newData.title_cn,
       title_en: this.newData.title_en,
     })
-    console.log('breadcrumbList', this.breadcrumbList)
     // this.menuList.forEach((item, index) => {
     //   if (item.id === this.id) {
-    //     console.log(item)
     //     this.breadcrumbList.push({
     //       title_cn: item.title_cn,
     //       title_en: item.title_en,
@@ -107,13 +104,12 @@ export default {
     // })
   },
   methods: {
-    ...mapMutations(['setCurrRoutePath']),
+    ...mapMutations(['setCurrRoutePath', 'setCurrRouteKey']),
     async loadData() {
       this.dataLoading = true
       const res = await GetNewsNewsDetailApi({
         news_id: this.id
       })
-      console.log(res)
       if (res) {
         this.newData = res.news_info
       }

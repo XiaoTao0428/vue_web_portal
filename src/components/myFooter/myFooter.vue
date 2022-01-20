@@ -5,14 +5,14 @@
       <img class="title" :src="Peking_University_title">
     </div>
     <div class="bottom">
-      <span class="a" @click="handlerClickHome">首页</span>
+      <span class="a" @click="handlerClickHome">{{$t('index.Home')}}</span>
       <template v-if="currScreenSize !== 'xs'">|</template>
-      <span class="a" v-if="!token" @click="handlerClickLogin">登录</span>
-      <span class="a" v-if="token" @click="handlerClickLogout">退出</span>
+      <span class="a" v-if="!token" @click="handlerClickLogin">{{$t('index.LogIn')}}</span>
+      <span class="a" v-if="token" @click="handlerClickLogout">{{$t('index.LogOut')}}</span>
       <template v-if="currScreenSize !== 'xs'">|</template>
-      <span>版权所有©北京大学</span>
+      <span>{{$t('index.Copyright')}}</span>
       <template v-if="currScreenSize !== 'xs'">|</template>
-      <span>地址：{{address}}</span>
+      <span>{{$t('index.Address')}}{{address}}</span>
     </div>
   </div>
 </template>
@@ -67,7 +67,8 @@ export default {
 
 <style lang="scss" scoped>
 .myFooter_warp {
-  background-color: rgb(104, 21, 21);
+  //background-color: rgb(104, 21, 21);
+  background-color: #3E4F6D;
   font-size: 14px;
   color: #ffffff;
   padding: 15px 0;
@@ -77,10 +78,10 @@ export default {
     align-items: center;
     justify-content: flex-start;
     .icon {
-      max-width: 80px;
+      max-width: 70px;
     }
     .title {
-      max-width: 140px;
+      max-width: 120px;
       margin-top: 10px;
     }
   }
