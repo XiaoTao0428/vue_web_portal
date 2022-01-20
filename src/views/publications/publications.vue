@@ -88,7 +88,6 @@ export default {
         page_num: this.currentPage,
         page_size: this.pageSize,
       })
-      console.log(res)
       if (res) {
         this.publicationList = res.publication_info_list
         this.pageCount = res.num_of_pages
@@ -116,7 +115,6 @@ export default {
         }
       })
       this.newPublicationList = [...newArr]
-      console.log('newPublicationList', this.newPublicationList)
     },
     /**
      * 当前页码切换时触发
@@ -125,7 +123,6 @@ export default {
       this.loadData()
     },
     toDetails(data) {
-      console.log(data)
       window.location.href = 'https://' + data.publish_link
     }
   }

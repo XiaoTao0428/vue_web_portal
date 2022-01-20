@@ -161,7 +161,6 @@ export default {
     async loadData() {
       this.dataLoading = true
       const res = await GetTabManagementTabListApi()
-      console.log(res)
       if (res) {
         this.setMenuList({
           menuList: res.tab_list
@@ -236,7 +235,6 @@ export default {
               this.$set(this.appendNodeData, 'children', [])
             }
           }
-          console.log('treeList', this.treeList)
 
           let param = {
             key: newChild.key,
@@ -250,9 +248,7 @@ export default {
             let arr = newChild.key.split('-')
             param.parent_key = arr[0]
           }
-          console.log('param', param)
           const res = await PostTabAddTabApi({...param})
-          console.log(res)
           if (res) {
             newChild.id = res.new_tab_info.id
             this.appendNodeData.children.push(newChild)
@@ -308,7 +304,6 @@ export default {
     * 添加子节点
     * */
     appendTreeNode(data) {
-      console.log(data)
       this.appendNodeData = data
       this.appendDialogVisible = true
     },
@@ -317,11 +312,9 @@ export default {
      * */
     async delDialogConfirm() {
       this.submitBtnLoading = true
-      console.log('delNodeData', this.delNodeData)
       const res = await PostTabDeleteTabApi({
         tab_id: this.delNodeData.id
       })
-      console.log(res)
       if (res) {
         this.delNode(this.treeList[0].children, this.delNodeData.key)
         this.$message.success('删除成功')
@@ -335,7 +328,6 @@ export default {
      * 删除指定节点
      * */
     delTreeNode(data) {
-      console.log(data)
       this.delNodeData = data
       this.delDialogVisible = true
     },
@@ -361,20 +353,15 @@ export default {
      * 节点拖动结束
      * */
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drag end: ',draggingNode.key, dropNode.key, dropType)
     },
     /**
     * 拖拽成功完成时触发的事件
     * */
     async handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drag: ',draggingNode, dropNode, dropType)
-      console.log('key', draggingNode.key)
-      console.log('this.treeList[0].children', this.treeList[0].children)
 
       this.dataLoading = true
       let node = []
       node = this.getNode(this.treeList[0].children, draggingNode.key)
-      console.log('node', node)
       let param = []
       node.forEach((item, index) => {
         param.push(item.id)
@@ -382,7 +369,6 @@ export default {
       const res = await PostTabSortTabApi({
         tab_id_list: JSON.stringify(param)
       })
-      console.log(res)
       if (res) {
         this.$message.success('操作成功')
         this.loadData()

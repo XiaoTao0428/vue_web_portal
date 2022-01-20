@@ -8,6 +8,7 @@ export default new Vuex.Store({
     currLang: '',  // 当前的语言
     menuList: [],  // 菜单栏列表
     currRoutePath: '',  // 当前页面的url
+    currRouteKey: '',  // 当前页面的url
     token: '',  // 用户token
     userInfo: {
       name_cn: '',  // 中文名
@@ -18,8 +19,9 @@ export default new Vuex.Store({
     },
 
     groupInfo: {
-      name_cn: '',  // 中文名
-      name_en: '',  // 英文名
+      // name_cn: '',  // 中文名
+      // name_en: '',  // 英文名
+      icon: '',
       contactAddress_cn: '',  // 联系地址
       contactAddress_en: '',  // 联系地址
     }
@@ -44,11 +46,16 @@ export default new Vuex.Store({
       state.currRoutePath = param.currRoutePath
     },
     /**
+     * 设置当前的 currRouteKey
+     * */
+    setCurrRouteKey(state, param) {
+      state.currRouteKey = param.currRouteKey
+    },
+    /**
      * 设置当前的 小组信息
      * */
     setGroupInfo(state, param) {
-      state.groupInfo.name_cn = param.groupInfo.name_cn
-      state.groupInfo.name_en = param.groupInfo.name_en
+      state.groupInfo.icon = param.groupInfo.icon
       state.groupInfo.contactAddress_cn = param.groupInfo.contactAddress_cn
       state.groupInfo.contactAddress_en = param.groupInfo.contactAddress_en
     },

@@ -109,11 +109,9 @@ export default {
       const res = await GetTabTabDetailApi({
         tab_id: id
       })
-      console.log('GetTabTabDetailApi', res)
       if (res) {
         this.mavonEditorValue.content_cn = res.tab_info.tab_content.content_cn
         this.mavonEditorValue.content_en = res.tab_info.tab_content.content_en
-        console.log(this.mavonEditorValue)
       }
       this.dataLoading = false
     },

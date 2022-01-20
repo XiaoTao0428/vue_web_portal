@@ -59,8 +59,6 @@ axios.interceptors.response.use(
         }
     },
     error => {
-        console.log(error)
-
         if (error.response) {
             Message({
                 showClose: true,

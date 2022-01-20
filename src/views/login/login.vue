@@ -3,12 +3,12 @@
     <div class="content">
       <div class="card">
         <div class="title">
-          登录
+          {{$t('index.LogIn')}}
         </div>
         <el-form ref="loginFormRef" :rules="rules" :model="loginForm" label-width="0px">
           <el-form-item label="" prop="username">
             <el-input size="" v-model="loginForm.username"
-                      placeholder="请输入用户名"
+                      :placeholder="$t('index.Username')"
             >
               <div class="icon" slot="prefix">
                 <img src="../../assets/icon/username.png">
@@ -17,7 +17,7 @@
           </el-form-item>
           <el-form-item label="" prop="password">
             <el-input v-model="loginForm.password"
-                      placeholder="请输入密码"
+                      :placeholder="$t('index.Password')"
                       type="password"
             >
               <div class="icon" slot="prefix">
@@ -27,7 +27,7 @@
           </el-form-item>
         </el-form>
         <div class="btn">
-          <el-button type="primary" :loading="btnLoading" @click="submitForm">登 录</el-button>
+          <el-button type="primary" :loading="btnLoading" @click="submitForm">{{$t('index.LogIn')}}</el-button>
         </div>
       </div>
     </div>
@@ -43,8 +43,10 @@ export default {
     return {
       btnLoading: false,
       loginForm: {
-        username: 'admin',
-        password: 'admin',
+        // username: 'admin',
+        // password: 'admin',
+        username: '',
+        password: '',
       },
       rules: {
         username: [
@@ -66,7 +68,6 @@ export default {
             username: this.loginForm.username,
             password: this.loginForm.password
           })
-          console.log(res)
           if (res) {
             this.login({
               token: res.token,

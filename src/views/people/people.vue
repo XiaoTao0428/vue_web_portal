@@ -67,9 +67,6 @@ export default {
   components: {PeopleCard, PageHeaderBlock},
   data() {
     return {
-      test:
-          "Ted and Ginger Jenkins Professor of Information Science and Technology and Professor of Applied Physics\n" +
-          "Executive Officer of the Department of Applied Physics and Materials Science",
 
       breadcrumbList: [
         {
@@ -101,7 +98,6 @@ export default {
     },
   },
   async mounted() {
-    console.log(this.$route.query)
     if (this.$route.query && this.$route.query.search) {
       this.search = this.$route.query.search
       this.menuList.forEach((item, index) => {
@@ -131,7 +127,6 @@ export default {
       const res = await GetMemberMemberListApi({
         type: this.search
       })
-      console.log(res)
       if (res) {
         this.peopleList = res.member_info_list
       }
@@ -163,7 +158,6 @@ export default {
           newPeopleList.push(obj)
         }
       })
-
       let obj = null
       newPeopleList.forEach((item, index) => {
         if (item.groupTitle === 'teacher') {
@@ -171,10 +165,10 @@ export default {
           newPeopleList.splice(index, 1)
         }
       })
-      newPeopleList.unshift(obj)
-
+      if (obj !== null) {
+        newPeopleList.unshift(obj)
+      }
       this.newPeopleList = [...newPeopleList]
-      console.log('newPeopleList', this.newPeopleList)
     },
     /**
     * 初始化
@@ -236,7 +230,6 @@ export default {
     * 去详情页
     * */
     toDetails(data) {
-      console.log(data)
       if (data.type === 'teacher') {
         let params = {
           id: data.id,

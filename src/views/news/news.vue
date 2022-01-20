@@ -106,7 +106,6 @@ export default {
         page_num: this.currentPage,
         page_size: this.pageSize,
       })
-      console.log(res)
       if (res) {
         this.newsList = res.news_info_list
         this.pageCount = res.num_of_pages
@@ -120,7 +119,6 @@ export default {
     * 初始化层级列表
     * */
     initList(num) {
-      console.log('colNum', this.colNum)
       let arr = []
       this.newsList.forEach((item, index) => {
         let i = parseInt(index/num)
@@ -132,13 +130,11 @@ export default {
         }
       })
       this.newNewsList = [...arr]
-      console.log('newResearchDirectionList', this.newResearchDirectionList)
     },
     /**
     * 当前页码切换时触发
     * */
     currentPageChange() {
-      console.log('currentPage', this.currentPage)
       this.loadData()
     },
     /**
@@ -160,7 +156,6 @@ export default {
           }
         ]
       }
-      console.log(data)
       this.$router.push({
         path: 'newDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
       })

@@ -15,33 +15,43 @@
 
       <div class="home-right">
         <div class="picture-introduction">
-          <el-image
-              class="image"
-              :src="homeImageUrl"
-          ></el-image>
-          <div class="image-msg">
-            {{homeImageForm['describe_' + currLang]}}
-          </div>
+          <el-carousel height="400px" indicator-position="none">
+            <el-carousel-item v-for="(item, index) in newsList" :key="'news' + index">
+
+              <div class="image-warp" @click="toNewsDetails(item)">
+<!--                <el-image-->
+<!--                    class="image"-->
+<!--                    :src="item.cover_image"-->
+<!--                ></el-image>-->
+                <img class="image" :src="item.cover_image" />
+                <div class="image-msg" v-if="item.cover_image">
+                  {{item['title_' + currLang]}}
+                </div>
+              </div>
+
+            </el-carousel-item>
+          </el-carousel>
+
         </div>
 
-        <div class="news">
+        <div class="research-list">
 
-          <div class="news-header">
-            <div class="news-header-title">
-              {{$t('index.News')}}
+          <div class="research-list-header">
+            <div class="research-list-header-title">
+              {{$t('index.Research')}}
             </div>
-            <span class="link" @click="toNews" :underline="false">{{$t('home.AllNews')}} <i class="el-icon-arrow-right"></i></span>
+            <span class="link" @click="toResearch" :underline="false">{{$t('home.AllResearch')}} <i class="el-icon-arrow-right"></i></span>
           </div>
 
           <div class="news-content">
-            <div class="new-item" v-for="(item, index) in newsList" :key="'new' + index">
+            <div class="new-item" v-for="(item, index) in researchList" :key="'research' + index">
 
               <image-text-card
                   :image-url="item.cover_image"
-                  :date="item.news_date"
+                  :date="item.date"
                   :description="item['title_' + currLang]"
                   :have-details="true"
-                  @handleClick="toDetails(item)"
+                  @handleClick="toResearchDetails(item)"
               ></image-text-card>
 
             </div>
@@ -57,7 +67,7 @@
 
 <script>
 import mixins from "@/mixins/mixins";
-import {GetIndexIndexInfoApi, GetNewsNewsListApi} from "@/request/api";
+import {GetIndexIndexInfoApi, GetNewsNewsListApi, GetResearchTesearchListApi} from "@/request/api";
 import {file_before_url} from "@/config/baseURL";
 import ImageTextCard from "@/components/imageTextCard/imageTextCard";
 import {mapMutations} from "vuex";
@@ -75,28 +85,29 @@ export default {
         value_en: '',
       },
       homeImageForm: {
-        describe_cn: '',
-        describe_en: '',
+        // describe_cn: '',
+        // describe_en: '',
         imageUrl: '',
-        groupName_cn: '',
-        groupName_en: '',
+        // groupName_cn: '',
+        // groupName_en: '',
         contactAddress_cn: '',
         contactAddress_en: '',
       },
       newsList: [],
+      researchList: [],
     }
   },
   computed: {
     currLang() {
       return this.$store.state.currLang
     },
-    homeImageUrl() {
-      if (this.homeImageForm.imageUrl) {
-        return this.fileBeforeUrl + '' + this.homeImageForm.imageUrl
-      }else {
-        return ''
-      }
-    }
+    // homeImageUrl() {
+    //   if (this.homeImageForm.imageUrl) {
+    //     return this.fileBeforeUrl + '' + this.homeImageForm.imageUrl
+    //   }else {
+    //     return ''
+    //   }
+    // }
   },
   created() {
   },
@@ -113,27 +124,29 @@ export default {
       const res = await GetIndexIndexInfoApi()
       console.log(res)
       if (res) {
-        this.homeImageForm.groupName_cn = res.index_info.group_name_cn
-        this.homeImageForm.groupName_en = res.index_info.group_name_en
+        // this.homeImageForm.groupName_cn = res.index_info.group_name_cn
+        // this.homeImageForm.groupName_en = res.index_info.group_name_en
         this.homeImageForm.contactAddress_cn = res.index_info.contact_address_cn
         this.homeImageForm.contactAddress_en = res.index_info.contact_address_en
 
         this.homePaperValue.value_cn = res.index_info.home_article_cn
         this.homePaperValue.value_en = res.index_info.home_article_en
         this.homeImageForm.imageUrl = res.index_info.home_image
-        this.homeImageForm.describe_cn = res.index_info.home_image_description_cn
-        this.homeImageForm.describe_en = res.index_info.home_image_description_en
+        // this.homeImageForm.describe_cn = res.index_info.home_image_description_cn
+        // this.homeImageForm.describe_en = res.index_info.home_image_description_en
 
         this.setGroupInfo({
           groupInfo: {
-            name_cn: this.homeImageForm.groupName_cn,
-            name_en: this.homeImageForm.groupName_en,
+            // name_cn: this.homeImageForm.groupName_cn,
+            // name_en: this.homeImageForm.groupName_en,
+            icon: this.homeImageForm.imageUrl,
             contactAddress_cn: this.homeImageForm.contactAddress_cn,
             contactAddress_en: this.homeImageForm.contactAddress_en,
           }
         })
       }
       await this.loadNewsData()
+      await this.loadResearchListData()
       this.dataLoading = false
     },
 
@@ -143,7 +156,7 @@ export default {
     async loadNewsData() {
       const res = await GetNewsNewsListApi({
         page_num: 1,
-        page_size: 2
+        page_size: 3
       })
       console.log(res)
       if (res) {
@@ -151,14 +164,30 @@ export default {
       }
     },
 
-    toNews() {
-      this.$router.push('/news')
+    /**
+     * 获取研究列表
+     * */
+    async loadResearchListData() {
+      const res = await GetResearchTesearchListApi({
+        page_num: 1,
+        page_size: 3
+      })
+      console.log(res)
+      if (res) {
+        this.researchList = res.research_info_list
+      }
+    },
+
+    /**
+     * 去研究方向页
+     * */
+    toResearch() {
+      this.$router.push('/research')
     },
     /**
-     * 去详情页
+     * 去新闻详情页
      * */
-    toDetails(data) {
-      console.log(data)
+    toNewsDetails(data) {
       let params = {
         id: data.id,
         parent: [
@@ -166,12 +195,41 @@ export default {
             title_cn: '首页',
             title_en: 'Home',
             to: '/home',
+          },
+          {
+            title_cn: '新闻',
+            title_en: 'News',
+            to: '/news',
           }
         ]
       }
       console.log(data)
       this.$router.push({
         path: 'newDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
+      })
+    },
+    /**
+     * 去研究方向详情页
+     * */
+    toResearchDetails(data) {
+      let params = {
+        id: data.id,
+        parent: [
+          {
+            title_cn: '首页',
+            title_en: 'Home',
+            to: '/home',
+          },
+          {
+            title_cn: '研究方向',
+            title_en: 'Research',
+            to: '/research',
+          }
+        ]
+      }
+      console.log(data)
+      this.$router.push({
+        path: 'researchDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
       })
     }
   }
@@ -206,23 +264,30 @@ export default {
       .picture-introduction {
         width: 100%;
         margin-bottom: 30px;
-        position: relative;
-        .image {
-          max-width: 100%;
-        }
-        .image-msg {
+
+        .image-warp {
           width: 100%;
-          position: absolute;
-          bottom: 4px;
-          left: 0;
-          padding: 16px 18px;
-          box-sizing: border-box;
-          color: #ffffff;
-          background-color: rgba(0, 0, 0, 0.54);
+          cursor: pointer;
+
+          position: relative;
+          .image {
+            min-height: 100%;
+          }
+          .image-msg {
+            width: 100%;
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            padding: 16px 18px;
+            box-sizing: border-box;
+            color: #ffffff;
+            background-color: rgba(0, 0, 0, 0.54);
+          }
         }
+
       }
 
-      .news-header {
+      .research-list-header {
         width: 100%;
         display: flex;
         align-items: flex-end;
@@ -230,7 +295,7 @@ export default {
         font-weight: bold;
         margin-bottom: 30px;
 
-        .news-header-title {
+        .research-list-header-title {
           color: #000000;
           font-size: 40px;
         }
@@ -301,8 +366,8 @@ export default {
           font-size: 14px;
         }
       }
-      .news-header {
-        .news-header-title {
+      .research-list-header {
+        .research-list-header-title {
           font-size: 28px;
         }
         .link {
@@ -330,8 +395,8 @@ export default {
           font-size: 12px;
         }
       }
-      .news-header {
-        .news-header-title {
+      .research-list-header {
+        .research-list-header-title {
           font-size: 28px;
         }
         .link {

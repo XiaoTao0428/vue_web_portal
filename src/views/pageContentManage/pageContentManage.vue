@@ -10,37 +10,14 @@
               {{$t('manage.GroupInformation')}}
             </div>
             <div class="card-content">
-              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="160px">
-                <el-form-item :label="$t('manage.GroupName_cn')" prop="groupName_cn">
-                  <el-input v-model="homeImageForm.groupName_cn" :rows="3"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('manage.GroupName_en')" prop="groupName_en">
-                  <el-input v-model="homeImageForm.groupName_en" :rows="3"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('manage.ContactAddress_cn')" prop="contactAddress_cn">
-                  <el-input type="textarea" v-model="homeImageForm.contactAddress_cn" :rows="3"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('manage.ContactAddress_en')" prop="contactAddress_en">
-                  <el-input type="textarea" v-model="homeImageForm.contactAddress_en" :rows="3"></el-input>
-                </el-form-item>
-              </el-form>
-
-            </div>
-          </div>
-
-          <div class="card home-image">
-            <div class="card-title">
-              {{$t('manage.HomeMainImage')}}
-            </div>
-            <div class="card-content">
-              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="140px">
-                <el-form-item :label="$t('manage.ImageDescription_cn')" prop="describe_cn">
-                  <el-input type="textarea" v-model="homeImageForm.describe_cn" :rows="3"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('manage.ImageDescription_en')" prop="describe_en">
-                  <el-input type="textarea" v-model="homeImageForm.describe_en" :rows="3"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('manage.UploadPicture')" prop="imageUrl">
+              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="210px">
+<!--                <el-form-item :label="$t('manage.GroupName_cn')" prop="groupName_cn">-->
+<!--                  <el-input v-model="homeImageForm.groupName_cn" :rows="3"></el-input>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item :label="$t('manage.GroupName_en')" prop="groupName_en">-->
+<!--                  <el-input v-model="homeImageForm.groupName_en" :rows="3"></el-input>-->
+<!--                </el-form-item>-->
+                <el-form-item :label="$t('manage.ResearchGroupIcon')" prop="imageUrl">
                   <el-upload
                       :action="uploadAction"
                       :headers="uploadHeaders"
@@ -59,10 +36,52 @@
                     <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
                   </el-upload>
                 </el-form-item>
+                <el-form-item :label="$t('manage.ContactAddress_cn')" prop="contactAddress_cn">
+                  <el-input type="textarea" v-model="homeImageForm.contactAddress_cn" :rows="3"></el-input>
+                </el-form-item>
+                <el-form-item :label="$t('manage.ContactAddress_en')" prop="contactAddress_en">
+                  <el-input type="textarea" v-model="homeImageForm.contactAddress_en" :rows="3"></el-input>
+                </el-form-item>
               </el-form>
 
             </div>
           </div>
+
+<!--          <div class="card home-image">-->
+<!--            <div class="card-title">-->
+<!--              {{$t('manage.HomeMainImage')}}-->
+<!--            </div>-->
+<!--            <div class="card-content">-->
+<!--              <el-form ref="homeImageForm" :rules="rules" :model="homeImageForm" label-width="140px">-->
+<!--                <el-form-item :label="$t('manage.ImageDescription_cn')" prop="describe_cn">-->
+<!--                  <el-input type="textarea" v-model="homeImageForm.describe_cn" :rows="3"></el-input>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item :label="$t('manage.ImageDescription_en')" prop="describe_en">-->
+<!--                  <el-input type="textarea" v-model="homeImageForm.describe_en" :rows="3"></el-input>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item :label="$t('manage.UploadPicture')" prop="imageUrl">-->
+<!--                  <el-upload-->
+<!--                      :action="uploadAction"-->
+<!--                      :headers="uploadHeaders"-->
+<!--                      :file-list="homeImageFileList"-->
+<!--                      :multiple="false"-->
+<!--                      name="file"-->
+<!--                      :limit="1"-->
+<!--                      list-type="picture-card"-->
+<!--                      :on-exceed="handleImageUploadExceed"-->
+<!--                      :on-preview="handleImageUploadPreview"-->
+<!--                      :before-upload="beforeImageUpload"-->
+<!--                      :on-remove="handleImageUploadRemove"-->
+<!--                      :on-success="handleImageUploadSuccess"-->
+<!--                  >-->
+<!--                    <i class="el-icon-plus avatar-uploader-icon"></i>-->
+<!--                    <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>-->
+<!--                  </el-upload>-->
+<!--                </el-form-item>-->
+<!--              </el-form>-->
+
+<!--            </div>-->
+<!--          </div>-->
 
           <div class="card home-paper">
             <div class="card-title">
@@ -789,11 +808,11 @@ export default {
       * */
       homeLoading: false,
       homeImageForm: {
-        describe_cn: '',
-        describe_en: '',
+        // describe_cn: '',
+        // describe_en: '',
         imageUrl: '',
-        groupName_cn: '',
-        groupName_en: '',
+        // groupName_cn: '',
+        // groupName_en: '',
         contactAddress_cn: '',
         contactAddress_en: '',
       },
@@ -1014,7 +1033,6 @@ export default {
         const res = await GetTabEditTabApi({
           tab_id: id
         })
-        console.log('GetTabEditTabApi', res)
         if (res) {
           this.newMenuListPageData.forEach((item, index) => {
             if (item.key === res.tab_info.key) {
@@ -1057,22 +1075,22 @@ export default {
     async loadHomeData() {
       this.homeLoading = true
       const res = await GetIndexIndexInfoApi()
-      console.log(res)
       if (res) {
-        this.homeImageForm.groupName_cn = res.index_info.group_name_cn
-        this.homeImageForm.groupName_en = res.index_info.group_name_en
+        // this.homeImageForm.groupName_cn = res.index_info.group_name_cn
+        // this.homeImageForm.groupName_en = res.index_info.group_name_en
         this.homeImageForm.contactAddress_cn = res.index_info.contact_address_cn
         this.homeImageForm.contactAddress_en = res.index_info.contact_address_en
         this.homePaperValue_cn = res.index_info.home_article_cn
         this.homePaperValue_en = res.index_info.home_article_en
         this.homeImageForm.imageUrl = res.index_info.home_image
-        this.homeImageForm.describe_cn = res.index_info.home_image_description_cn
-        this.homeImageForm.describe_en = res.index_info.home_image_description_en
+        // this.homeImageForm.describe_cn = res.index_info.home_image_description_cn
+        // this.homeImageForm.describe_en = res.index_info.home_image_description_en
 
         this.setGroupInfo({
           groupInfo: {
-            name_cn: this.homeImageForm.groupName_cn,
-            name_en: this.homeImageForm.groupName_en,
+            // name_cn: this.homeImageForm.groupName_cn,
+            // name_en: this.homeImageForm.groupName_en,
+            icon: this.homeImageForm.imageUrl,
             contactAddress_cn: this.homeImageForm.contactAddress_cn,
             contactAddress_en: this.homeImageForm.contactAddress_en,
           }
@@ -1122,7 +1140,6 @@ export default {
      * 上传首页图片时，图片预览
      * */
     handleImageUploadPreview(file) {
-      console.log(file.url)
       this.previewImageUrl = file.url
       this.previewDialogVisible = true
     },
@@ -1136,7 +1153,6 @@ export default {
      * 上传首页图片时，图片上传成功
      * */
     handleImageUploadSuccess(res, file) {
-      console.log('handleImageUploadSuccess', res)
       if (res.code === 200) {
         this.homeImageForm.imageUrl = res.data.path
       }
@@ -1150,19 +1166,18 @@ export default {
           this.btnLoading = true
           let param = {
             home_image: this.homeImageForm.imageUrl,
-            home_image_description_cn: this.homeImageForm.describe_cn,
-            home_image_description_en: this.homeImageForm.describe_en,
+            // home_image_description_cn: this.homeImageForm.describe_cn,
+            // home_image_description_en: this.homeImageForm.describe_en,
             home_article_cn: this.homePaperValue_cn,
             home_article_en: this.homePaperValue_en,
-            group_name_cn: this.homeImageForm.groupName_cn,
-            group_name_en: this.homeImageForm.groupName_en,
+            // group_name_cn: this.homeImageForm.groupName_cn,
+            // group_name_en: this.homeImageForm.groupName_en,
             contact_address_cn: this.homeImageForm.contactAddress_cn,
             contact_address_en: this.homeImageForm.contactAddress_en,
           }
           const res = await GetIndexEditIndexApi({
             index_info: JSON.stringify(param)
           })
-          console.log(res)
           if (res) {
             this.$message.success('操作成功')
           }
@@ -1175,7 +1190,6 @@ export default {
      * 去编辑详情
      * */
     editDetails(data) {
-      console.log(data)
       this.currEditId = data.id
       if (this.activeName === '5') {
         this.pageDetails.data_cn = data.detail_cn
@@ -1225,7 +1239,6 @@ export default {
         })
       }
 
-      console.log(res)
       if (res) {
         this.$message.success('修改成功')
       }
@@ -1258,7 +1271,6 @@ export default {
         page_num: this.currentResearchPage,
         page_size: this.pageSize,
       })
-      console.log(res)
       if (res) {
         this.researchTableData = res.research_info_list
         this.pageResearchCount = res.num_of_pages
@@ -1293,7 +1305,6 @@ export default {
             content_cn: '',
             content_en: '',
           })
-          console.log(res)
           if (res) {
             this.$message.success('新增成功')
           }
@@ -1321,7 +1332,6 @@ export default {
      * 新增研究方向弹窗中，图片上传成功时触发
      * */
     handleAddResearchImageUploadSuccess(res, file) {
-      console.log(res, file)
       if (res.code === 200) {
         this.addResearchForm.imageUrl = res.data.path
       }
@@ -1330,7 +1340,6 @@ export default {
      * 删除研究方向
      * */
     async delResearch(data) {
-      console.log(data)
       this.researchTableData.forEach((item, index) => {
         if (item.id === data.id) {
           this.$set(item, 'isLoading', true)
@@ -1339,7 +1348,6 @@ export default {
       const res = await PostResearchDeleteResearchApi({
         research_id: data.id
       })
-      console.log(res)
       if (res) {
         this.$message.success('删除成功')
       }
@@ -1355,7 +1363,6 @@ export default {
         page_num: this.currentNewsPage,
         page_size: this.pageSize,
       })
-      console.log(res)
       if (res) {
         this.newsTableData = res.news_info_list
         this.pageNewsCount = res.num_of_pages
@@ -1391,7 +1398,6 @@ export default {
             content_cn: '',
             content_en: '',
           })
-          console.log(res)
           if (res) {
             this.$message.success('新增成功')
           }
@@ -1419,7 +1425,6 @@ export default {
      * 新增新闻弹窗中，图片上传成功时触发
      * */
     handleAddNewImageUploadSuccess(res, file) {
-      console.log(res, file)
       if (res.code === 200) {
         this.addNewForm.imageUrl = res.data.path
       }
@@ -1428,7 +1433,6 @@ export default {
      * 删除新闻
      * */
     async delNew(data) {
-      console.log(data)
       this.newsTableData.forEach((item, index) => {
         if (item.id === data.id) {
           this.$set(item, 'isLoading', true)
@@ -1437,7 +1441,6 @@ export default {
       const res = await PostNewsDeleteNewsApi({
         news_id: data.id
       })
-      console.log(res)
       if (res) {
         this.$message.success('删除成功')
       }
@@ -1453,7 +1456,6 @@ export default {
         page_num: this.currentPublicationPage,
         page_size: this.pageSize,
       })
-      console.log(res)
       if (res) {
         this.publicationTableData = res.publication_info_list
         this.pagePublicationCount = res.num_of_pages
@@ -1488,7 +1490,6 @@ export default {
             publish_date: this.addPublicationForm.publish_date,
             issn: this.addPublicationForm.issn,
           })
-          console.log(res)
           if (res) {
             this.$message.success('新增成功')
           }
@@ -1509,7 +1510,6 @@ export default {
      * 删除发布的成果
      * */
     async delPublication(data) {
-      console.log(data)
       this.publicationTableData.forEach((item, index) => {
         if (item.id === data.id) {
           this.$set(item, 'isLoading', true)
@@ -1518,7 +1518,6 @@ export default {
       const res = await PostPublicationDeletePublicationApi({
         publication_id: data.id
       })
-      console.log(res)
       if (res) {
         this.$message.success('删除成功')
       }
@@ -1534,7 +1533,6 @@ export default {
         // page_num: this.currentPeoplePage,
         // page_size: this.pageSize,
       })
-      console.log(res)
       if (res) {
         this.peopleTableData = res.member_info_list
         // this.pagePeopleCount = res.num_of_pages
@@ -1572,7 +1570,6 @@ export default {
             detail_cn: '',
             detail_en: '',
           })
-          console.log(res)
           if (res) {
             this.$message.success('新增成功')
           }
@@ -1600,7 +1597,6 @@ export default {
      * 新增人员弹窗中，图片上传成功时触发
      * */
     handleAddPeopleImageUploadSuccess(res, file) {
-      console.log(res, file)
       if (res.code === 200) {
         this.addPeopleForm.imageUrl = res.data.path
       }
@@ -1609,7 +1605,6 @@ export default {
      * 删除人员
      * */
     async delPeople(data) {
-      console.log(data)
       this.peopleTableData.forEach((item, index) => {
         if (item.id === data.id) {
           this.$set(item, 'isLoading', true)
@@ -1618,7 +1613,6 @@ export default {
       const res = await PostMemberDeleteMemberApi({
         member_id: data.id
       })
-      console.log(res)
       if (res) {
         this.$message.success('删除成功')
       }
@@ -1630,7 +1624,6 @@ export default {
     * */
     async customPageSubmit(obj) {
       this.btnLoading = true
-      console.log(obj)
       let param = {
         content_cn: '',
         content_en: '',
@@ -1647,7 +1640,6 @@ export default {
         tab_content_cn: param.content_cn,
         tab_content_en: param.content_en,
       })
-      console.log(res)
       if (res) {
         this.$message.success('操作成功')
         this.loadCustomPageData()

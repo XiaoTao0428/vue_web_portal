@@ -232,12 +232,11 @@ let mixins = {
                 }
             }
         },
-        currScreenSize: {
-            immediate: true,
-            handler(newValue) {
-                console.log('currScreenSize', newValue)
-            }
-        },
+        // currScreenSize: {
+        //     immediate: true,
+        //     handler(newValue) {
+        //     }
+        // },
     },
     created() {
         const that = this

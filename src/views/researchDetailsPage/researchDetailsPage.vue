@@ -46,12 +46,10 @@ export default {
     let param = JSON.parse(decodeURIComponent(data))
     this.id = param.id
     let parentList = param.parent
-    console.log('parentList', parentList)
     parentList.forEach((item, index) => {
       this.breadcrumbList.push(item)
     })
     await this.loadData()
-    console.log('breadcrumbList', this.breadcrumbList)
   },
   methods: {
     async loadData() {
@@ -59,7 +57,6 @@ export default {
       const res = await GetResearchResearchDetailApi({
         research_id: this.id
       })
-      console.log(res)
       if (res) {
         this.researchData = res.research_info
       }
