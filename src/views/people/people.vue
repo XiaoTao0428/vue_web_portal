@@ -1,11 +1,11 @@
 <template>
   <div :class="'people_warp ' + peopleClassName">
-    <div class="header">
-      <page-header-block
-          :title="pageHeaderBlockTitle['title_' + currLang]"
-          :breadcrumb-list="breadcrumbList"
-      ></page-header-block>
-    </div>
+<!--    <div class="header">-->
+<!--      <page-header-block-->
+<!--          :title="pageHeaderBlockTitle['title_' + currLang]"-->
+<!--          :breadcrumb-list="breadcrumbList"-->
+<!--      ></page-header-block>-->
+<!--    </div>-->
     <div class="content">
       <div class="group" v-for="(item, index) in newPeopleList" :key="'group' + index">
         <div class="group-teacher" v-if="item.groupTitle === 'teacher'">

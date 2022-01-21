@@ -80,6 +80,11 @@ export default {
       return this.$store.state.currLang
     },
   },
+  created() {
+    this.setCurrRouteKey({
+      currRouteKey: '3'
+    })
+  },
   async mounted() {
     let data = this.$route.query.data
     let param = JSON.parse(decodeURIComponent(data))

@@ -1,8 +1,8 @@
 <template>
   <div class="manage_warp">
-    <div class="header">
-      <page-header-block :title="pageHeaderBlockTitle['title_' + currLang]" :breadcrumb-list="breadcrumbList"></page-header-block>
-    </div>
+<!--    <div class="header">-->
+<!--      <page-header-block :title="pageHeaderBlockTitle['title_' + currLang]" :breadcrumb-list="breadcrumbList"></page-header-block>-->
+<!--    </div>-->
     <div class="content">
 
       <div class="sidebar">

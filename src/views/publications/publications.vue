@@ -1,11 +1,11 @@
 <template>
   <div :class="'publications_warp ' + publicationsClassName" v-loading="dataLoading">
-    <div class="header">
-      <page-header-block
-          :title="pageHeaderBlockTitle['title_' + currLang]"
-          :breadcrumb-list="breadcrumbList"
-      ></page-header-block>
-    </div>
+<!--    <div class="header">-->
+<!--      <page-header-block-->
+<!--          :title="pageHeaderBlockTitle['title_' + currLang]"-->
+<!--          :breadcrumb-list="breadcrumbList"-->
+<!--      ></page-header-block>-->
+<!--    </div>-->
     <div class="content">
       <div class="group" v-for="(item, index) in newPublicationList" :key="'group' + index">
         <div class="group-title">

@@ -1,11 +1,11 @@
 <template>
   <div :class="'news_warp ' + newsClassName" v-loading="dataLoading">
-    <div class="header">
-      <page-header-block
-          :title="pageHeaderBlockTitle['title_' + currLang]"
-          :breadcrumb-list="breadcrumbList"
-      ></page-header-block>
-    </div>
+<!--    <div class="header">-->
+<!--      <page-header-block-->
+<!--          :title="pageHeaderBlockTitle['title_' + currLang]"-->
+<!--          :breadcrumb-list="breadcrumbList"-->
+<!--      ></page-header-block>-->
+<!--    </div>-->
     <div class="content">
       <el-row class="row" :gutter="20" v-for="(item, index) in newNewsList" :key="'row' + index">
         <el-col class="col" :span="24/colNum" v-for="(item2, index2) in item" :key="'col' + index2">

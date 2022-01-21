@@ -1,9 +1,9 @@
 <template>
   <div :class="'peopleDetailsPage_warp ' + customPageClassName" v-loading="dataLoading">
-    <page-header-block
-        :title="peopleData['name_' + currLang]"
-        :breadcrumb-list="breadcrumbList"
-    ></page-header-block>
+<!--    <page-header-block-->
+<!--        :title="peopleData['name_' + currLang]"-->
+<!--        :breadcrumb-list="breadcrumbList"-->
+<!--    ></page-header-block>-->
     <div class="content">
       <mavon-editor v-model="peopleData['detail_' + currLang]"
                     class="markdown-warp"

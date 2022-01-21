@@ -1,11 +1,11 @@
 <template>
   <div :class="'customPage_warp ' + customPageClassName">
-    <div class="header">
-      <page-header-block
-          :title="pageHeaderBlockTitle['title_' + currLang]"
-          :breadcrumb-list="breadcrumbList"
-      ></page-header-block>
-    </div>
+<!--    <div class="header">-->
+<!--      <page-header-block-->
+<!--          :title="pageHeaderBlockTitle['title_' + currLang]"-->
+<!--          :breadcrumb-list="breadcrumbList"-->
+<!--      ></page-header-block>-->
+<!--    </div>-->
     <div class="content" v-loading="dataLoading">
       <mavon-editor v-model="mavonEditorValue['content_' + currLang]"
                     class="markdown-warp"

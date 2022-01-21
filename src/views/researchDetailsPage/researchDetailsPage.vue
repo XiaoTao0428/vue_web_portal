@@ -1,9 +1,9 @@
 <template>
   <div :class="'researchDetailsPage_warp ' + customPageClassName" v-loading="dataLoading">
-    <page-header-block
-        :title="researchData['title_' + currLang]"
-        :breadcrumb-list="breadcrumbList"
-    ></page-header-block>
+<!--    <page-header-block-->
+<!--        :title="researchData['title_' + currLang]"-->
+<!--        :breadcrumb-list="breadcrumbList"-->
+<!--    ></page-header-block>-->
     <div class="content">
       <mavon-editor v-model="researchData['content_' + currLang]"
                     class="markdown-warp"
@@ -21,6 +21,7 @@
 import PageHeaderBlock from "@/components/pageHeaderBlock/pageHeaderBlock";
 import {GetResearchResearchDetailApi} from "@/request/api";
 import mixins from "@/mixins/mixins";
+import {mapMutations} from "vuex";
 export default {
   name: "researchDetailsPage",
   mixins: [mixins],
@@ -41,6 +42,11 @@ export default {
       return this.$store.state.currLang
     },
   },
+  created() {
+    this.setCurrRouteKey({
+      currRouteKey: '2'
+    })
+  },
   async mounted() {
     let data = this.$route.query.data
     let param = JSON.parse(decodeURIComponent(data))
@@ -52,6 +58,7 @@ export default {
     await this.loadData()
   },
   methods: {
+    ...mapMutations(['setCurrRouteKey']),
     async loadData() {
       this.dataLoading = true
       const res = await GetResearchResearchDetailApi({

@@ -530,8 +530,8 @@ export default {
     .menu-warp {
       width: 100%;
       max-width: 1440px;
-      height: 47px;
-      min-height: 47px;
+      height: 67px;
+      min-height: 67px;
       margin-top: 30px;
       padding: 0 50px;
       box-sizing: border-box;
@@ -589,7 +589,7 @@ export default {
             background-color: #1B1B1B;
             border-top: 5px solid #D14900;
             position: absolute;
-            top: 44px;
+            top: 64px;
             left: 0;
             display: none;
             flex-direction: column;
@@ -796,6 +796,7 @@ export default {
 
     .main {
       width: 100%;
+      margin-top: 20px;
       flex: 1;
       margin-bottom: 60px;
     }
