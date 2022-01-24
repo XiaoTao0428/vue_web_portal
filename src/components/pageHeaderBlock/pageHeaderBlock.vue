@@ -84,10 +84,10 @@ export default {
       .breadcrumb-item {
         .breadcrumb-item-a {
           //color: #ffffff;
-          color: #D14900;
+          color: #9B0000;
           cursor: pointer;
           &:hover {
-            color: #D14900;
+            color: #9B0000;
           }
         }
         .breadcrumb-item-span {

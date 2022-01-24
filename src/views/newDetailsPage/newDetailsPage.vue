@@ -152,7 +152,7 @@ export default {
       box-sizing: border-box;
       .breadcrumb-item {
         .breadcrumb-item-a {
-          color: #D14900;
+          color: #9B0000;
           cursor: pointer;
           margin-bottom: 10px;
         }

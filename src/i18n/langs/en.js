@@ -37,7 +37,8 @@ const en = {
         'DeleteNodeHint': 'Are you sure you want to delete this node?',
 
         'GroupInformation': '1. Research Group Information',
-        'ResearchGroupIcon': 'Research Group Icon',
+        'ResearchGroupIcon_cn': 'Research Group Icon (Chinese)',
+        'ResearchGroupIcon_en': 'Research Group Icon (English)',
         'HomeMainImage': '2. Home Main Image',
         'HomeArticles': '2. Home Articles',
         'GroupName_cn': 'Research Group Name (Chinese)',

@@ -87,7 +87,8 @@ export default {
       homeImageForm: {
         // describe_cn: '',
         // describe_en: '',
-        imageUrl: '',
+        imageUrl_cn: '',
+        imageUrl_en: '',
         // groupName_cn: '',
         // groupName_en: '',
         contactAddress_cn: '',
@@ -134,7 +135,8 @@ export default {
 
         this.homePaperValue.value_cn = res.index_info.home_article_cn
         this.homePaperValue.value_en = res.index_info.home_article_en
-        this.homeImageForm.imageUrl = res.index_info.home_image
+        this.homeImageForm.imageUrl_cn = res.index_info.home_image_cn
+        this.homeImageForm.imageUrl_en = res.index_info.home_image_en
         // this.homeImageForm.describe_cn = res.index_info.home_image_description_cn
         // this.homeImageForm.describe_en = res.index_info.home_image_description_en
 
@@ -142,7 +144,8 @@ export default {
           groupInfo: {
             // name_cn: this.homeImageForm.groupName_cn,
             // name_en: this.homeImageForm.groupName_en,
-            icon: this.homeImageForm.imageUrl,
+            icon_cn: this.homeImageForm.imageUrl_cn,
+            icon_en: this.homeImageForm.imageUrl_en,
             contactAddress_cn: this.homeImageForm.contactAddress_cn,
             contactAddress_en: this.homeImageForm.contactAddress_en,
           }
@@ -152,7 +155,6 @@ export default {
       await this.loadResearchListData()
       this.dataLoading = false
     },
-
     /**
     * 获取新闻列表
     * */
@@ -166,7 +168,6 @@ export default {
         this.newsList = res.news_info_list
       }
     },
-
     /**
      * 获取研究列表
      * */
@@ -180,7 +181,6 @@ export default {
         this.researchList = res.research_info_list
       }
     },
-
     /**
      * 去研究方向页
      * */
@@ -308,10 +308,10 @@ export default {
           height: 32px;
           cursor: pointer;
           &:hover {
-            color: #D14900;
+            color: #9B0000;
           }
           .el-icon-arrow-right {
-            color: #D14900;
+            color: #9B0000;
             font-weight: bold;
           }
         }

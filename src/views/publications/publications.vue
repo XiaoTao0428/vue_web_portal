@@ -177,7 +177,7 @@ export default {
 
           .link {
             cursor: pointer;
-            color: #D14900;
+            color: #9B0000;
           }
         }
       }
@@ -240,7 +240,7 @@ export default {
 
           .link {
             cursor: pointer;
-            color: #D14900;
+            color: #9B0000;
           }
         }
       }

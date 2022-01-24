@@ -37,7 +37,8 @@ const cn = {
         'DeleteNodeHint': '确定要删除此节点吗？',
 
         'GroupInformation': '1、课题组信息',
-        'ResearchGroupIcon': '课题组图标',
+        'ResearchGroupIcon_cn': '课题组图标（中文）',
+        'ResearchGroupIcon_en': '课题组图标（英文）',
         'HomeMainImage': '2、首页主图',
         'HomeArticles': '2、首页文章',
         'GroupName_cn': '课题组名称（中文）',

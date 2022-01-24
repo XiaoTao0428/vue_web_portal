@@ -21,7 +21,8 @@ export default new Vuex.Store({
     groupInfo: {
       // name_cn: '',  // 中文名
       // name_en: '',  // 英文名
-      icon: '',
+      icon_cn: '',
+      icon_en: '',
       contactAddress_cn: '',  // 联系地址
       contactAddress_en: '',  // 联系地址
     }
@@ -55,7 +56,8 @@ export default new Vuex.Store({
      * 设置当前的 小组信息
      * */
     setGroupInfo(state, param) {
-      state.groupInfo.icon = param.groupInfo.icon
+      state.groupInfo.icon_cn = param.groupInfo.icon_cn
+      state.groupInfo.icon_en = param.groupInfo.icon_en
       state.groupInfo.contactAddress_cn = param.groupInfo.contactAddress_cn
       state.groupInfo.contactAddress_en = param.groupInfo.contactAddress_en
     },

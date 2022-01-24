@@ -147,7 +147,8 @@ export default {
       currMenuKey: '1',
 
       homeImageForm: {
-        imageUrl: '',
+        imageUrl_cn: '',
+        imageUrl_en: '',
         contactAddress_cn: '',
         contactAddress_en: '',
       },
@@ -159,7 +160,12 @@ export default {
     },
     researchGroupIcon() {
       if (this.groupInfo.icon) {
-        return this.fileBeforeUrl + '' + this.groupInfo.icon
+        if (this.currLang == 'cn') {
+          return this.fileBeforeUrl + '' + this.groupInfo.icon_cn
+        }
+        if (this.currLang == 'en') {
+          return this.fileBeforeUrl + '' + this.groupInfo.icon_en
+        }
       }else {
         return ''
       }
@@ -265,11 +271,13 @@ export default {
       if (res) {
         this.homeImageForm.contactAddress_cn = res.index_info.contact_address_cn
         this.homeImageForm.contactAddress_en = res.index_info.contact_address_en
-        this.homeImageForm.imageUrl = res.index_info.home_image
+        this.homeImageForm.imageUrl_cn = res.index_info.home_image_cn
+        this.homeImageForm.imageUrl_en = res.index_info.home_image_en
 
         this.setGroupInfo({
           groupInfo: {
-            icon: this.homeImageForm.imageUrl,
+            icon_cn: this.homeImageForm.imageUrl_cn,
+            icon_en: this.homeImageForm.imageUrl_en,
             contactAddress_cn: this.homeImageForm.contactAddress_cn,
             contactAddress_en: this.homeImageForm.contactAddress_en,
           }
@@ -570,7 +578,7 @@ export default {
           .menu-item-title {
             white-space: nowrap;
             &:hover {
-              color: #D14900;
+              color: #9B0000;
             }
           }
 
@@ -581,13 +589,13 @@ export default {
           }
 
           .menu-item-title-checked {
-            color: #D14900;
+            color: #9B0000;
           }
 
           .submenu {
             width: 300px;
             background-color: #1B1B1B;
-            border-top: 5px solid #D14900;
+            border-top: 5px solid #9B0000;
             position: absolute;
             top: 64px;
             left: 0;
@@ -611,12 +619,12 @@ export default {
                 cursor: pointer;
                 white-space: nowrap;
                 &:hover {
-                  //color: #D14900;
+                  //color: #9B0000;
                 }
               }
 
               .submit-item-title-checked {
-                color: #D14900;
+                color: #9B0000;
               }
 
               &:last-child {
@@ -656,7 +664,7 @@ export default {
           .menu-list-popup {
             width: 250px;
             background-color: #1B1B1B;
-            border-top: 5px solid #D14900;
+            border-top: 5px solid #9B0000;
             position: absolute;
             top: 40px;
             left: 0;
@@ -717,7 +725,7 @@ export default {
                     }
                   }
                   .menu-item-title-checked {
-                    color: #D14900;
+                    color: #9B0000;
                   }
                   .icon {
                     width: 17px;
@@ -778,7 +786,7 @@ export default {
                     font-weight: bold;
                   }
                   .submit-item-title-checked {
-                    color: #D14900;
+                    color: #9B0000;
                   }
                 }
 

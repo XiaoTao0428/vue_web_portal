@@ -87,7 +87,7 @@ export default {
 
   .date {
     font-size: 12px;
-    color: #D14900;
+    color: #9B0000;
     font-weight: bold;
     margin-bottom: 10px;
 

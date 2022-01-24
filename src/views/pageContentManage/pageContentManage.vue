@@ -17,7 +17,7 @@
 <!--                <el-form-item :label="$t('manage.GroupName_en')" prop="groupName_en">-->
 <!--                  <el-input v-model="homeImageForm.groupName_en" :rows="3"></el-input>-->
 <!--                </el-form-item>-->
-                <el-form-item :label="$t('manage.ResearchGroupIcon')" prop="imageUrl">
+                <el-form-item :label="$t('manage.ResearchGroupIcon_cn')" prop="imageUrl_cn">
                   <el-upload
                       :action="uploadAction"
                       :headers="uploadHeaders"
@@ -31,6 +31,25 @@
                       :before-upload="beforeImageUpload"
                       :on-remove="handleImageUploadRemove"
                       :on-success="handleImageUploadSuccess"
+                  >
+                    <i class="el-icon-plus avatar-uploader-icon"></i>
+                    <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
+                  </el-upload>
+                </el-form-item>
+                <el-form-item :label="$t('manage.ResearchGroupIcon_en')" prop="imageUrl_en">
+                  <el-upload
+                      :action="uploadAction"
+                      :headers="uploadHeaders"
+                      :file-list="homeImageFileList2"
+                      :multiple="false"
+                      name="file"
+                      :limit="1"
+                      list-type="picture-card"
+                      :on-exceed="handleImageUploadExceed"
+                      :on-preview="handleImageUploadPreview"
+                      :before-upload="beforeImageUpload"
+                      :on-remove="handleImageUploadRemove2"
+                      :on-success="handleImageUploadSuccess2"
                   >
                     <i class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
@@ -718,6 +737,12 @@ export default {
         imageUrl: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
+        imageUrl_cn: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
+        imageUrl_en: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ],
         title_cn: [
           { required: true, message: '不能为空', trigger: 'change' }
         ],
@@ -810,13 +835,15 @@ export default {
       homeImageForm: {
         // describe_cn: '',
         // describe_en: '',
-        imageUrl: '',
+        imageUrl_cn: '',
+        imageUrl_en: '',
         // groupName_cn: '',
         // groupName_en: '',
         contactAddress_cn: '',
         contactAddress_en: '',
       },
       homeImageFileList: [],
+      homeImageFileList2: [],
       homePaperValue_cn: '',
       homePaperValue_en: '',
 
@@ -1082,7 +1109,8 @@ export default {
         this.homeImageForm.contactAddress_en = res.index_info.contact_address_en
         this.homePaperValue_cn = res.index_info.home_article_cn
         this.homePaperValue_en = res.index_info.home_article_en
-        this.homeImageForm.imageUrl = res.index_info.home_image
+        this.homeImageForm.imageUrl_cn = res.index_info.home_image_cn
+        this.homeImageForm.imageUrl_en = res.index_info.home_image_en
         // this.homeImageForm.describe_cn = res.index_info.home_image_description_cn
         // this.homeImageForm.describe_en = res.index_info.home_image_description_en
 
@@ -1090,20 +1118,31 @@ export default {
           groupInfo: {
             // name_cn: this.homeImageForm.groupName_cn,
             // name_en: this.homeImageForm.groupName_en,
-            icon: this.homeImageForm.imageUrl,
+            icon_cn: this.homeImageForm.imageUrl_cn,
+            icon_en: this.homeImageForm.imageUrl_en,
             contactAddress_cn: this.homeImageForm.contactAddress_cn,
             contactAddress_en: this.homeImageForm.contactAddress_en,
           }
         })
 
-        if (this.homeImageForm.imageUrl !== '') {
+        if (this.homeImageForm.imageUrl_cn !== '') {
           let arr = []
           arr.push({
             name: 'image',
-            url: this.fileBeforeUrl + this.homeImageForm.imageUrl
+            url: this.fileBeforeUrl + this.homeImageForm.imageUrl_cn
           })
           this.homeImageFileList = arr
         }
+
+        if (this.homeImageForm.imageUrl_en !== '') {
+          let arr = []
+          arr.push({
+            name: 'image',
+            url: this.fileBeforeUrl + this.homeImageForm.imageUrl_en
+          })
+          this.homeImageFileList2 = arr
+        }
+
       }
       this.homeLoading = false
     },
@@ -1147,14 +1186,28 @@ export default {
      * 上传首页图片时，图片删除
      * */
     handleImageUploadRemove(file, fileList) {
-      this.homeImageForm.imageUrl = ''
+      this.homeImageForm.imageUrl_cn = ''
+    },
+    /**
+     * 上传首页图片时，图片删除
+     * */
+    handleImageUploadRemove2(file, fileList) {
+      this.homeImageForm.imageUrl_en = ''
     },
     /**
      * 上传首页图片时，图片上传成功
      * */
     handleImageUploadSuccess(res, file) {
       if (res.code === 200) {
-        this.homeImageForm.imageUrl = res.data.path
+        this.homeImageForm.imageUrl_cn = res.data.path
+      }
+    },
+    /**
+     * 上传首页图片时，图片上传成功
+     * */
+    handleImageUploadSuccess2(res, file) {
+      if (res.code === 200) {
+        this.homeImageForm.imageUrl_en = res.data.path
       }
     },
     /**
@@ -1165,7 +1218,8 @@ export default {
         if (valid) {
           this.btnLoading = true
           let param = {
-            home_image: this.homeImageForm.imageUrl,
+            home_image_cn: this.homeImageForm.imageUrl_cn,
+            home_image_en: this.homeImageForm.imageUrl_en,
             // home_image_description_cn: this.homeImageForm.describe_cn,
             // home_image_description_en: this.homeImageForm.describe_en,
             home_article_cn: this.homePaperValue_cn,
