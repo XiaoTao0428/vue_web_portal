@@ -5,10 +5,7 @@
         <div class="header-icon">
           <img class="icon" :src="Peking_University_logo" @click="toPekingUniversityHome">
           <el-divider class="divider" direction="vertical" v-if="currScreenSize !== 'xs'"></el-divider>
-          <img class="research-group-icon" v-if="researchGroupIcon" :src="researchGroupIcon">
-<!--          <div class="title">-->
-<!--            {{researchGroupIcon}}-->
-<!--          </div>-->
+          <img class="research-group-icon" :src="researchGroupIcon">
         </div>
         <div class="actions">
           <el-select class="lang-change" size="mini" v-model="currLang" @change="langChange" placeholder="请选择">
@@ -159,13 +156,11 @@ export default {
       return this.$store.state.groupInfo
     },
     researchGroupIcon() {
-      if (this.groupInfo.icon) {
-        if (this.currLang == 'cn') {
-          return this.fileBeforeUrl + '' + this.groupInfo.icon_cn
-        }
-        if (this.currLang == 'en') {
-          return this.fileBeforeUrl + '' + this.groupInfo.icon_en
-        }
+      if (this.currLang == 'cn' && this.groupInfo.icon_cn) {
+        return this.fileBeforeUrl + '' + this.groupInfo.icon_cn
+      }
+      else if (this.currLang == 'en' && this.groupInfo.icon_en) {
+        return this.fileBeforeUrl + '' + this.groupInfo.icon_en
       }else {
         return ''
       }
@@ -472,9 +467,8 @@ export default {
           background-color: #c8c8c8;
         }
         .research-group-icon {
-          height: 75%;
-          max-height: 75%;
-          max-width: 100%;
+          max-height: 100%;
+          max-width: calc(100% - 200px);
         }
         .title {
           font-size: 24px;
@@ -520,8 +514,7 @@ export default {
           margin-top: 5px;
         }
         .research-group-icon {
-          height: 75%;
-          max-height: 75%;
+          max-height: 100%;
           max-width: 100%;
           cursor: pointer;
           margin-top: 10px;

@@ -151,13 +151,15 @@ export default {
       padding-bottom: 15px;
       box-sizing: border-box;
       .breadcrumb-item {
+        padding-top: 10px;
         .breadcrumb-item-a {
           color: #9B0000;
           cursor: pointer;
-          margin-bottom: 10px;
+          padding-bottom: 10px;
         }
         .breadcrumb-item-span {
           color: #aaa99f;
+          padding-bottom: 10px;
         }
       }
     }

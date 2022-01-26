@@ -3,37 +3,35 @@
 
     <div class="content">
 
-      <div class="home-left">
-        <mavon-editor class="markdown-warp" v-model="homePaperValue['value_' + currLang]"
-                      :language="'zh-CN'"
-                      :editable="false"
-                      :toolbars-flag="false"
-                      :subfield="false"
-                      :default-open="'preview'"
-        ></mavon-editor>
-      </div>
-
-      <div class="home-right">
-        <div class="picture-introduction">
-          <el-carousel height="400px" indicator-position="none">
-            <el-carousel-item v-for="(item, index) in newsList" :key="'news' + index">
-
-              <div class="image-warp" @click="toNewsDetails(item)">
-<!--                <el-image-->
-<!--                    class="image"-->
-<!--                    :src="item.cover_image"-->
-<!--                ></el-image>-->
-                <img class="image" :src="item.cover_image" />
-                <div class="image-msg" v-if="item.cover_image">
-                  {{item['title_' + currLang]}}
-                </div>
-              </div>
-
-            </el-carousel-item>
-          </el-carousel>
-
+      <div class="home-top">
+        <div class="home-top-left">
+          <mavon-editor class="markdown-warp" v-model="homePaperValue['value_' + currLang]"
+                        :language="'zh-CN'"
+                        :editable="false"
+                        :toolbars-flag="false"
+                        :subfield="false"
+                        :default-open="'preview'"
+          ></mavon-editor>
         </div>
+        <div class="home-top-right">
+          <div class="picture-introduction">
+            <el-carousel height="400px" indicator-position="none">
+              <el-carousel-item v-for="(item, index) in newsList" :key="'news' + index">
 
+                <div class="image-warp" @click="toNewsDetails(item)">
+                  <img class="image" :src="item.cover_image" />
+                  <div class="image-msg" v-if="item.cover_image">
+                    {{item['title_' + currLang]}}
+                  </div>
+                </div>
+
+              </el-carousel-item>
+            </el-carousel>
+
+          </div>
+        </div>
+      </div>
+      <div class="home-bottom">
         <div class="research-list">
 
           <div class="research-list-header">
@@ -43,23 +41,32 @@
             <span class="link" @click="toResearch" :underline="false">{{$t('home.AllResearch')}} <i class="el-icon-arrow-right"></i></span>
           </div>
 
-          <div class="news-content">
-            <div class="new-item" v-for="(item, index) in researchList" :key="'research' + index">
-
-              <image-text-card
-                  :image-url="item.cover_image"
-                  :date="item.date"
-                  :description="item['title_' + currLang]"
-                  :have-details="true"
-                  @handleClick="toResearchDetails(item)"
-              ></image-text-card>
-
-            </div>
+          <div class="research-content">
+            <el-row class="row" :gutter="20" v-for="(item, index) in newResearchList" :key="'row' + index">
+              <el-col class="col" :span="24/colNum" v-for="(item2, index2) in item" :key="'col' + index2">
+                <image-text-card
+                    :image-url="item2.cover_image"
+                    :date="item2.date"
+                    :description="item2['title_' + currLang]"
+                    :have-details="true"
+                    @handleClick="toResearchDetails(item2)"
+                ></image-text-card>
+              </el-col>
+            </el-row>
+<!--            <div class="research-item" v-for="(item, index) in researchList" :key="'research' + index">-->
+<!--              <image-text-card-->
+<!--                  :image-url="item.cover_image"-->
+<!--                  :date="item.date"-->
+<!--                  :description="item['title_' + currLang]"-->
+<!--                  :have-details="true"-->
+<!--                  @handleClick="toResearchDetails(item)"-->
+<!--              ></image-text-card>-->
+<!--            </div>-->
           </div>
 
         </div>
-
       </div>
+
     </div>
 
   </div>
@@ -96,6 +103,8 @@ export default {
       },
       newsList: [],
       researchList: [],
+      newResearchList: [],
+      colNum: 4,
     }
   },
   computed: {
@@ -109,6 +118,20 @@ export default {
     //     return ''
     //   }
     // }
+  },
+  watch: {
+    currScreenSize() {
+      if (this.currScreenSize === 'lg') {
+        this.colNum = 4
+      } else if (this.currScreenSize === 'md') {
+        this.colNum = 3
+      } else if (this.currScreenSize === 'sm') {
+        this.colNum = 2
+      } else {
+        this.colNum = 1
+      }
+      this.initList(this.colNum)
+    }
   },
   created() {
     this.setCurrRouteKey({
@@ -174,12 +197,29 @@ export default {
     async loadResearchListData() {
       const res = await GetResearchTesearchListApi({
         page_num: 1,
-        page_size: 3
+        page_size: 4
       })
       console.log(res)
       if (res) {
         this.researchList = res.research_info_list
+        this.initList(this.colNum)
       }
+    },
+    /**
+     * 初始化层级列表
+     * */
+    initList(num) {
+      let arr = []
+      this.researchList.forEach((item, index) => {
+        let i = parseInt(index/num)
+        if (arr[i] && arr[i].length) {
+          arr[i].push(item)
+        }else {
+          arr[i] = []
+          arr[i].push(item)
+        }
+      })
+      this.newResearchList = [...arr]
     },
     /**
      * 去研究方向页
@@ -249,47 +289,61 @@ export default {
     width: 100%;
     padding: 0 50px;
 
-    .home-left {
-      margin-right: 20px;
-      .markdown-warp {
-        box-shadow: none !important;
-        z-index: 1;
-        font-size: 20px;
-        & /deep/ .v-show-content {
-          padding: 0;
-          background-color: #ffffff !important;
+    .home-top {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 30px;
+
+      .home-top-left {
+        margin-right: 20px;
+        flex: 1;
+        .markdown-warp {
+          box-shadow: none !important;
+          z-index: 1;
+          font-size: 20px;
+          & /deep/ .v-show-content {
+            padding: 0;
+            background-color: #ffffff !important;
+          }
         }
       }
-    }
-    .home-right {
-      margin-left: 20px;
 
-      .picture-introduction {
-        width: 100%;
-        margin-bottom: 30px;
+      .home-top-right {
+        margin-left: 20px;
+        flex: 1;
 
-        .image-warp {
+        .picture-introduction {
           width: 100%;
-          cursor: pointer;
 
-          position: relative;
-          .image {
-            min-height: 100%;
-          }
-          .image-msg {
+          .image-warp {
             width: 100%;
-            position: absolute;
-            bottom: 4px;
-            left: 0;
-            padding: 16px 18px;
-            box-sizing: border-box;
-            color: #ffffff;
-            background-color: rgba(0, 0, 0, 0.54);
-          }
-        }
+            cursor: pointer;
 
+            position: relative;
+            .image {
+              min-height: 100%;
+            }
+            .image-msg {
+              width: 100%;
+              position: absolute;
+              bottom: 4px;
+              left: 0;
+              padding: 16px 18px;
+              box-sizing: border-box;
+              color: #ffffff;
+              background-color: rgba(0, 0, 0, 0.54);
+            }
+          }
+
+        }
       }
 
+    }
+
+    .home-bottom {
+      width: 100%;
       .research-list-header {
         width: 100%;
         display: flex;
@@ -317,40 +371,69 @@ export default {
         }
       }
 
-      .news-content {
-        width: 100%;
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-
-        .new-item {
-          flex: 1;
-          &:first-child {
-            margin-right: 10px;
+      .research-content {
+        width: calc(100% + 20px);
+        max-width: 1440px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        .row {
+          width: 100%;
+          margin-bottom: 50px;
+          //margin-left: 0 !important;
+          margin-left: -10px;
+          margin-right: 0 !important;
+          .col {
           }
-          &:last-child {
-            margin-left: 10px;
-          }
-
         }
-
+        .content-item {
+        }
       }
 
     }
   }
-
 }
 
+//.home_warp-lg, .home_warp-md, .home_warp-sm {
+//  .content {
+//    display: flex;
+//    align-items: flex-start;
+//    justify-content: space-between;
+//    .home-left {
+//      flex: 1;
+//    }
+//    .home-right {
+//      flex: 1;
+//    }
+//  }
+//}
+
 .home_warp-lg, .home_warp-md, .home_warp-sm {
-  .content {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    .home-left {
+  .home-top {
+    .home-top-left {
       flex: 1;
+      .markdown-warp {
+        font-size: 18px;
+      }
     }
-    .home-right {
+    .home-top-right {
       flex: 1;
+      .picture-introduction {
+        .image-msg {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  .home-bottom {
+    .research-list {
+      .research-list-header {
+        .research-list-header-title {
+          font-size: 28px;
+        }
+        .link {
+          height: 26px
+        }
+      }
     }
   }
 }
@@ -358,17 +441,23 @@ export default {
 .home_warp-sm {
   .content {
     padding: 0 20px;
-    .home-left {
+  }
+  .home-top {
+    .home-top-left {
       .markdown-warp {
         font-size: 18px;
       }
     }
-    .home-right {
+    .home-top-right {
       .picture-introduction {
         .image-msg {
           font-size: 14px;
         }
       }
+    }
+  }
+  .home-bottom {
+    .research-list {
       .research-list-header {
         .research-list-header-title {
           font-size: 28px;
@@ -383,21 +472,27 @@ export default {
 
 .home_warp-xs {
   .content {
-    display: block;
     padding: 0 20px;
-    .home-left {
-      margin-left: 0;
+  }
+  .home-top {
+    display: block !important;
+    .home-top-left {
+      margin-right: 0 !important;
       .markdown-warp {
         font-size: 18px;
       }
     }
-    .home-right {
-      margin-left: 0;
+    .home-top-right {
+      margin-left: 0 !important;
       .picture-introduction {
         .image-msg {
           font-size: 12px;
         }
       }
+    }
+  }
+  .home-bottom {
+    .research-list {
       .research-list-header {
         .research-list-header-title {
           font-size: 28px;
@@ -409,4 +504,58 @@ export default {
     }
   }
 }
+//.home_warp-sm {
+//  .content {
+//    padding: 0 20px;
+//    .home-left {
+//      .markdown-warp {
+//        font-size: 18px;
+//      }
+//    }
+//    .home-right {
+//      .picture-introduction {
+//        .image-msg {
+//          font-size: 14px;
+//        }
+//      }
+//      .research-list-header {
+//        .research-list-header-title {
+//          font-size: 28px;
+//        }
+//        .link {
+//          height: 26px
+//        }
+//      }
+//    }
+//  }
+//}
+
+//.home_warp-xs {
+//  .content {
+//    display: block;
+//    padding: 0 20px;
+//    .home-left {
+//      margin-left: 0;
+//      .markdown-warp {
+//        font-size: 18px;
+//      }
+//    }
+//    .home-right {
+//      margin-left: 0;
+//      .picture-introduction {
+//        .image-msg {
+//          font-size: 12px;
+//        }
+//      }
+//      .research-list-header {
+//        .research-list-header-title {
+//          font-size: 28px;
+//        }
+//        .link {
+//          height: 26px
+//        }
+//      }
+//    }
+//  }
+//}
 </style>
