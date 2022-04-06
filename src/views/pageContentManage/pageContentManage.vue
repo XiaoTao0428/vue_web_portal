@@ -1,5 +1,5 @@
 <template>
-  <div class="pageContentManage_warp">
+  <div class="pageContentManage_warp" ref="pageContentManage_warp">
     <el-tabs class="tabs" v-model="activeName" @tab-click="handleTabClick">
       <!--   首页配置   -->
       <el-tab-pane class="tab-pane" :label="$t('manage.Home')" name="1">
@@ -111,6 +111,8 @@
             </div>
             <mavon-editor class="mavon-editor-warp" v-model="homePaperValue_cn"
                           :language="mavonEditorLang"
+                          ref="editHomeMD_cn"
+                          @imgAdd="editHomeMDImgAdd_cn"
             ></mavon-editor>
             <br>
             <div class="card-title">
@@ -118,6 +120,8 @@
             </div>
             <mavon-editor class="mavon-editor-warp" v-model="homePaperValue_en"
                           :language="mavonEditorLang"
+                          ref="editHomeMD_en"
+                          @imgAdd="editHomeMDImgAdd_en"
             ></mavon-editor>
 
             <div class="btn-warp">
@@ -419,6 +423,8 @@
             </div>
             <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].value_cn"
                           :language="mavonEditorLang"
+                          :ref="'customPageMD' + index + '_cn'"
+                          @imgAdd="(pos, $file) => customPageMDImgAdd_cn(pos, $file, index)"
             ></mavon-editor>
           </div>
           <div class="content-en">
@@ -427,6 +433,8 @@
             </div>
             <mavon-editor class="mavon-editor-warp" v-model="newMenuListPageData[index].value_en"
                           :language="mavonEditorLang"
+                          :ref="'customPageMD' + index + '_en'"
+                          @imgAdd="(pos, $file) => customPageMDImgAdd_en(pos, $file, index)"
             ></mavon-editor>
           </div>
 
@@ -457,16 +465,22 @@
           <div class="content-title">
             {{$t('manage.ChineseVersion')}}
           </div>
-          <mavon-editor class="mavon-editor-warp" v-model="pageDetails.data_cn"
+          <mavon-editor class="mavon-editor-warp"
+                        v-model="pageDetails.data_cn"
                         :language="mavonEditorLang"
+                        ref="editDetailsMD_cn"
+                        @imgAdd="editDetailsMDImgAdd_cn"
           ></mavon-editor>
         </div>
         <div class="content-cn">
           <div class="content-title">
             {{$t('manage.EnglishVersion')}}
           </div>
-          <mavon-editor class="mavon-editor-warp" v-model="pageDetails.data_en"
+          <mavon-editor class="mavon-editor-warp"
+                        v-model="pageDetails.data_en"
                         :language="mavonEditorLang"
+                        ref="editDetailsMD_en"
+                        @imgAdd="editDetailsMDImgAdd_en"
           ></mavon-editor>
         </div>
       </div>
@@ -695,6 +709,7 @@
 
 <script>
 import ModifyPaperContent from "@/components/modifyPaperContent/modifyPaperContent";
+import axios from 'axios'
 import {upload_file_URL, file_before_url} from '@/config/baseURL'
 import {
   GetTabManagementTabListApi,
@@ -946,7 +961,7 @@ export default {
     },
     token() {
       return this.$store.state.token;
-    }
+    },
   },
   watch: {
     token: {
@@ -954,7 +969,7 @@ export default {
         this.uploadHeaders.Authorization = this.token
       },
       immediate: true
-    }
+    },
   },
   mounted() {
     this.initData()
@@ -1699,6 +1714,114 @@ export default {
         this.loadCustomPageData()
       }
       this.btnLoading = false
+    },
+
+    /**
+     * 自定义页中文内容编辑中的上传图片
+     * */
+    editDetailsMDImgAdd_cn(pos, $file){
+      let formData = new FormData();
+      formData.append('file', $file);
+      axios({
+        url: this.uploadAction,
+        method: 'post',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((res) => {
+        if (res && res.url) {
+          this.$refs.editDetailsMD_cn.$img2Url(pos, res.url);
+        }
+      })
+    },
+    /**
+     * 自定义页英文内容编辑中的上传图片
+     * */
+    editDetailsMDImgAdd_en(pos, $file){
+      let formData = new FormData();
+      formData.append('file', $file);
+      axios({
+        url: this.uploadAction,
+        method: 'post',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((res) => {
+        if (res && res.url) {
+          this.$refs.editDetailsMD_en.$img2Url(pos, res.url);
+        }
+      })
+    },
+    /**
+     * 首页中文内容编辑中的上传图片
+     * */
+    editHomeMDImgAdd_cn(pos, $file){
+      let formData = new FormData();
+      formData.append('file', $file);
+      axios({
+        url: this.uploadAction,
+        method: 'post',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((res) => {
+        if (res && res.url) {
+          this.$refs.editHomeMD_cn.$img2Url(pos, res.url);
+        }
+
+      })
+    },
+    /**
+     * 首页英文内容编辑中的上传图片
+     * */
+    editHomeMDImgAdd_en(pos, $file){
+      let formData = new FormData();
+      formData.append('file', $file);
+      axios({
+        url: this.uploadAction,
+        method: 'post',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((res) => {
+        if (res && res.url) {
+          this.$refs.editHomeMD_en.$img2Url(pos, res.url);
+        }
+      })
+    },
+    /**
+     * 自定义页中文内容编辑中的上传图片
+     * */
+    customPageMDImgAdd_cn(pos, $file, index){
+      let formData = new FormData();
+      formData.append('file', $file);
+      axios({
+        url: this.uploadAction,
+        method: 'post',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((res) => {
+        if (res && res.url) {
+          this.$nextTick(() => {
+            this.$refs['customPageMD' + index + '_cn'][0].$img2Url(pos, res.url)
+          })
+        }
+      })
+    },
+    /**
+     * 自定义页英文内容编辑中的上传图片
+     * */
+    customPageMDImgAdd_en(pos, $file, index){
+      let formData = new FormData();
+      formData.append('file', $file);
+      axios({
+        url: this.uploadAction,
+        method: 'post',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((res) => {
+        if (res && res.url) {
+          this.$nextTick(() => {
+            this.$refs['customPageMD' + index + '_en'][0].$img2Url(pos, res.url)
+          })
+        }
+      })
     },
 
   }
