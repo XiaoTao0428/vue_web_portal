@@ -149,7 +149,6 @@ export default {
     async loadHomeData() {
       this.dataLoading = true
       const res = await GetIndexIndexInfoApi()
-      console.log(res)
       if (res) {
         // this.homeImageForm.groupName_cn = res.index_info.group_name_cn
         // this.homeImageForm.groupName_en = res.index_info.group_name_en
@@ -186,7 +185,6 @@ export default {
         page_num: 1,
         page_size: 3
       })
-      console.log(res)
       if (res) {
         this.newsList = res.news_info_list
       }
@@ -199,7 +197,6 @@ export default {
         page_num: 1,
         page_size: 4
       })
-      console.log(res)
       if (res) {
         this.researchList = res.research_info_list
         this.initList(this.colNum)
@@ -246,7 +243,6 @@ export default {
           }
         ]
       }
-      console.log(data)
       this.$router.push({
         path: 'newDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
       })
@@ -270,7 +266,6 @@ export default {
           }
         ]
       }
-      console.log(data)
       this.$router.push({
         path: 'researchDetailsPage?data=' +encodeURIComponent(JSON.stringify(params)),
       })

@@ -2239,13 +2239,11 @@ export default {
     * 修改信息时初始化上传到服务器的图片地址
     * */
     initEditImageUrl(url) {
-      console.log('url', url)
       if (!url) {
         return ''
       }
       if (url.indexOf('/media/') !== -1) {
         let index = url.indexOf('/media/') + 7
-        console.log(url.substr(index))
         return url.substr(index)
       }else {
         return url

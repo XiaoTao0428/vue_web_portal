@@ -1,5 +1,4 @@
 // 接口域名
-// export const BASE_URL = 'https://photonics.lvpeng990324.cn/'
 export const BASE_URL = 'http://192.168.0.105:8080/'
 
 // 上传文件的地址

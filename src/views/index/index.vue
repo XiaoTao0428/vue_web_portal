@@ -213,11 +213,8 @@ export default {
      * 初始化路由key
      * */
     initCurrRouteKey() {
-      console.log(this.menuList)
       let url = this.$route.path
       let query = this.$route.query
-      console.log(url)
-      console.log(query)
       if (url === '/manage' || url === '/pageContentManage' || url === '/pageHeaderMenuManage') {
         this.setCurrRouteKey({
           currRouteKey: '99999'
