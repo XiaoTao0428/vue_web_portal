@@ -115,6 +115,12 @@ export const PostPublicationAddPublicationApi = (param) => post('/publication/ad
  */
 export const PostPublicationDeletePublicationApi = (param) => post('/publication/delete-publication/', param)
 
+
+/**
+ * 编辑成果物（管理员）
+ */
+export const PostPublicationEditPublicationApi = (param) => post('/publication/edit-publication/', param)
+
 /**
  * 获取成员列表（管理员）
  */

@@ -176,9 +176,10 @@
             <el-table-column
                 prop="name"
                 :label="$t('manage.Action')"
-                width="240">
+                width="300">
               <template slot-scope="scope">
                 <div class="table-column-action">
+                  <el-button size="mini" type="warning" :loading="scope.row.isLoading" @click="editResearch(scope.row)">{{$t('manage.EditDetails')}}</el-button>
                   <el-button size="mini" type="primary" :loading="scope.row.isLoading" @click="editDetails(scope.row)">{{$t('manage.EditContent')}}</el-button>
                   <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delResearch(scope.row)">{{$t('manage.Delete')}}</el-button>
                 </div>
@@ -312,9 +313,10 @@
             <el-table-column
                 prop="name"
                 :label="$t('manage.Action')"
-                width="120">
+                width="240">
               <template slot-scope="scope">
                 <div class="table-column-action">
+                  <el-button size="mini" type="warning" :loading="scope.row.isLoading" @click="editPublication(scope.row)">{{$t('manage.EditDetails')}}</el-button>
                   <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delPublication(scope.row)">{{$t('manage.Delete')}}</el-button>
                 </div>
               </template>
@@ -393,9 +395,10 @@
             <el-table-column
                 prop="name"
                 :label="$t('manage.Action')"
-                width="240">
+                width="300">
               <template slot-scope="scope">
                 <div class="table-column-action">
+                  <el-button size="mini" type="warning" :loading="scope.row.isLoading" @click="editPeople(scope.row)">{{$t('manage.EditDetails')}}</el-button>
                   <el-button size="mini" type="primary" v-if="scope.row.type === 'teacher'" :loading="scope.row.isLoading" @click="editDetails(scope.row)">{{$t('manage.EditContent')}}</el-button>
                   <el-button size="mini" type="danger" :loading="scope.row.isLoading" @click="delPeople(scope.row)">{{$t('manage.Delete')}}</el-button>
                 </div>
@@ -511,6 +514,9 @@
           <el-form-item :label="$t('manage.Preface_en')" prop="preface_en">
             <el-input type="textarea" v-model="addResearchForm.preface_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
+          <el-form-item :label="$t('manage.SortPriority')">
+            <el-input type="number" v-model="addResearchForm.sort_priority" :placeholder="$t('manage.SortPriority')"></el-input>
+          </el-form-item>
           <el-form-item :label="$t('manage.Image')" prop="imageUrl">
             <el-upload
                 ref="addResearchFormUploadRef"
@@ -535,6 +541,58 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addResearchDialogCancel">{{$t('manage.Cancel')}}</el-button>
         <el-button type="primary" :loading="btnLoading" @click="addResearchDialogConfirm">{{$t('manage.Confirm')}}</el-button>
+      </span>
+    </el-dialog>
+
+    <!--  编辑研究方向  -->
+    <el-dialog
+        :title="$t('manage.Edit')"
+        :visible.sync="editResearchDialogVisible"
+        width="800px"
+        custom-class="edit_research_dialog_warp"
+        :before-close="editResearchDialogCancel">
+      <div class="dialog-content">
+        <el-form :model="editResearchForm" :rules="rules" ref="editResearchFormRef" label-width="200px">
+          <el-form-item :label="$t('manage.Title_cn')" prop="title_cn">
+            <el-input v-model="editResearchForm.title_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Title_en')" prop="title_en">
+            <el-input v-model="editResearchForm.title_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Preface_cn')" prop="preface_cn">
+            <el-input type="textarea" v-model="editResearchForm.preface_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Preface_en')" prop="preface_en">
+            <el-input type="textarea" v-model="editResearchForm.preface_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.SortPriority')">
+            <el-input type="number" v-model="editResearchForm.sort_priority" :placeholder="$t('manage.SortPriority')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Image')" prop="imageUrl">
+            <el-upload
+                ref="editResearchFormUploadRef"
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :multiple="false"
+                name="file"
+                :limit="1"
+                list-type="picture-card"
+                :file-list="editResearchFormPhotoFileList"
+                :on-exceed="handleImageUploadExceed"
+                :on-preview="handleImageUploadPreview"
+                :before-upload="beforeImageUpload"
+                :on-remove="handleEditResearchImageUploadRemove"
+                :on-success="handleEditResearchImageUploadSuccess"
+            >
+              <i class="el-icon-plus avatar-uploader-icon"></i>
+              <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editResearchDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="editResearchDialogConfirm">{{$t('manage.Confirm')}}</el-button>
       </span>
     </el-dialog>
 
@@ -640,6 +698,52 @@
       </span>
     </el-dialog>
 
+    <!--  编辑发布的成果  -->
+    <el-dialog
+        :title="$t('manage.Edit')"
+        :visible.sync="editPublicationDialogVisible"
+        width="800px"
+        custom-class="edit_publication_dialog_warp"
+        :before-close="editPublicationDialogCancel">
+      <div class="dialog-content">
+        <el-form :model="editPublicationForm" :rules="rules" ref="editPublicationFormRef" label-width="140px">
+          <el-form-item :label="$t('manage.Title_cn')" prop="title_cn">
+            <el-input v-model="editPublicationForm.title_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Title_en')" prop="title_en">
+            <el-input v-model="editPublicationForm.title_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Author_cn')" prop="authors_cn">
+            <el-input type="textarea" v-model="editPublicationForm.authors_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Author_en')" prop="authors_en">
+            <el-input type="textarea" v-model="editPublicationForm.authors_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.JournalTitle')" prop="issn">
+            <el-input v-model="editPublicationForm.issn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.PeriodicalPublicationDate')" prop="publish_date">
+            <el-date-picker
+                v-model="editPublicationForm.publish_date"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :placeholder="$t('manage.SelectDate')">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item :label="$t('manage.JournalLink')" prop="publish_link">
+            <el-input v-model="editPublicationForm.publish_link" :placeholder="$t('manage.PleaseEnter')">
+              <template slot="prepend">https://</template>
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editPublicationDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="editPublicationDialogConfirm">{{$t('manage.Confirm')}}</el-button>
+      </span>
+    </el-dialog>
+
     <!--  新增人员  -->
     <el-dialog
         :title="$t('manage.Add')"
@@ -677,6 +781,9 @@
           <el-form-item v-if="addPeopleForm.type === 'teacher'" :label="$t('manage.Introduction_en')" prop="introduction_en">
             <el-input type="textarea" v-model="addPeopleForm.introduction_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
           </el-form-item>
+          <el-form-item :label="$t('manage.SortPriority')">
+            <el-input type="number" v-model="addPeopleForm.sort_priority" :placeholder="$t('manage.SortPriority')"></el-input>
+          </el-form-item>
           <el-form-item :label="$t('manage.Image')" prop="imageUrl">
             <el-upload
                 ref="addPeopleFormUploadRef"
@@ -704,6 +811,74 @@
       </span>
     </el-dialog>
 
+    <!--  编辑人员  -->
+    <el-dialog
+        :title="$t('manage.Edit')"
+        :visible.sync="editPeopleDialogVisible"
+        width="800px"
+        custom-class="edit_people_dialog_warp"
+        :before-close="editPeopleDialogCancel">
+      <div class="dialog-content">
+        <el-form :model="editPeopleForm" :rules="rules" ref="editPeopleFormRef" label-width="200px">
+          <el-form-item :label="$t('manage.Name_cn')" prop="name_cn">
+            <el-input v-model="editPeopleForm.name_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Name_en')" prop="name_en">
+            <el-input v-model="editPeopleForm.name_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.ContactContact_cn')" prop="contact_cn">
+            <el-input v-model="editPeopleForm.contact_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.ContactContact_en')" prop="contact_en">
+            <el-input v-model="editPeopleForm.contact_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Type')" prop="type">
+            <el-select v-model="editPeopleForm.type" :placeholder="$t('manage.PleaseChoose')">
+              <el-option
+                  v-for="(item, index) in peopleTypeOption"
+                  :key="'peopleType' + index"
+                  :label="item['label_' + currLang]"
+                  :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="editPeopleForm.type === 'teacher'" :label="$t('manage.Introduction_cn')" prop="introduction_cn">
+            <el-input type="textarea" v-model="editPeopleForm.introduction_cn" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item v-if="editPeopleForm.type === 'teacher'" :label="$t('manage.Introduction_en')" prop="introduction_en">
+            <el-input type="textarea" v-model="editPeopleForm.introduction_en" :placeholder="$t('manage.PleaseEnter')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.SortPriority')">
+            <el-input type="number" v-model="editPeopleForm.sort_priority" :placeholder="$t('manage.SortPriority')"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('manage.Image')" prop="imageUrl">
+            <el-upload
+                ref="editPeopleFormUploadRef"
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :multiple="false"
+                name="file"
+                :limit="1"
+                list-type="picture-card"
+                :file-list="editPeopleFormPhotoFileList"
+                :on-exceed="handleImageUploadExceed"
+                :on-preview="handleImageUploadPreview"
+                :before-upload="beforeImageUpload"
+                :on-remove="handleEditPeopleImageUploadRemove"
+                :on-success="handleEditPeopleImageUploadSuccess"
+            >
+              <i class="el-icon-plus avatar-uploader-icon"></i>
+              <div class="el-upload__tip" slot="tip">{{$t('manage.UploadPictureHint')}}</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editPeopleDialogCancel">{{$t('manage.Cancel')}}</el-button>
+        <el-button type="primary" :loading="btnLoading" @click="editPeopleDialogConfirm">{{$t('manage.Confirm')}}</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -727,7 +902,12 @@ import {
   PostPublicationAddPublicationApi,
   PostPublicationDeletePublicationApi,
   GetMemberManagementMemberListApi,
-  PostMemberAddMemberApi, PostMemberDeleteMemberApi, PostMemberEditMemberApi, GetIndexIndexInfoApi, GetIndexEditIndexApi
+  PostMemberAddMemberApi,
+  PostMemberDeleteMemberApi,
+  PostMemberEditMemberApi,
+  GetIndexIndexInfoApi,
+  GetIndexEditIndexApi,
+  PostPublicationEditPublicationApi
 } from "@/request/api";
 import {mapMutations} from "vuex";
 export default {
@@ -880,12 +1060,24 @@ export default {
       pageResearchCount: 0,
       researchTableData: [],
       addResearchDialogVisible: false,
+      editResearchDialogVisible: false,
       addResearchForm: {
         title_cn: '',
         title_en: '',
         preface_cn: '',
         preface_en: '',
         imageUrl: '',
+        sort_priority: '',
+      },
+      editResearchFormPhotoFileList: [],
+      editResearchForm: {
+        id: '',
+        title_cn: '',
+        title_en: '',
+        preface_cn: '',
+        preface_en: '',
+        imageUrl: '',
+        sort_priority: '',
       },
 
       /**
@@ -913,7 +1105,18 @@ export default {
       pagePublicationCount: 0,
       publicationTableData: [],
       addPublicationDialogVisible: false,
+      editPublicationDialogVisible: false,
       addPublicationForm: {
+        title_cn: '',
+        title_en: '',
+        authors_cn: '',
+        authors_en: '',
+        publish_link: '',
+        publish_date: '',
+        issn: '',
+      },
+      editPublicationForm: {
+        id: '',
         title_cn: '',
         title_en: '',
         authors_cn: '',
@@ -932,6 +1135,7 @@ export default {
       pagePeopleCount: 0,
       peopleTableData: [],
       addPeopleDialogVisible: false,
+      editPeopleDialogVisible: false,
       addPeopleForm: {
         type: '',
         imageUrl: '',
@@ -941,6 +1145,20 @@ export default {
         contact_en: '',
         introduction_cn: '',
         introduction_en: '',
+        sort_priority: '',
+      },
+      editPeopleFormPhotoFileList: [],
+      editPeopleForm: {
+        id: '',
+        type: '',
+        imageUrl: '',
+        name_cn: '',
+        name_en: '',
+        contact_cn: '',
+        contact_en: '',
+        introduction_cn: '',
+        introduction_en: '',
+        sort_priority: '',
       },
 
     }
@@ -1371,6 +1589,7 @@ export default {
             cover_image: this.addResearchForm.imageUrl,
             preface_cn: this.addResearchForm.preface_cn,
             preface_en: this.addResearchForm.preface_en,
+            sort_priority: this.addResearchForm.sort_priority,
             content_cn: '',
             content_en: '',
           })
@@ -1384,12 +1603,67 @@ export default {
       })
     },
     /**
+     * 编辑研究方向弹窗提交时触发
+     * */
+    editResearchDialogConfirm() {
+      this.$refs.editResearchFormRef.validate(async (valid) => {
+        if (valid) {
+          this.btnLoading = true
+          let imageUrl = this.initEditImageUrl(this.editResearchForm.imageUrl)
+          const res = await GetResearchEditResearchApi({
+            research_id: this.editResearchForm.id,
+            title_cn: this.editResearchForm.title_cn,
+            title_en: this.editResearchForm.title_en,
+            cover_image: imageUrl,
+            preface_cn: this.editResearchForm.preface_cn,
+            preface_en: this.editResearchForm.preface_en,
+            sort_priority: this.editResearchForm.sort_priority,
+          })
+          if (res) {
+            this.$message.success('编辑成功')
+          }
+          this.editResearchDialogCancel()
+          this.btnLoading = false
+          this.loadResearchData()
+        }
+      })
+    },
+    /**
      * 新增研究方向弹窗关闭时触发
      * */
     addResearchDialogCancel() {
       this.$refs.addResearchFormUploadRef.clearFiles()
       this.$refs.addResearchFormRef.resetFields()
+      this.addResearchForm.sort_priority = ''
       this.addResearchDialogVisible = false
+    },
+    /**
+     * 编辑研究方向弹窗关闭时触发
+     * */
+    editResearchDialogCancel() {
+      this.$refs.editResearchFormUploadRef.clearFiles()
+      this.$refs.editResearchFormRef.resetFields()
+      this.editResearchFormPhotoFileList = []
+      this.editResearchForm.sort_priority = ''
+      this.editResearchDialogVisible = false
+    },
+    /**
+     * 编辑研究方向
+     * */
+    editResearch(data) {
+      this.editResearchForm.id = data.id
+      this.editResearchForm.title_cn = data.title_cn
+      this.editResearchForm.title_en = data.title_en
+      this.editResearchForm.preface_cn = data.preface_cn
+      this.editResearchForm.preface_en = data.preface_en
+      this.editResearchForm.imageUrl = data.cover_image
+      this.editResearchForm.sort_priority = data.sort_priority
+      let arr = []
+      arr.push({
+        url: data.cover_image
+      })
+      this.editResearchFormPhotoFileList = arr
+      this.editResearchDialogVisible = true
     },
     /**
      * 新增研究方向弹窗中，图片删除时触发
@@ -1398,11 +1672,25 @@ export default {
       this.addResearchForm.imageUrl = ''
     },
     /**
+     * 编辑研究方向弹窗中，图片删除时触发
+     * */
+    handleEditResearchImageUploadRemove(file, fileList) {
+      this.editResearchForm.imageUrl = ''
+    },
+    /**
      * 新增研究方向弹窗中，图片上传成功时触发
      * */
     handleAddResearchImageUploadSuccess(res, file) {
       if (res.code === 200) {
         this.addResearchForm.imageUrl = res.data.path
+      }
+    },
+    /**
+     * 编辑研究方向弹窗中，图片上传成功时触发
+     * */
+    handleEditResearchImageUploadSuccess(res, file) {
+      if (res.code === 200) {
+        this.editResearchForm.imageUrl = res.data.path
       }
     },
     /**
@@ -1569,11 +1857,58 @@ export default {
       })
     },
     /**
+     * 编辑发布的成果弹窗提交时触发
+     * */
+    editPublicationDialogConfirm() {
+      this.$refs.editPublicationFormRef.validate(async (valid) => {
+        if (valid) {
+          this.btnLoading = true
+          const res = await PostPublicationEditPublicationApi({
+            publication_id: this.editPublicationForm.id,
+            title_cn: this.editPublicationForm.title_cn,
+            title_en: this.editPublicationForm.title_en,
+            authors_cn: this.editPublicationForm.authors_cn,
+            authors_en: this.editPublicationForm.authors_en,
+            publish_link: this.editPublicationForm.publish_link,
+            publish_date: this.editPublicationForm.publish_date,
+            issn: this.editPublicationForm.issn,
+          })
+          if (res) {
+            this.$message.success('编辑成功')
+          }
+          this.editPublicationDialogCancel()
+          this.btnLoading = false
+          this.loadPublicationData()
+        }
+      })
+    },
+    /**
      * 新增发布的成果弹窗关闭时触发
      * */
     addPublicationDialogCancel() {
       this.$refs.addPublicationFormRef.resetFields()
       this.addPublicationDialogVisible = false
+    },
+    /**
+     * 编辑发布的成果弹窗关闭时触发
+     * */
+    editPublicationDialogCancel() {
+      this.$refs.editPublicationFormRef.resetFields()
+      this.editPublicationDialogVisible = false
+    },
+    /**
+    * 编辑发布的成果
+    * */
+    editPublication(data) {
+      this.editPublicationForm.id = data.id
+      this.editPublicationForm.title_cn = data.title_cn
+      this.editPublicationForm.title_en = data.title_en
+      this.editPublicationForm.authors_cn = data.authors_cn
+      this.editPublicationForm.authors_en = data.authors_en
+      this.editPublicationForm.publish_link = data.publish_link
+      this.editPublicationForm.publish_date = data.publish_date
+      this.editPublicationForm.issn = data.issn
+      this.editPublicationDialogVisible = true
     },
     /**
      * 删除发布的成果
@@ -1636,6 +1971,7 @@ export default {
             contact_en: this.addPeopleForm.contact_en,
             introduction_cn: this.addPeopleForm.introduction_cn,
             introduction_en: this.addPeopleForm.introduction_en,
+            sort_priority: this.addPeopleForm.sort_priority,
             detail_cn: '',
             detail_en: '',
           })
@@ -1649,12 +1985,52 @@ export default {
       })
     },
     /**
+     * 编辑人员弹窗提交时触发
+     * */
+    editPeopleDialogConfirm() {
+      this.$refs.editPeopleFormRef.validate(async (valid) => {
+        if (valid) {
+          this.btnLoading = true
+          let imageUrl = this.initEditImageUrl(this.editPeopleForm.imageUrl)
+          const res = await PostMemberEditMemberApi({
+            member_id: this.editPeopleForm.id,
+            type: this.editPeopleForm.type,
+            photo: imageUrl,
+            name_cn: this.editPeopleForm.name_cn,
+            name_en: this.editPeopleForm.name_en,
+            contact_cn: this.editPeopleForm.contact_cn,
+            contact_en: this.editPeopleForm.contact_en,
+            introduction_cn: this.editPeopleForm.introduction_cn,
+            introduction_en: this.editPeopleForm.introduction_en,
+            sort_priority: this.editPeopleForm.sort_priority,
+          })
+          if (res) {
+            this.$message.success('编辑成功')
+          }
+          this.editPeopleDialogCancel()
+          this.btnLoading = false
+          this.loadPeopleData()
+        }
+      })
+    },
+    /**
      * 新增人员弹窗关闭时触发
      * */
     addPeopleDialogCancel() {
       this.$refs.addPeopleFormUploadRef.clearFiles()
       this.$refs.addPeopleFormRef.resetFields()
+      this.addPeopleForm.sort_priority = ''
       this.addPeopleDialogVisible = false
+    },
+    /**
+     * 编辑人员弹窗关闭时触发
+     * */
+    editPeopleDialogCancel() {
+      this.$refs.editPeopleFormUploadRef.clearFiles()
+      this.$refs.editPeopleFormRef.resetFields()
+      this.editPeopleFormPhotoFileList = []
+      this.editPeopleForm.sort_priority = ''
+      this.editPeopleDialogVisible = false
     },
     /**
      * 新增人员弹窗中，图片删除时触发
@@ -1663,12 +2039,47 @@ export default {
       this.addPeopleForm.imageUrl = ''
     },
     /**
+     * 编辑人员弹窗中，图片删除时触发
+     * */
+    handleEditPeopleImageUploadRemove(file, fileList) {
+      this.editPeopleForm.imageUrl = ''
+    },
+    /**
      * 新增人员弹窗中，图片上传成功时触发
      * */
     handleAddPeopleImageUploadSuccess(res, file) {
       if (res.code === 200) {
         this.addPeopleForm.imageUrl = res.data.path
       }
+    },
+    /**
+     * 编辑人员弹窗中，图片上传成功时触发
+     * */
+    handleEditPeopleImageUploadSuccess(res, file) {
+      if (res.code === 200) {
+        this.editPeopleForm.imageUrl = res.data.path
+      }
+    },
+    /**
+     * 编辑人员人员
+     * */
+    editPeople(data) {
+      this.editPeopleForm.id = data.id
+      this.editPeopleForm.type = data.type
+      this.editPeopleForm.imageUrl = data.photo
+      this.editPeopleForm.name_cn = data.name_cn
+      this.editPeopleForm.name_en = data.name_en
+      this.editPeopleForm.contact_cn = data.contact_cn
+      this.editPeopleForm.contact_en = data.contact_en
+      this.editPeopleForm.introduction_cn = data.introduction_cn
+      this.editPeopleForm.introduction_en = data.introduction_en
+      this.editPeopleForm.sort_priority = data.sort_priority
+      let arr = []
+      arr.push({
+        url: data.photo,
+      })
+      this.editPeopleFormPhotoFileList = arr
+      this.editPeopleDialogVisible = true
     },
     /**
      * 删除人员
@@ -1822,6 +2233,23 @@ export default {
           })
         }
       })
+    },
+
+    /**
+    * 修改信息时初始化上传到服务器的图片地址
+    * */
+    initEditImageUrl(url) {
+      console.log('url', url)
+      if (!url) {
+        return ''
+      }
+      if (url.indexOf('/media/') !== -1) {
+        let index = url.indexOf('/media/') + 7
+        console.log(url.substr(index))
+        return url.substr(index)
+      }else {
+        return url
+      }
     },
 
   }
