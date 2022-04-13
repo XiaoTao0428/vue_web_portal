@@ -15,7 +15,12 @@
         </div>
         <div class="home-top-right">
           <div class="picture-introduction">
-            <el-carousel height="400px" indicator-position="none">
+
+            <div class="picture-introduction-cover-image-test">
+              <img id="calculateCoverImageAltitude" class="image" v-if="!coverImageWidthIsInit && newsList && newsList.length > 0" :src="newsList[0].cover_image" />
+            </div>
+
+            <el-carousel v-if="coverImageWidthIsInit" :height="coverImageHeight + 'px'" indicator-position="none">
               <el-carousel-item v-for="(item, index) in newsList" :key="'news' + index">
 
                 <div class="image-warp" @click="toNewsDetails(item)">
@@ -102,9 +107,12 @@ export default {
         contactAddress_en: '',
       },
       newsList: [],
+      coverImageWidthIsInit: false,
       researchList: [],
       newResearchList: [],
       colNum: 4,
+
+      coverImageHeight: 0,
     }
   },
   computed: {
@@ -175,7 +183,23 @@ export default {
       }
       await this.loadNewsData()
       await this.loadResearchListData()
+
+      if (this.newsList.length > 0) {
+        this.calculateCoverImageAltitude()
+      }else {
+        this.coverImageHeight = 400
+        this.$nextTick(() => {
+          this.coverImageWidthIsInit = true
+        })
+      }
       this.dataLoading = false
+    },
+    calculateCoverImageAltitude() {
+      let imgDom = document.getElementById('calculateCoverImageAltitude')
+      this.coverImageHeight = imgDom.offsetHeight
+      this.$nextTick(() => {
+        this.coverImageWidthIsInit = true
+      })
     },
     /**
     * 获取新闻列表
@@ -312,13 +336,25 @@ export default {
         .picture-introduction {
           width: 100%;
 
+          .picture-introduction-cover-image-test {
+            width: 100%;
+
+            .image {
+              min-width: 100%;
+              max-width: 100%;
+              object-fit: cover;
+            }
+          }
+
           .image-warp {
             width: 100%;
             cursor: pointer;
 
             position: relative;
             .image {
-              min-height: 100%;
+              min-width: 100%;
+              max-width: 100%;
+              object-fit: cover;
             }
             .image-msg {
               width: 100%;
