@@ -177,7 +177,8 @@ export default {
 
       .depiction {
         width: 100%;
-        background-color: unset;
+        //background-color: unset;
+        background-color: rgba(0, 0, 0, 0.54);
         position: absolute;
         bottom: 0;
         box-sizing: border-box;
@@ -237,7 +238,7 @@ export default {
           width: 100%;
           max-width: 1440px;
           margin: 0 auto;
-          padding: 0 50px;
+          padding: 50px 50px 0 50px;
         }
       }
     }
@@ -250,7 +251,7 @@ export default {
       .depiction {
         .depiction-content {
           width: 100%;
-          padding: 0 50px;
+          padding: 50px 50px 0 50px;
         }
       }
     }
@@ -263,7 +264,7 @@ export default {
       .depiction {
         .depiction-content {
           width: 100%;
-          padding: 0 20px;
+          padding: 20px 20px 0 20px;
 
           .title {
             font-size: 34px;
@@ -301,7 +302,7 @@ export default {
     .image-wrapper {
       .depiction {
         .depiction-content {
-          padding: 0 20px;
+          padding: 20px 20px 0 20px;
           .title {
             font-size: 20px;
             margin-bottom: 10px;

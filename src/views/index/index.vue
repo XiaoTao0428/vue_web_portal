@@ -4,7 +4,8 @@
       <div :class="'header ' + headerClassName">
         <div class="header-icon">
           <img class="icon" :src="Peking_University_logo" @click="toPekingUniversityHome">
-          <el-divider class="divider" direction="vertical" v-if="currScreenSize !== 'xs'"></el-divider>
+<!--          <el-divider class="divider" direction="vertical" v-if="currScreenSize !== 'xs'"></el-divider>-->
+          <div class="divider" direction="vertical" v-if="currScreenSize !== 'xs'"></div>
           <img class="research-group-icon" :src="researchGroupIcon">
         </div>
         <div class="actions">
@@ -447,7 +448,7 @@ export default {
 
       .header-icon {
         width: 100%;
-        height: 40px;
+        height: 50px;
         display: flex;
         align-items: flex-end;
         justify-content: flex-start;
@@ -458,12 +459,13 @@ export default {
         }
         .divider {
           height: 100%;
-          width: 2px;
+          width: 0;
           margin-left: 26px;
           margin-right: 26px;
-          background-color: #c8c8c8;
+          border-right: 2px solid #c8c8c8;
         }
         .research-group-icon {
+          margin-right: 100px;
           max-height: 100%;
           max-width: calc(100% - 200px);
         }
@@ -503,7 +505,7 @@ export default {
         justify-content: flex-start;
         .icon {
           width: 80%;
-          max-width: 120px;
+          max-width: 180px;
           min-width: 80px;
         }
         .title {
