@@ -1560,7 +1560,7 @@ export default {
       })
       if (res) {
         this.researchTableData = res.research_info_list
-        this.pageResearchCount = res.num_of_pages
+        this.pageResearchCount = res.total_num
       }
       this.researchListLoading = false
     },
@@ -1722,7 +1722,7 @@ export default {
       })
       if (res) {
         this.newsTableData = res.news_info_list
-        this.pageNewsCount = res.num_of_pages
+        this.pageNewsCount = res.total_num
       }
       this.newsListLoading = false
     },
@@ -1815,7 +1815,7 @@ export default {
       })
       if (res) {
         this.publicationTableData = res.publication_info_list
-        this.pagePublicationCount = res.num_of_pages
+        this.pagePublicationCount = res.total_num
       }
       this.publicationListLoading = false
     },
@@ -1939,7 +1939,7 @@ export default {
       })
       if (res) {
         this.peopleTableData = res.member_info_list
-        // this.pagePeopleCount = res.num_of_pages
+        // this.pagePeopleCount = res.total_num
       }
       this.peopleListLoading = false
     },

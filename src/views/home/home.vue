@@ -188,18 +188,24 @@ export default {
         this.calculateCoverImageAltitude()
       }else {
         this.coverImageHeight = 400
-        this.$nextTick(() => {
+        // this.$nextTick(() => {
+        //   this.coverImageWidthIsInit = true
+        // })
+        setTimeout(() => {
           this.coverImageWidthIsInit = true
-        })
+        }, 100)
       }
       this.dataLoading = false
     },
     calculateCoverImageAltitude() {
       let imgDom = document.getElementById('calculateCoverImageAltitude')
       this.coverImageHeight = imgDom.offsetHeight
-      this.$nextTick(() => {
+      // this.$nextTick(() => {
+      //   this.coverImageWidthIsInit = true
+      // })
+      setTimeout(() => {
         this.coverImageWidthIsInit = true
-      })
+      }, 100)
     },
     /**
     * 获取新闻列表
