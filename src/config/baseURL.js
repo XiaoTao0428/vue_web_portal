@@ -1,9 +1,5 @@
 // 接口域名
-// export const BASE_URL = 'https://photonics.lvpeng990324.cn/'
-
-export const BASE_URL = 'https://photonics.pku.edu.cn/api/'
-
-// export const BASE_URL = 'http://192.168.0.105:8080/'
+export const BASE_URL = 'https://xxxxxx/'
 
 // 上传文件的地址
 export const upload_file_URL = BASE_URL + 'file/upload-file/'
